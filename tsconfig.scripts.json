@@ -1,0 +1,10 @@
+{
+  "//": "Config for CLI scripts run under tsx. Identical to the app config except that it maps `server-only` to a no-op stub. The real package throws on import outside a React Server Component, which is exactly right for the Next.js client bundle and exactly wrong for a Node script that legitimately runs on a server. Mapping it here rather than in tsconfig.json keeps the guard intact for the build.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+      "server-only": ["./tests/helpers/server-only-stub.ts"]
+    }
+  }
+}

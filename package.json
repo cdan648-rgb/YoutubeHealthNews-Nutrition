@@ -22,9 +22,10 @@
     "verify": "npm run check:env-example && npm run typecheck && npm run lint && npm run format:check && npm run test",
     "test:db": "node scripts/run-db-tests.mjs",
     "test:db:list": "node scripts/run-db-tests.mjs --list",
-    "seed": "tsx scripts/seed-articles.ts",
-    "seed:sql": "tsx scripts/seed-articles.ts --sql",
-    "ingest": "tsx scripts/backfill-youtube.ts"
+    "seed": "tsx --tsconfig tsconfig.scripts.json scripts/seed-articles.ts",
+    "seed:sql": "tsx --tsconfig tsconfig.scripts.json scripts/seed-articles.ts --sql",
+    "ingest": "tsx --tsconfig tsconfig.scripts.json scripts/backfill-youtube.ts",
+    "generate": "tsx --tsconfig tsconfig.scripts.json scripts/generate-article.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
