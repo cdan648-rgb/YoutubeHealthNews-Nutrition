@@ -53,6 +53,45 @@ jobs:
       - name: No secrets in build output
         run: npm run check:secrets
 
+  # ---------------------------------------------------------------------------
+  # Database tests. Additive: this job cannot weaken the `verify` job above,
+  # which still runs on every push with no database at all.
+  #
+  # The suite needs a Postgres connection. Every test wraps itself in
+  # BEGIN ... ROLLBACK, so pointing it at the Supabase project leaves no trace.
+  # Set the DATABASE_URL repository secret to enable it; without the secret the
+  # job reports the suite inventory and passes, so forks and contributors without
+  # database access are not blocked.
+  # ---------------------------------------------------------------------------
+  database:
+    name: Database (pgTAP)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Mapped at job level so the `if:` conditions below can read it. A secret is
+    # not visible in the `env` context unless it is bound like this.
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Suite inventory
+        run: npm run test:db:list
+
+      - name: Run pgTAP suite
+        if: ${{ env.DATABASE_URL != '' }}
+        run: node scripts/run-db-tests.mjs --allow-remote
+
+      - name: Note when skipped
+        if: ${{ env.DATABASE_URL == '' }}
+        run: echo "DATABASE_URL secret not set - pgTAP execution skipped. Set it to enable."
+
   secret-scan:
     name: Secret scan
     runs-on: ubuntu-latest
