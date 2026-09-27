@@ -5,3 +5,7 @@ package-lock.json
 supabase/.temp/
 *.md
 src/lib/supabase/database.types.ts
+# Captured verbatim from the real YouTube channel on 2026-09-27 and checked in as
+# evidence. Reformatting them would modify recorded data, so they stay byte-for-byte
+# as captured.
+tests/fixtures/youtube/
