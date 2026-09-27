@@ -99,6 +99,21 @@ export function hanoiYear(instant: Date = new Date()): number {
   return hanoiParts(instant).year;
 }
 
+/**
+ * The UTC instant of Hanoi midnight for the day an instant falls in.
+ *
+ * Used for "how many emails have we sent today" style caps, which are a Hanoi-calendar
+ * question asked against `timestamptz` columns. Derived by subtracting the Hanoi wall-clock
+ * time-of-day from the instant, so it needs no offset literal and stays correct if the zone
+ * ever changes.
+ */
+export function startOfHanoiDay(instant: Date = new Date()): Date {
+  const parts = hanoiParts(instant);
+  const msIntoDay =
+    ((parts.hour * 60 + parts.minute) * 60 + parts.second) * 1000 + (instant.getTime() % 1000);
+  return new Date(instant.getTime() - msIntoDay);
+}
+
 /** Shift a Hanoi calendar date by whole days, staying in the calendar (never in UTC). */
 export function addHanoiDays(date: HanoiDate, days: number): HanoiDate {
   const [year, month, day] = date.split('-').map((part) => Number.parseInt(part, 10)) as [

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Be_Vietnam_Pro, Noto_Serif } from 'next/font/google';
 import { SiteHeader } from '@/components/layout/SiteHeader';
 import { SiteFooter } from '@/components/layout/SiteFooter';
+import { NewsletterModal } from '@/components/newsletter/NewsletterModal';
 import { JsonLdScript } from '@/components/seo/JsonLdScript';
 import { organizationJsonLd, websiteJsonLd } from '@/lib/seo/jsonld';
 import { SITE } from '@/lib/site';
@@ -67,6 +68,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SiteHeader />
         <div className="flex-1">{children}</div>
         <SiteFooter />
+        {/* Timed, dismissible, and self-suppressing — see NewsletterModal for the rules. */}
+        <NewsletterModal />
       </body>
     </html>
   );

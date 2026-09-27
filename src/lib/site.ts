@@ -74,6 +74,7 @@ export const routes = {
   privacy: () => '/chinh-sach-bao-mat',
   contact: () => '/lien-he',
   newsletter: () => '/newsletter',
+  newsletterConfirmed: () => '/newsletter/xac-nhan',
   unsubscribe: () => '/huy-dang-ky',
   rss: () => '/rss.xml',
 } as const;
@@ -106,4 +107,7 @@ export function articlePath(article: {
  * Methodology, disclaimer, privacy, contact) are built in the editorial-trust phase and
  * are added here in the same change, so the footer never advertises a 404.
  */
-export const FOOTER_LINKS = [{ href: routes.rss(), label: 'RSS' }] as const;
+export const FOOTER_LINKS = [
+  { href: routes.newsletter(), label: 'Bản tin' },
+  { href: routes.rss(), label: 'RSS' },
+] as const;
