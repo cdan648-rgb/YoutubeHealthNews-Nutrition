@@ -48,7 +48,12 @@ jobs:
         run: npm test
 
       - name: Build
-        run: npm run build
+        # Captured so the bundle-budget check reads Next's own reported figure rather
+        # than rebuilding.
+        run: npm run build | tee build.log
+
+      - name: Bundle budget
+        run: node scripts/check-bundle-budget.mjs --from-file build.log
 
       - name: No secrets in build output
         run: npm run check:secrets

@@ -75,6 +75,21 @@ export default async function UnsubscribePage({ searchParams }: Search) {
   // First visit from an email link: validate the token, then show a confirm button.
   const token = t ?? '';
   const subscriberId = u ?? '';
+
+  // A direct visit with no link parameters touches no database — there is nothing to look
+  // up, and building a service-role client for an empty request would be both wasteful and,
+  // if the key were unset, a needless failure.
+  if (subscriberId === '' || token === '') {
+    return (
+      <Panel title="Huỷ đăng ký bản tin">
+        <p>
+          Để huỷ đăng ký, vui lòng mở email mới nhất từ chúng tôi và bấm liên kết &ldquo;Huỷ đăng
+          ký&rdquo; ở cuối thư. Liên kết đó chứa mã xác thực riêng cho địa chỉ của bạn.
+        </p>
+      </Panel>
+    );
+  }
+
   const check = await checkUnsubscribeToken(subscriberId, token);
 
   if (check === 'already_unsubscribed') {
