@@ -46,6 +46,19 @@ export const MEDICAL_DISCLAIMER = {
   body: 'Nội dung này nhằm mục đích thông tin và giáo dục, không thay thế cho việc thăm khám, chẩn đoán hoặc điều trị y tế. Với bất kỳ vấn đề sức khoẻ nào, quý vị hãy đến cơ sở y tế để được bác sĩ có chuyên môn tư vấn trực tiếp. Không tự ý dùng thuốc hoặc thực phẩm bổ sung dựa trên thông tin trên internet.',
 } as const;
 
+/**
+ * Shown on every research article, as fixed text rather than generated prose.
+ *
+ * A single study is the easiest thing on this site to report badly, and the correction for
+ * that is not a better prompt — it is a sentence the generator cannot touch. The body must
+ * also carry its own caution callout about the specific paper's limits; this is the general
+ * statement that is true of every one of them.
+ */
+export const SINGLE_STUDY_CAVEAT = {
+  title: 'Một nghiên cứu đơn lẻ chưa phải là kết luận của y học',
+  body: 'Bài viết này tường thuật một công trình nghiên cứu cụ thể, không phải hướng dẫn điều trị. Một kết quả đơn lẻ — kể cả khi được công bố trên tạp chí có phản biện — cần được các nhóm nghiên cứu độc lập kiểm chứng lại trước khi trở thành cơ sở cho thực hành y khoa. Quý vị hãy đọc phần giới hạn của nghiên cứu và trao đổi với bác sĩ thay vì thay đổi cách chăm sóc sức khoẻ dựa trên một bài báo.',
+} as const;
+
 /** Route builders. Keeping them here stops a URL shape being retyped by hand. */
 export const routes = {
   home: () => '/',

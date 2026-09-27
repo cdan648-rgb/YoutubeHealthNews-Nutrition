@@ -1,0 +1,1204 @@
+{
+  "version": "6.9",
+  "hitCount": 4,
+  "request": {
+    "queryString": "(EXT_ID:41837770 OR EXT_ID:40535201 OR EXT_ID:41669894 OR EXT_ID:41724097)",
+    "resultType": "core",
+    "cursorMark": "*",
+    "pageSize": 25,
+    "sort": "",
+    "synonym": false
+  },
+  "resultList": {
+    "result": [
+      {
+        "id": "41837770",
+        "source": "MED",
+        "pmid": "41837770",
+        "pmcid": "PMC13093417",
+        "fullTextIdList": {
+          "fullTextId": [
+            "PMC13093417"
+          ]
+        },
+        "doi": "10.1111/acel.70446",
+        "title": "Magnesium Deficiency Accelerates Gut Aging and Increases Susceptibility to Colitis.",
+        "authorString": "Zhang R, Ge M, Hu M, Zhao Y, Chong B, Li W, Yu J, Lu Y, He S, Wang J, Yue J, Chen HN, Xu H, Peng Y, Lei P, Liu Z, Dai L.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Zhang R",
+              "lastName": "Zhang",
+              "firstName": "Rou",
+              "initials": "R",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Ge M",
+              "lastName": "Ge",
+              "firstName": "Meiling",
+              "initials": "M",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Hu M",
+              "lastName": "Hu",
+              "firstName": "Meng",
+              "initials": "M",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Zhao Y",
+              "lastName": "Zhao",
+              "firstName": "Yanjie",
+              "initials": "Y",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0009-0000-6382-9228"
+              },
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Department of Big Data in Health Science School of Public Health, Zhejiang Key Laboratory of Intelligent Preventive Medicine, Center for Clinical Big Data and Analytics Second Affiliated Hospital, Zhejiang University School of Medicine, Zhejiang, Hangzhou, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Chong B",
+              "lastName": "Chong",
+              "firstName": "Baochen",
+              "initials": "B",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Li W",
+              "lastName": "Li",
+              "firstName": "Wanmeng",
+              "initials": "W",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Advanced Mass Spectrometry Center, Research Core Facility, Frontiers Science Center for Disease-Related Molecular Network, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Yu J",
+              "lastName": "Yu",
+              "firstName": "Jia",
+              "initials": "J",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Lu Y",
+              "lastName": "Lu",
+              "firstName": "Ying",
+              "initials": "Y",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "He S",
+              "lastName": "He",
+              "firstName": "Siyu",
+              "initials": "S",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Wang J",
+              "lastName": "Wang",
+              "firstName": "Jiao",
+              "initials": "J",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Yue J",
+              "lastName": "Yue",
+              "firstName": "Jirong",
+              "initials": "J",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0000-0002-3730-779X"
+              },
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Chen HN",
+              "lastName": "Chen",
+              "firstName": "Hai-Ning",
+              "initials": "HN",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0000-0003-0104-8498"
+              },
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Department of General Surgery, Colorectal Cancer Center, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Xu H",
+              "lastName": "Xu",
+              "firstName": "Heng",
+              "initials": "H",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0000-0002-7748-2621"
+              },
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Peng Y",
+              "lastName": "Peng",
+              "firstName": "Yong",
+              "initials": "Y",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Lei P",
+              "lastName": "Lei",
+              "firstName": "Peng",
+              "initials": "P",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0000-0001-5652-1962"
+              },
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Liu Z",
+              "lastName": "Liu",
+              "firstName": "Zuyun",
+              "initials": "Z",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Department of Big Data in Health Science School of Public Health, Zhejiang Key Laboratory of Intelligent Preventive Medicine, Center for Clinical Big Data and Analytics Second Affiliated Hospital, Zhejiang University School of Medicine, Zhejiang, Hangzhou, China."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Dai L",
+              "lastName": "Dai",
+              "firstName": "Lunzhi",
+              "initials": "L",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0000-0002-3003-8910"
+              },
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China."
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "authorIdList": {
+          "authorId": [
+            {
+              "type": "ORCID",
+              "value": "0000-0001-5652-1962"
+            },
+            {
+              "type": "ORCID",
+              "value": "0000-0002-3003-8910"
+            },
+            {
+              "type": "ORCID",
+              "value": "0000-0002-3730-779X"
+            },
+            {
+              "type": "ORCID",
+              "value": "0000-0002-7748-2621"
+            },
+            {
+              "type": "ORCID",
+              "value": "0000-0003-0104-8498"
+            },
+            {
+              "type": "ORCID",
+              "value": "0009-0000-6382-9228"
+            }
+          ]
+        },
+        "dataLinksTagsList": {
+          "dataLinkstag": [
+            "supporting_data"
+          ]
+        },
+        "journalInfo": {
+          "issue": "3",
+          "volume": "25",
+          "journalIssueId": 4128740,
+          "dateOfPublication": "2026 Mar",
+          "monthOfPublication": 3,
+          "yearOfPublication": 2026,
+          "journal": {
+            "medlineAbbreviation": "Aging Cell",
+            "title": "Aging cell",
+            "essn": "1474-9726",
+            "issn": "1474-9718",
+            "nlmid": "101130839",
+            "isoabbreviation": "Aging Cell"
+          },
+          "printPublicationDate": "2026-03-01"
+        },
+        "pubYear": "2026",
+        "pageInfo": "e70446",
+        "abstractText": "Aging is linked to a higher incidence of gut diseases such as inflammatory bowel disease (IBD), yet the underlying mechanisms remain unclear. We identified an age-related decline in magnesium (Mg) levels specifically in the gut across species, prompting investigation of its role in intestinal health. Functional studies demonstrated that Mg restriction accelerates gut aging in old but not in young mice and aggravates colitis severity. Multi-omics analysis of mouse tissues revealed that dietary Mg deficiency reshapes the phosphoproteome and N-glycoproteome, destabilizing adhesion complexes, a hallmark of intestinal aging and inflammation. In the UK Biobank cohort (n = 182,213), dietary Mg intake was inversely correlated with gut disorder risk, with 334.7-420.0 mg/day conferring significant protection against Crohn's disease, ulcerative colitis, irritable bowel syndrome, and diverticular disease. These findings identify Mg homeostasis as a key regulator of gut health and highlight Mg supplementation as a potential strategy to counteract age-related gut dysfunction.",
+        "affiliation": "National Clinical Research Center for Geriatrics, State Key Laboratory of Biotherapy, West China Hospital, Sichuan University, Chengdu, China.",
+        "publicationStatus": "ppublish",
+        "language": "eng",
+        "pubModel": "Print",
+        "pubTypeList": {
+          "pubType": [
+            "research-article",
+            "Journal Article"
+          ]
+        },
+        "grantsList": {
+          "grant": [
+            {
+              "agency": "Sichuan Province Science and Technology Support Program",
+              "grantId": "2026NSFSC0924",
+              "orderIn": 0
+            },
+            {
+              "agency": "Sichuan Provincial Science and Technology Support Program",
+              "grantId": "2026NSFSC0924",
+              "orderIn": 0
+            },
+            {
+              "agency": "National Key R&amp;D Program of China",
+              "grantId": "2022YFA1303200",
+              "orderIn": 0
+            },
+            {
+              "agency": "Science and Technology Project of Sichuan Province",
+              "grantId": "2024YFFK0099",
+              "orderIn": 0
+            },
+            {
+              "agency": "National Clinical Research Center for Geriatrics of West China Hospital",
+              "grantId": "Z2024JC002",
+              "orderIn": 0
+            },
+            {
+              "agency": "Sichuan Provincial Science and Technology Support Program",
+              "grantId": "2024YFFK0099",
+              "orderIn": 0
+            },
+            {
+              "agency": "Noncommunicable Chronic Diseases-National Science and Technology Major Project",
+              "grantId": "2024ZD0531100",
+              "orderIn": 0
+            },
+            {
+              "agency": "China Postdoctoral Science Foundation",
+              "grantId": "2024M762204",
+              "orderIn": 0
+            },
+            {
+              "agency": "West China Hospital 1.3.5 project for disciplines of excellence",
+              "grantId": "ZYYC23013",
+              "orderIn": 0
+            },
+            {
+              "agency": "Yang Peng Mercantile Limited (ZL)",
+              "orderIn": 0
+            },
+            {
+              "agency": "National Natural Science Foundation of China",
+              "grantId": "82401845",
+              "orderIn": 0
+            },
+            {
+              "agency": "National Key Research and Development Program of China",
+              "grantId": "2022YFA1303200",
+              "orderIn": 0
+            },
+            {
+              "agency": "Postdoctoral Research Fund of West China Hospital",
+              "grantId": "2024HXBH025",
+              "orderIn": 0
+            },
+            {
+              "agency": "Zhejiang Key Laboratory of Intelligent Preventive Medicine",
+              "orderIn": 0
+            }
+          ]
+        },
+        "meshHeadingList": {
+          "meshHeading": [
+            {
+              "majorTopic_YN": "N",
+              "descriptorName": "Animals"
+            },
+            {
+              "majorTopic_YN": "N",
+              "descriptorName": "Humans"
+            },
+            {
+              "majorTopic_YN": "N",
+              "descriptorName": "Mice"
+            },
+            {
+              "majorTopic_YN": "Y",
+              "descriptorName": "Colitis",
+              "meshQualifierList": {
+                "meshQualifier": [
+                  {
+                    "majorTopic_YN": "N",
+                    "abbreviation": "ET",
+                    "qualifierName": "etiology"
+                  },
+                  {
+                    "majorTopic_YN": "N",
+                    "abbreviation": "ME",
+                    "qualifierName": "metabolism"
+                  },
+                  {
+                    "majorTopic_YN": "N",
+                    "abbreviation": "PA",
+                    "qualifierName": "pathology"
+                  }
+                ]
+              }
+            },
+            {
+              "majorTopic_YN": "Y",
+              "descriptorName": "Magnesium Deficiency",
+              "meshQualifierList": {
+                "meshQualifier": [
+                  {
+                    "majorTopic_YN": "N",
+                    "abbreviation": "CO",
+                    "qualifierName": "complications"
+                  }
+                ]
+              }
+            },
+            {
+              "majorTopic_YN": "Y",
+              "descriptorName": "Magnesium",
+              "meshQualifierList": {
+                "meshQualifier": [
+                  {
+                    "majorTopic_YN": "N",
+                    "abbreviation": "ME",
+                    "qualifierName": "metabolism"
+                  }
+                ]
+              }
+            },
+            {
+              "majorTopic_YN": "Y",
+              "descriptorName": "Aging"
+            },
+            {
+              "majorTopic_YN": "N",
+              "descriptorName": "Female"
+            }
+          ]
+        },
+        "chemicalList": {
+          "chemical": [
+            {
+              "name": "Magnesium",
+              "registryNumber": "I38ZP9992A"
+            }
+          ]
+        },
+        "subsetList": {
+          "subset": [
+            {
+              "code": "IM",
+              "name": "Index Medicus"
+            }
+          ]
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Subscription required",
+              "availabilityCode": "S",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.1111/acel.70446"
+            },
+            {
+              "availability": "Open access",
+              "availabilityCode": "OA",
+              "documentStyle": "html",
+              "site": "Europe_PMC",
+              "url": "https://europepmc.org/articles/PMC13093417"
+            },
+            {
+              "availability": "Open access",
+              "availabilityCode": "OA",
+              "documentStyle": "pdf",
+              "site": "Europe_PMC",
+              "url": "https://europepmc.org/articles/PMC13093417?pdf=render"
+            }
+          ]
+        },
+        "isOpenAccess": "Y",
+        "inEPMC": "Y",
+        "inPMC": "Y",
+        "citedByCount": 1,
+        "hasReferences": "Y",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "Y",
+        "hasBook": "N",
+        "hasSuppl": "Y",
+        "hasLabsLinks": "N",
+        "hasData": "Y",
+        "license": "cc by",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "Y",
+        "tmAccessionTypeList": {
+          "accessionType": [
+            "doi"
+          ]
+        },
+        "dateOfCompletion": "2026-07-11",
+        "dateOfCreation": "2026-03-16",
+        "dateOfRevision": "2026-08-13",
+        "firstPublicationDate": "2026-03-01",
+        "firstIndexDate": "2026-03-17",
+        "fullTextReceivedDate": "2026-04-22",
+        "hasEvaluations": "N"
+      },
+      {
+        "id": "41724097",
+        "source": "MED",
+        "pmid": "41724097",
+        "doi": "10.1016/j.watres.2026.125588",
+        "title": "Magnesium enrichment of desalinated water: Technologies, mechanisms, and practical considerations - a critical review.",
+        "authorString": "Birnhack L, Nativ P, Lahav O.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Birnhack L",
+              "lastName": "Birnhack",
+              "firstName": "Liat",
+              "initials": "L",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Faculty of Civil and Environmental Engineering, Technion - IIT, Haifa 3200003, Israel."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Nativ P",
+              "lastName": "Nativ",
+              "firstName": "Paz",
+              "initials": "P",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0000-0002-0849-4880"
+              },
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Faculty of Civil and Environmental Engineering, Technion - IIT, Haifa 3200003, Israel. Electronic address: paznativ@technion.ac.il."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Lahav O",
+              "lastName": "Lahav",
+              "firstName": "Ori",
+              "initials": "O",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Faculty of Civil and Environmental Engineering, Technion - IIT, Haifa 3200003, Israel."
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "authorIdList": {
+          "authorId": [
+            {
+              "type": "ORCID",
+              "value": "0000-0002-0849-4880"
+            }
+          ]
+        },
+        "journalInfo": {
+          "volume": "295",
+          "journalIssueId": 4148937,
+          "dateOfPublication": "2026 May",
+          "monthOfPublication": 5,
+          "yearOfPublication": 2026,
+          "journal": {
+            "medlineAbbreviation": "Water Res",
+            "title": "Water research",
+            "essn": "1879-2448",
+            "issn": "0043-1354",
+            "nlmid": "0105072",
+            "isoabbreviation": "Water Res"
+          },
+          "printPublicationDate": "2026-05-01"
+        },
+        "pubYear": "2026",
+        "pageInfo": "125588",
+        "abstractText": "Desalinated water, while increasingly relied upon as a sustainable source of drinking water, is deficient in essential minerals, out of which the most important macronutrient is magnesium. Magnesium deficiency has been linked to cardiovascular diseases and other health risks in humans, as well as negative effects on agricultural productivity when desalinated water is used for irrigation. This review covers current technological approaches for enriching desalinated water with Mg<sup>2+</sup>, ranging from simple techniques such as dilution with seawater or other brines, direct chemical supplementation and dissolution of quarry dolomite, to advanced seawater-separation-based methods including ion-exchange, nanofiltration followed by diananofiltration and ultrafiltration, hybrid electrodialysis/nanofiltration, and flow-electrode capacitive deionization. Case studies from Israel and Saudi Arabia highlight practical challenges, normalized costs, and policy drivers. While no single method is universally applicable, separation-based technologies offer promising scalability and cost-effectiveness for achieving regulatory targets between 5 and 20 mg/L as Mg in the product water. A comparative analysis of operational, economic, and water quality implications is presented, together with answers to common questions and perspectives for future research and implementation.",
+        "affiliation": "Faculty of Civil and Environmental Engineering, Technion - IIT, Haifa 3200003, Israel.",
+        "publicationStatus": "ppublish",
+        "language": "eng",
+        "pubModel": "Print-Electronic",
+        "pubTypeList": {
+          "pubType": [
+            "Review",
+            "Journal Article"
+          ]
+        },
+        "meshHeadingList": {
+          "meshHeading": [
+            {
+              "majorTopic_YN": "Y",
+              "descriptorName": "Magnesium",
+              "meshQualifierList": {
+                "meshQualifier": [
+                  {
+                    "majorTopic_YN": "N",
+                    "abbreviation": "CH",
+                    "qualifierName": "chemistry"
+                  }
+                ]
+              }
+            },
+            {
+              "majorTopic_YN": "N",
+              "descriptorName": "Seawater",
+              "meshQualifierList": {
+                "meshQualifier": [
+                  {
+                    "majorTopic_YN": "N",
+                    "abbreviation": "CH",
+                    "qualifierName": "chemistry"
+                  }
+                ]
+              }
+            },
+            {
+              "majorTopic_YN": "Y",
+              "descriptorName": "Water Purification",
+              "meshQualifierList": {
+                "meshQualifier": [
+                  {
+                    "majorTopic_YN": "N",
+                    "abbreviation": "MT",
+                    "qualifierName": "methods"
+                  }
+                ]
+              }
+            },
+            {
+              "majorTopic_YN": "Y",
+              "descriptorName": "Saline Waters"
+            }
+          ]
+        },
+        "keywordList": {
+          "keyword": [
+            "Magnesium",
+            "desalination",
+            "drinking water",
+            "Public Health",
+            "Separation Technologies"
+          ]
+        },
+        "chemicalList": {
+          "chemical": [
+            {
+              "name": "Magnesium",
+              "registryNumber": "I38ZP9992A"
+            }
+          ]
+        },
+        "subsetList": {
+          "subset": [
+            {
+              "code": "IM",
+              "name": "Index Medicus"
+            }
+          ]
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Subscription required",
+              "availabilityCode": "S",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.1016/j.watres.2026.125588"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "Y",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "N",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "N",
+        "dateOfCompletion": "2026-07-08",
+        "dateOfCreation": "2026-02-22",
+        "dateOfRevision": "2026-07-08",
+        "electronicPublicationDate": "2026-02-17",
+        "firstPublicationDate": "2026-02-17",
+        "firstIndexDate": "2026-02-23",
+        "hasEvaluations": "N"
+      },
+      {
+        "id": "41669894",
+        "source": "MED",
+        "pmid": "41669894",
+        "pmcid": "PMC13034741",
+        "fullTextIdList": {
+          "fullTextId": [
+            "PMC13034741"
+          ]
+        },
+        "doi": "10.1097/hjh.0000000000004253",
+        "title": "Magnesium depletion score is associated with arterial stiffness: data from the Brisighella Heart Study.",
+        "authorString": "Fogacci F, Giovannini M, Grandi E, D'Addato S, Borghi C, Cicero AFG, Brisighella Heart Study group.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Fogacci F",
+              "lastName": "Fogacci",
+              "firstName": "Federica",
+              "initials": "F",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0000-0001-7853-0042"
+              },
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Hypertension and Cardiovascular Risk Research Center, Medical and Surgical Sciences Department, Alma Mater Studiorum University of Bologna."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Giovannini M",
+              "lastName": "Giovannini",
+              "firstName": "Marina",
+              "initials": "M",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Hypertension and Cardiovascular Risk Research Center, Medical and Surgical Sciences Department, Alma Mater Studiorum University of Bologna."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Grandi E",
+              "lastName": "Grandi",
+              "firstName": "Elisa",
+              "initials": "E",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Hypertension and Cardiovascular Risk Research Center, Medical and Surgical Sciences Department, Alma Mater Studiorum University of Bologna."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "D'Addato S",
+              "lastName": "D'Addato",
+              "firstName": "Sergio",
+              "initials": "S",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Hypertension and Cardiovascular Risk Research Center, Medical and Surgical Sciences Department, Alma Mater Studiorum University of Bologna."
+                  },
+                  {
+                    "affiliation": "Cardiovascular Medicine Unit, Heart, Chest and Vascular Department, IRCCS Azienda Ospedaliero-Universitaria di Bologna, Bologna, Italy."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Borghi C",
+              "lastName": "Borghi",
+              "firstName": "Claudio",
+              "initials": "C",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Hypertension and Cardiovascular Risk Research Center, Medical and Surgical Sciences Department, Alma Mater Studiorum University of Bologna."
+                  },
+                  {
+                    "affiliation": "Cardiovascular Medicine Unit, Heart, Chest and Vascular Department, IRCCS Azienda Ospedaliero-Universitaria di Bologna, Bologna, Italy."
+                  }
+                ]
+              }
+            },
+            {
+              "fullName": "Cicero AFG",
+              "lastName": "Cicero",
+              "firstName": "Arrigo F G",
+              "initials": "AFG",
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Hypertension and Cardiovascular Risk Research Center, Medical and Surgical Sciences Department, Alma Mater Studiorum University of Bologna."
+                  },
+                  {
+                    "affiliation": "Cardiovascular Medicine Unit, Heart, Chest and Vascular Department, IRCCS Azienda Ospedaliero-Universitaria di Bologna, Bologna, Italy."
+                  }
+                ]
+              }
+            },
+            {
+              "collectiveName": "Brisighella Heart Study group"
+            }
+          ]
+        },
+        "authorIdList": {
+          "authorId": [
+            {
+              "type": "ORCID",
+              "value": "0000-0001-7853-0042"
+            }
+          ]
+        },
+        "dataLinksTagsList": {
+          "dataLinkstag": [
+            "supporting_data"
+          ]
+        },
+        "journalInfo": {
+          "issue": "5",
+          "volume": "44",
+          "journalIssueId": 4160008,
+          "dateOfPublication": "2026 May",
+          "monthOfPublication": 5,
+          "yearOfPublication": 2026,
+          "journal": {
+            "medlineAbbreviation": "J Hypertens",
+            "title": "Journal of hypertension",
+            "essn": "1473-5598",
+            "issn": "0263-6352",
+            "nlmid": "8306882",
+            "isoabbreviation": "J Hypertens"
+          },
+          "printPublicationDate": "2026-05-01"
+        },
+        "pubYear": "2026",
+        "pageInfo": "771-777",
+        "abstractText": "<h4>Background and aims</h4>The magnesium depletion score (MDS) estimates magnesium deficiency risk by integrating dietary intake and physiological losses. This study evaluated the association between MDS and arterial stiffness in a rural Mediterranean population.<h4>Methods</h4>We analyzed data from 2048 participants (49.2% men, 50.8% women) in the Brisighella Heart Study. MDS and arterial stiffness parameters - augmentation index (AIx) and carotid-femoral pulse wave velocity (cfPWV) - were assessed using validated methods. Multiple regression models adjusted for age and mean arterial pressure included sex, smoking, physical activity, BMI, heart rate, fasting glucose, low-density lipoprotein cholesterol (LDL-C), triglycerides, serum uric acid, estimated glomerular filtration rate (eGFR), and MDS.<h4>Results</h4>An MDS at least 2 was observed in 51.6% of participants, more often in men ( P  < 0.001). Higher MDS was significantly associated with increased AIx and cfPWV in both sexes ( P  < 0.001). MDS remained an independent predictor of AIx ( β  = 0.087, P  = 0.011) and cfPWV ( β  = 0.131, P  = 0.013) after adjustment.<h4>Conclusion</h4>Higher MDS values correlate with greater arterial stiffness, suggesting that magnesium imbalance may negatively affect vascular health.",
+        "affiliation": "Hypertension and Cardiovascular Risk Research Center, Medical and Surgical Sciences Department, Alma Mater Studiorum University of Bologna.",
+        "publicationStatus": "ppublish",
+        "language": "eng",
+        "pubModel": "Print-Electronic",
+        "pubTypeList": {
+          "pubType": [
+            "research-article",
+            "Journal Article"
+          ]
+        },
+        "meshHeadingList": {
+          "meshHeading": [
+            {
+              "majorTopic_YN": "N",
+              "descriptorName": "Humans"
+            },
+            {
+              "majorTopic_YN": "Y",
+              "descriptorName": "Magnesium Deficiency",
+              "meshQualifierList": {
+                "meshQualifier": [
+                  {
+                    "majorTopic_YN": "N",
+                    "abbreviation": "EP",
+                    "qualifierName": "epidemiology"
+                  },
+                  {
+                    "majorTopic_YN": "N",
+                    "abbreviation": "PP",
+                    "qualifierName": "physiopathology"
+                  }
+                ]
+              }
+            },
+            {
+              "majorTopic_YN": "Y",
+              "descriptorName": "Magnesium",
+              "meshQualifierList": {
+                "meshQualifier": [
+                  {
+                    "majorTopic_YN": "N",
+                    "abbreviation": "BL",
+                    "qualifierName": "blood"
+                  }
+                ]
+              }
+            },
+            {
+              "majorTopic_YN": "N",
+              "descriptorName": "Aged"
+            },
+            {
+              "majorTopic_YN": "N",
+              "descriptorName": "Middle Aged"
+            },
+            {
+              "majorTopic_YN": "N",
+              "descriptorName": "Female"
+            },
+            {
+              "majorTopic_YN": "N",
+              "descriptorName": "Male"
+            },
+            {
+              "majorTopic_YN": "Y",
+              "descriptorName": "Vascular Stiffness"
+            },
+            {
+              "majorTopic_YN": "N",
+              "descriptorName": "Pulse Wave Analysis"
+            }
+          ]
+        },
+        "keywordList": {
+          "keyword": [
+            "Magnesium",
+            "Pulse wave velocity",
+            "epidemiology",
+            "Arterial stiffness",
+            "Augmentation Index"
+          ]
+        },
+        "chemicalList": {
+          "chemical": [
+            {
+              "name": "Magnesium",
+              "registryNumber": "I38ZP9992A"
+            }
+          ]
+        },
+        "subsetList": {
+          "subset": [
+            {
+              "code": "IM",
+              "name": "Index Medicus"
+            }
+          ]
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Subscription required",
+              "availabilityCode": "S",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.1097/HJH.0000000000004253"
+            },
+            {
+              "availability": "Open access",
+              "availabilityCode": "OA",
+              "documentStyle": "html",
+              "site": "Europe_PMC",
+              "url": "https://europepmc.org/articles/PMC13034741"
+            },
+            {
+              "availability": "Open access",
+              "availabilityCode": "OA",
+              "documentStyle": "pdf",
+              "site": "Europe_PMC",
+              "url": "https://europepmc.org/articles/PMC13034741?pdf=render"
+            }
+          ]
+        },
+        "isOpenAccess": "Y",
+        "inEPMC": "Y",
+        "inPMC": "Y",
+        "citedByCount": 2,
+        "hasReferences": "Y",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "Y",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "Y",
+        "license": "cc by",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "Y",
+        "tmAccessionTypeList": {
+          "accessionType": [
+            "doi"
+          ]
+        },
+        "dateOfCompletion": "2026-07-07",
+        "dateOfCreation": "2026-02-11",
+        "dateOfRevision": "2026-08-13",
+        "electronicPublicationDate": "2026-02-10",
+        "firstPublicationDate": "2026-02-10",
+        "firstIndexDate": "2026-02-11",
+        "fullTextReceivedDate": "2026-03-31",
+        "hasEvaluations": "N"
+      },
+      {
+        "id": "40535201",
+        "source": "MED",
+        "pmid": "40535201",
+        "pmcid": "PMC12170560",
+        "fullTextIdList": {
+          "fullTextId": [
+            "PMC12170560"
+          ]
+        },
+        "doi": "10.1177/1753495x251349950",
+        "title": "Magnesium deficiency and dilated cardiomyopathy diagnosed peripartum.",
+        "authorString": "Morton A.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Morton A",
+              "lastName": "Morton",
+              "firstName": "Adam",
+              "initials": "A",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0000-0001-9887-714X"
+              },
+              "authorAffiliationDetailsList": {
+                "authorAffiliation": [
+                  {
+                    "affiliation": "Departments of Obstetric Medicine and Endocrinology, Mater Health, South Brisbane, QLD, Australia."
+                  },
+                  {
+                    "affiliation": "Department of Medicine, University of Queensland, Brisbane, QLD, Australia."
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "authorIdList": {
+          "authorId": [
+            {
+              "type": "ORCID",
+              "value": "0000-0001-9887-714X"
+            }
+          ]
+        },
+        "dataLinksTagsList": {
+          "dataLinkstag": [
+            "altmetrics",
+            "supporting_data"
+          ]
+        },
+        "journalInfo": {
+          "issue": "1",
+          "volume": "19",
+          "journalIssueId": 4136412,
+          "dateOfPublication": "2026 Mar",
+          "monthOfPublication": 3,
+          "yearOfPublication": 2026,
+          "journal": {
+            "medlineAbbreviation": "Obstet Med",
+            "title": "Obstetric medicine",
+            "essn": "1753-4968",
+            "issn": "1753-495X",
+            "nlmid": "101464191",
+            "isoabbreviation": "Obstet Med"
+          },
+          "printPublicationDate": "2026-03-01"
+        },
+        "pubYear": "2026",
+        "pageInfo": "21-29",
+        "abstractText": "Dilated cardiomyopathy in pregnancy, whether diagnosed pre-conception, or occurring de novo during pregnancy, may be associated with significant maternal morbidity and mortality. Hypomagnesaemia is associated with ventricular arrhythmias and may be a risk factor for heart failure, coronary artery disease and atrial fibrillation in the general population. Pregnancy is associated with a progressive physiological fall in serum magnesium concentration. Intracellular magnesium deficiency may exist despite normal serum magnesium concentration. Three cases of dilated cardiomyopathy developing in the peripartum period with hypomagnesaemia are presented. The literature regarding associations between magnesium deficiency and dilated cardiomyopathy is reviewed. Potential future research examining magnesium deficiency as a potential contributor to dilated cardiomyopathy in pregnancy is proposed, and possible implications for management are discussed.",
+        "affiliation": "Departments of Obstetric Medicine and Endocrinology, Mater Health, South Brisbane, QLD, Australia.",
+        "publicationStatus": "epublish",
+        "language": "eng",
+        "pubModel": "Electronic-eCollection",
+        "pubTypeList": {
+          "pubType": [
+            "review-article",
+            "Review",
+            "Journal Article"
+          ]
+        },
+        "keywordList": {
+          "keyword": [
+            "Pregnancy",
+            "Magnesium",
+            "Cardiomyopathy"
+          ]
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Subscription required",
+              "availabilityCode": "S",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.1177/1753495X251349950"
+            },
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "html",
+              "site": "Europe_PMC",
+              "url": "https://europepmc.org/articles/PMC12170560"
+            },
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "pdf",
+              "site": "Europe_PMC",
+              "url": "https://europepmc.org/articles/PMC12170560?pdf=render"
+            },
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.1177/1753495x251349950"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "Y",
+        "inPMC": "Y",
+        "citedByCount": 0,
+        "hasReferences": "Y",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "Y",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "Y",
+        "hasData": "Y",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "Y",
+        "tmAccessionTypeList": {
+          "accessionType": [
+            "doi"
+          ]
+        },
+        "dateOfCompletion": "2026-06-16",
+        "dateOfCreation": "2025-06-19",
+        "dateOfRevision": "2026-09-26",
+        "electronicPublicationDate": "2025-06-16",
+        "firstPublicationDate": "2025-06-16",
+        "firstIndexDate": "2025-06-19",
+        "fullTextReceivedDate": "2026-06-24",
+        "hasEvaluations": "N"
+      }
+    ]
+  }
+}

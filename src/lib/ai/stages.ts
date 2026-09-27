@@ -416,3 +416,134 @@ KHÔNG hứa hẹn kết quả sức khoẻ. KHÔNG dùng từ như "thần dư�
 
 CHỈ trả về JSON đúng schema.`;
 }
+
+/* ============================ research variants =========================== */
+
+/**
+ * The research fallback writes from a published paper rather than from a video, and the
+ * dangers are different enough to need their own prompts rather than a flag on the
+ * existing ones.
+ *
+ * What changes: there is no presenter, so nothing may be attributed to one; the abstract is
+ * a primary scientific source rather than one person's summary, so the temptation is to
+ * report a single result as settled medicine; and the paper's own limitations — sample size,
+ * whether it was in humans, whether anything was replicated — are the most important thing
+ * the article has to say and the thing a generator is most likely to omit.
+ *
+ * What does not change: HOUSE_RULES. Every fabrication and dosage rule applies verbatim.
+ */
+export const RESEARCH_RULES = `BỐI CẢNH RIÊNG CHO BÀI VIẾT VỀ NGHIÊN CỨU:
+A. Tư liệu của bạn là phần tóm tắt (abstract) của MỘT công trình đã công bố. Không có video, không có người nói. TUYỆT ĐỐI KHÔNG dùng attribution "speaker" và không viết "theo video".
+B. MỘT nghiên cứu đơn lẻ KHÔNG phải kết luận của y học. Bài viết phải nói rõ điều đó.
+C. Phải nêu rõ giới hạn của nghiên cứu: cỡ mẫu, đối tượng (người hay động vật hay tế bào), thiết kế nghiên cứu, và việc kết quả cần được kiểm chứng độc lập. Nếu abstract không cho biết một chi tiết nào, hãy viết rằng abstract không nêu — KHÔNG suy đoán.
+D. KHÔNG chuyển kết quả nghiên cứu thành lời khuyên cho người đọc.
+E. Bài viết BẮT BUỘC có một block {"t":"callout","tone":"caution"} giải thích một nghiên cứu đơn lẻ chứng minh được điều gì và chưa chứng minh được điều gì.
+F. references BẮT BUỘC chứa đường dẫn tới chính công trình gốc.`;
+
+export function researchExtractionPrompt(input: {
+  readonly title: string;
+  readonly abstract: string;
+  readonly journal: string | null;
+  readonly publicationDate: string | null;
+  readonly authors: readonly string[];
+  readonly categories: readonly { slug: string; name: string; description: string }[];
+}): string {
+  const categoryList = input.categories
+    .map((category) => `- ${category.slug}: ${category.name} — ${category.description}`)
+    .join('\n');
+
+  return `Dưới đây là tóm tắt của một công trình nghiên cứu đã công bố. Nhiệm vụ của bạn là PHÂN TÍCH, chưa viết bài.
+
+TIÊU ĐỀ CÔNG TRÌNH:
+${input.title}
+
+TẠP CHÍ: ${input.journal ?? 'không rõ'}
+NGÀY CÔNG BỐ: ${input.publicationDate ?? 'không rõ'}
+TÁC GIẢ: ${input.authors.length === 0 ? 'không rõ' : input.authors.slice(0, 8).join(', ')}
+
+TÓM TẮT (đây là toàn bộ tư liệu bạn có):
+"""
+${input.abstract}
+"""
+
+CÁC CHUYÊN MỤC CÓ SẴN (chọn ĐÚNG MỘT slug từ danh sách này):
+${categoryList}
+
+YÊU CẦU:
+1. Xác định chủ đề và chuyên mục phù hợp.
+2. Liệt kê các luận điểm. Với bài nghiên cứu, hãy phân loại:
+   - "speaker_claim": điều CHÍNH công trình này báo cáo (kết quả của riêng nó, chưa được xác lập rộng rãi).
+   - "general_knowledge": kiến thức y khoa nền đã được xác lập, có thể dẫn nguồn uy tín.
+   - "uncertain": suy luận vượt quá dữ liệu trong abstract.
+3. Với mỗi luận điểm, liệt kê MỌI con số xuất hiện trong đó, copy đúng như trong abstract.
+4. "restrictedTopics": nếu công trình liên quan tới liều dùng, trẻ em, thai kỳ, lựa chọn phác đồ điều trị ung thư, tương tác thuốc, tranh cãi về an toàn vắc xin, tuyên bố chữa khỏi, hoặc tự chẩn đoán — hãy liệt kê.
+5. "isFactCheck": false, trừ khi công trình trực tiếp phản biện một quan niệm phổ biến.
+6. Đề xuất 4–8 mục (outline). BẮT BUỘC có một mục dành cho giới hạn của nghiên cứu.
+
+CHỈ trả về JSON đúng schema.`;
+}
+
+export function researchDraftPrompt(input: {
+  readonly extraction: Extraction;
+  readonly verification: Verification;
+  readonly paperTitle: string;
+  readonly paperUrl: string;
+  readonly journal: string | null;
+  readonly publicationDate: string | null;
+  readonly authors: readonly string[];
+  readonly abstract: string;
+  readonly wordCountMin: number;
+  readonly wordCountMax: number;
+}): string {
+  const citable = input.verification.verifiedClaims.filter((claim) => claim.resolution === 'cite');
+  const paperOwn = input.verification.verifiedClaims.filter(
+    (claim) => claim.resolution === 'attribute_to_speaker',
+  );
+  const dropped = input.verification.verifiedClaims.filter((claim) => claim.resolution === 'drop');
+
+  return `Viết bài báo hoàn chỉnh về công trình nghiên cứu này, dựa trên phân tích đã có.
+
+CHỦ ĐỀ: ${input.extraction.topic}
+CHUYÊN MỤC (dùng đúng slug này): ${input.extraction.proposedCategorySlug}
+
+CÔNG TRÌNH GỐC:
+- Tiêu đề: ${input.paperTitle}
+- Tạp chí: ${input.journal ?? 'không rõ'}
+- Ngày công bố: ${input.publicationDate ?? 'không rõ'}
+- Tác giả: ${input.authors.length === 0 ? 'không rõ' : input.authors.slice(0, 8).join(', ')}
+- Đường dẫn: ${input.paperUrl}
+
+TÓM TẮT GỐC (chỉ được dùng con số xuất hiện ở đây):
+"""
+${input.abstract}
+"""
+
+DÀN Ý ĐỀ XUẤT:
+${input.extraction.outline.map((item, i) => `${i + 1}. ${item.heading} — ${item.intent}`).join('\n')}
+
+Ý CÓ THỂ DẪN NGUỒN NGOÀI (attribution "established", kèm ref là chỉ số trong mảng references):
+${citable.length === 0 ? '(không có)' : citable.map((claim, i) => `[ref ${i + 1}] ${claim.claimText}\n   nguồn: ${claim.suggestedTitle ?? ''} — ${claim.suggestedPublisher ?? ''} — ${claim.suggestedUrl ?? ''}`).join('\n')}
+
+Ý LÀ KẾT QUẢ CỦA RIÊNG CÔNG TRÌNH NÀY (attribution "established" kèm ref 0 — tức chính công trình gốc — và phải ghi rõ trong câu rằng đây là kết quả của nghiên cứu này):
+${paperOwn.length === 0 ? '(không có)' : paperOwn.map((claim) => `- ${claim.claimText}`).join('\n')}
+
+Ý PHẢI BỎ HẲN:
+${dropped.length === 0 ? '(không có)' : dropped.map((claim) => `- ${claim.claimText} (lý do: ${claim.reason})`).join('\n')}
+
+CẤU TRÚC BẮT BUỘC của mảng body:
+- ĐÚNG MỘT block {"t":"source_note"} (đặt gần đầu bài)
+- ÍT NHẤT 4 block {"t":"h2"}, trong đó một mục nói về giới hạn của nghiên cứu
+- ÍT NHẤT MỘT block {"t":"key_facts"} với 2–8 items
+- ĐÚNG MỘT block {"t":"callout","tone":"caution"} — giải thích một nghiên cứu đơn lẻ chứng minh được gì và chưa chứng minh được gì
+- ĐÚNG MỘT block {"t":"disclaimer"} (đặt cuối)
+- TUYỆT ĐỐI KHÔNG có block {"t":"video_embed"} — không có video nào
+- TUYỆT ĐỐI KHÔNG có đoạn nào "attribution":"speaker" — không có người nói
+
+references: phần tử ĐẦU TIÊN (chỉ số 0) PHẢI là chính công trình gốc, với url đúng bằng ${input.paperUrl}. Sau đó chỉ thêm các nguồn đã được cung cấp ở trên. KHÔNG thêm nguồn nào khác.
+
+ĐỘ DÀI: ${input.wordCountMin}–${input.wordCountMax} từ (đếm theo âm tiết tiếng Việt).
+
+slug: chữ thường không dấu, các từ nối bằng dấu gạch ngang, chỉ a-z 0-9 và dấu -.
+
+CHỈ trả về JSON đúng schema.`;
+}

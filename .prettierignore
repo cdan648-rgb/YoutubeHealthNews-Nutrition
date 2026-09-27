@@ -9,3 +9,6 @@ src/lib/supabase/database.types.ts
 # evidence. Reformatting them would modify recorded data, so they stay byte-for-byte
 # as captured.
 tests/fixtures/youtube/
+# Captured verbatim from Europe PMC, Crossref and NCBI E-utilities on 2026-09-27.
+# Raw API responses kept byte-for-byte as returned, for the same reason.
+tests/fixtures/research/

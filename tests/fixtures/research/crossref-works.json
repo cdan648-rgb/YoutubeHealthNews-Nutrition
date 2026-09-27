@@ -1,0 +1,2501 @@
+{
+  "status": "ok",
+  "message-type": "work-list",
+  "message-version": "1.0.0",
+  "message": {
+    "facets": {},
+    "total-results": 15614,
+    "items": [
+      {
+        "abstract": "<jats:p>Hypomagnesemia is a characteristic feature of many diseases (migraine, diabetes mellitus, osteoporosis, asthma, preeclampsia, and cardiovascular diseases). Serum magnesium concentrations are closely linked to bone metabolism. Magnesium plays a pivotal role in ATP production and utilization. The authors present a literature review regarding studies on actual magnesium intake.</jats:p>",
+        "DOI": "10.33920/med-03-2607-01",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Magnesium deficiency: a dormant problem of the 21st centur y, or years of experience studying actual magnesium intake"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-8979-8084",
+            "authenticated-orcid": false,
+            "given": "M. L.",
+            "family": "Maksimov",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "FSAEI CPE Russian Medical Academy of Continuous Professional Education of the Ministry of Health of Russia"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-5132-924X",
+            "authenticated-orcid": false,
+            "given": "V. A.",
+            "family": "Dudareva",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "FSBEI HE Rostov State Medical University of the Ministry of Health of the Russian Federation"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0002-0407-0092",
+            "authenticated-orcid": false,
+            "given": "E. R.",
+            "family": "Lvova",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "FSBEI HE Rostov State Medical University of the Ministry of Health of the Russian Federation"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0004-4009-3886",
+            "authenticated-orcid": false,
+            "given": "V. I.",
+            "family": "Sklyarova",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "FSBEI HE Rostov State Medical University of the Ministry of Health of the Russian Federation"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0002-6706-7798",
+            "authenticated-orcid": false,
+            "given": "O. E.",
+            "family": "Ryabysh",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "FSAEI CPE Russian Medical Academy of Continuous Professional Education of the Ministry of Health of Russia"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Glavvrač (Chief Medical Officer)"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              7,
+              20
+            ]
+          ]
+        },
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              7,
+              20
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  3,
+                  5
+                ]
+              ],
+              "date-time": "2026-03-05T00:00:00Z",
+              "timestamp": 1772668800000
+            },
+            "content-version": "vor",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0/"
+          }
+        ],
+        "abstract": "<jats:p>Magnesium is an essential macronutrient for both plants and humans. However, its availability in agricultural systems and dietary intake has been declining, raising concerns about crop productivity and nutritional security. In plants, magnesium plays a critical role in photosynthesis, enzyme activation, carbohydrate transport, and overall metabolic regulation, while in humans it is required for numerous biochemical processes related to energy metabolism, cardiovascular function, and disease prevention. Long-term studies have reported a 20–30% decrease in magnesium concentrations in fruits and vegetables worldwide, potentially contributing to widespread magnesium deficiency. Soil factors such as acidification, nutrient imbalance, and intensive agricultural practices further limit magnesium availability along the soil–plant–human continuum. This review summarizes the biological importance of magnesium in plants and humans, evaluates the occurrence and causes of magnesium deficiency, and discusses current strategies for improving magnesium nutrition through agronomic and genetic biofortification. It considers even fertilizer management, nano-fertilizers, and alternative magnesium sources such as serpentinite. The review highlights biofortification as a cost-effective and sustainable strategy to enhance crop magnesium concentration and mitigate global magnesium deficiency while emphasizing the need for further research on bioavailability, environmental safety, and long-term agricultural sustainability.</jats:p>",
+        "DOI": "10.3390/plants15050801",
+        "type": "journal-article",
+        "is-referenced-by-count": 2,
+        "title": [
+          "Addressing Magnesium Deficiency Through Crop Biofortification: Plant–Soil–Human Perspective—A Review"
+        ],
+        "author": [
+          {
+            "given": "Jan",
+            "family": "Vašíček",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Agro-Environmental Chemistry and Plant Nutrition, Faculty of Agrobiology, Food and Natural Resources, Czech University of Life Sciences, 165 00 Prague, Czech Republic"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-2755-7215",
+            "authenticated-orcid": false,
+            "given": "Martin",
+            "family": "Kulhánek",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Agro-Environmental Chemistry and Plant Nutrition, Faculty of Agrobiology, Food and Natural Resources, Czech University of Life Sciences, 165 00 Prague, Czech Republic"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Kateřina",
+            "family": "Šulcová",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Agro-Environmental Chemistry and Plant Nutrition, Faculty of Agrobiology, Food and Natural Resources, Czech University of Life Sciences, 165 00 Prague, Czech Republic"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jan",
+            "family": "Hladík",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Agro-Environmental Chemistry and Plant Nutrition, Faculty of Agrobiology, Food and Natural Resources, Czech University of Life Sciences, 165 00 Prague, Czech Republic"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-5537-5713",
+            "authenticated-orcid": false,
+            "given": "Jindřich",
+            "family": "Černý",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Agro-Environmental Chemistry and Plant Nutrition, Faculty of Agrobiology, Food and Natural Resources, Czech University of Life Sciences, 165 00 Prague, Czech Republic"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jiří",
+            "family": "Balík",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Agro-Environmental Chemistry and Plant Nutrition, Faculty of Agrobiology, Food and Natural Resources, Czech University of Life Sciences, 165 00 Prague, Czech Republic"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Plants"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              3,
+              5
+            ]
+          ]
+        },
+        "ISSN": [
+          "2223-7747"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              3,
+              5
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  8,
+                  26
+                ]
+              ],
+              "date-time": "2026-08-26T00:00:00Z",
+              "timestamp": 1787702400000
+            },
+            "content-version": "vor",
+            "delay-in-days": 0,
+            "URL": "http://onlinelibrary.wiley.com/termsAndConditions#vor"
+          },
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  8,
+                  26
+                ]
+              ],
+              "date-time": "2026-08-26T00:00:00Z",
+              "timestamp": 1787702400000
+            },
+            "content-version": "tdm",
+            "delay-in-days": 0,
+            "URL": "http://doi.wiley.com/10.1002/tdm_license_1.1"
+          }
+        ],
+        "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:sec>\n                    <jats:title>BACKGROUND</jats:title>\n                    <jats:p>Magnesium deficiency is a common symptom of chlorosis in macadamia plantations in southern China, particularly in Yunnan, which restricts their sustainable production and processing quality. This study clarified its negative effects on leaf physiology and fruit quality.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>RESULTS</jats:title>\n                    <jats:p>\n                      Magnesium‐deficient plants exhibited interveinal chlorosis in lower leaves, disordered mesophyll cells, weakened chlorophyll autofluorescence, and 45.52–70.08% lower leaf magnesium content (\n                      <jats:italic>P</jats:italic>\n                       &lt; 0.05), hindering chlorophyll biosynthesis. Chloroplasts were fewer in number, and ultrastructurally exhibited reduced grana lamellae, increased plastoglobuli, and severe grana degradation. Net photosynthetic rate (\n                      <jats:italic>P</jats:italic>\n                      <jats:sub>n</jats:sub>\n                      ), stomatal conductance (\n                      <jats:italic>g</jats:italic>\n                      <jats:sub>s</jats:sub>\n                      ), and transpiration rate (\n                      <jats:italic>T</jats:italic>\n                      <jats:sub>r</jats:sub>\n                      ) declined significantly, while intercellular CO\n                      <jats:sub>2</jats:sub>\n                      concentration (\n                      <jats:italic>C</jats:italic>\n                      <jats:sub>i</jats:sub>\n                      ) increased by 16.13%. magnesium deficiency reduced single‐plant yield by 49.90% (5.10\n                      <jats:italic>vs.</jats:italic>\n                      10.18 kg plant\n                      <jats:sup>−1</jats:sup>\n                      ), fruit transverse diameter by 7.63%, kernel weight by 18.15%, and total fatty acid content by 2.57%; palmitoleic acid and linolenic acid decreased by 8.17% and 18.18%, while arachidonic acid and erucic acid increased by 27.21% and 30.00%, respectively (\n                      <jats:italic>P</jats:italic>\n                       &lt; 0.05). In magnesium‐deficient areas, soil available potassium was 49.30% higher (200.69\n                      <jats:italic>vs.</jats:italic>\n                      134.42 mg kg\n                      <jats:sup>−1</jats:sup>\n                      ) and showed a significant negative correlation with leaf magnesium content.\n                    </jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>CONCLUSION</jats:title>\n                    <jats:p>In conclusion, high‐potassium–low‐magnesium soil is closely associated with magnesium deficiency in macadamia. Such nutrient imbalance may impair photosynthetic carbon assimilation and the conversion from carbohydrates to fatty acids, thereby reducing the yield and quality of macadamia. Optimizing the potassium‐to‐magnesium application ratio is therefore recommended to support the sustainable development of the macadamia industry. © 2026 Society of Chemical Industry.</jats:p>\n                  </jats:sec>",
+        "DOI": "10.1002/jsfa.71006",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Soil potassium–magnesium imbalance induces magnesium‐deficiency chlorosis in macadamia leaves: impacts on microstructure, photosynthesis, yield, quality, and fatty acid profile"
+        ],
+        "author": [
+          {
+            "given": "Tinghong",
+            "family": "Ye",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Yunnan Institute of Tropical Crop Science  Jinghong China"
+              },
+              {
+                "name": "Yunnan Agricultural Engineering Research Center for Macadamia  Jinghong China"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Xiyong",
+            "family": "He",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Yunnan Institute of Tropical Crop Science  Jinghong China"
+              },
+              {
+                "name": "Yunnan Agricultural Engineering Research Center for Macadamia  Jinghong China"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Xiaorong",
+            "family": "Huang",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Yunnan Institute of Tropical Crop Science  Jinghong China"
+              },
+              {
+                "name": "Yunnan Agricultural Engineering Research Center for Macadamia  Jinghong China"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Linyu",
+            "family": "Qu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Yunnan Institute of Tropical Crop Science  Jinghong China"
+              },
+              {
+                "name": "Yunnan Agricultural Engineering Research Center for Macadamia  Jinghong China"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Liping",
+            "family": "Yang",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Yunnan Institute of Tropical Crop Science  Jinghong China"
+              },
+              {
+                "name": "Yunnan Agricultural Engineering Research Center for Macadamia  Jinghong China"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Zhe",
+            "family": "Chen",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Yunnan Institute of Tropical Crop Science  Jinghong China"
+              },
+              {
+                "name": "Yunnan Agricultural Engineering Research Center for Macadamia  Jinghong China"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0008-5315-9433",
+            "authenticated-orcid": false,
+            "given": "Haiqing",
+            "family": "Zhang",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Yunnan Institute of Tropical Crop Science  Jinghong China"
+              },
+              {
+                "name": "Yunnan Agricultural Engineering Research Center for Macadamia  Jinghong China"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Journal of the Science of Food and Agriculture"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              8,
+              26
+            ]
+          ]
+        },
+        "ISSN": [
+          "0022-5142",
+          "1097-0010"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              8,
+              26
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  5,
+                  27
+                ]
+              ],
+              "date-time": "2026-05-27T00:00:00Z",
+              "timestamp": 1779840000000
+            },
+            "content-version": "unspecified",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0"
+          }
+        ],
+        "abstract": "<jats:p>The objective: to compare the effect of the dietary supplement PREGNEMAG with the effect of other magnesium complexes with vitamin B6 on the level of personal and reactive anxiety, blood pressure and blood serum prolactin concentration in women with clinical signs of magnesium deficiency at the stages of preconception and fetal programming.Materials and methods. 120 women were examined, who were divided into groups. The main group included 45 women with clinical signs of magnesium deficiency, who received supplementation with the dietary supplement PREGNEMAG; comparison group – 45 women with clinical signs of magnesium deficiency, who received supplementation with other magnesium complexes with vitamin B6; control group – 30 healthy women of reproductive age. Determination of personal and reactive anxiety levels according to the Spielberger–Khanin anxiety scale, laboratory examination “Balance of vitamins and minerals (basic)” and the first extended prenatal screening were used for examination.Results. The dietary supplement PREGNEMAG was found to be 2.0 times more effective than other magnesium complexes with B vitamins in reducing venous blood prolactin concentration, as well as the personal and reactive anxiety levels in women with magnesium deficiency at the stage of preconception. It restored magnesium levels in the body by 22.7% better, which according to the clinical study led to normalization of mean arterial pressure in women at the stage of fetal programming (their number was significant higher by 40.0%).Conclusions. The use of the dietary supplement PREGNEMAG at the stages of preconception and fetal programming in women with magnesium deficiency significantly improves the metabolic, hormonal and physical condition of future mothers and their children.</jats:p>",
+        "DOI": "10.30841/2708-8731.3.2026.364525",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Preconception and fetal programming in women with magnesium deficiency"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-5846-1067",
+            "authenticated-orcid": false,
+            "given": "S.B.",
+            "family": "Arbuzova",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "National Academy of Medical Sciences of Ukraine, Kyiv",
+                "place": [
+                  "Ukraine"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0001-7323-5546",
+            "authenticated-orcid": false,
+            "given": "O.V.",
+            "family": "Gorbunova",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Shupyk National Healthcare University of Ukraine, Kyiv",
+                "place": [
+                  "Ukraine"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0003-0357-3261",
+            "authenticated-orcid": false,
+            "given": "K.V.",
+            "family": "Zarichanska",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Shupyk National Healthcare University of Ukraine, Kyiv",
+                "place": [
+                  "Ukraine"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-0231-7496",
+            "authenticated-orcid": false,
+            "given": "M.I.",
+            "family": "Nikolenko",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "PE “Medico-Biological Center “Genom”, Kyiv",
+                "place": [
+                  "Ukraine"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Reproductive health of woman",
+          "Репродуктивне здоров'я жінки"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              5,
+              27
+            ]
+          ]
+        },
+        "ISSN": [
+          "2708-8731",
+          "2708-8723"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              5,
+              27
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  7,
+                  1
+                ]
+              ],
+              "date-time": "2026-07-01T00:00:00Z",
+              "timestamp": 1782864000000
+            },
+            "content-version": "vor",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0/"
+          }
+        ],
+        "abstract": "<jats:sec>\n                    <jats:title>Background</jats:title>\n                    <jats:p>COVID-19 survivors face an elevated risk of long-term cognitive decline, yet potentially modifiable factors that shape post-COVID dementia trajectories remain insufficiently characterized. Low magnesium status has been linked to dementia risk in general populations, but whether low magnesium status is associated with long-term dementia risk among COVID-19 survivors remains unclear.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Methods</jats:title>\n                    <jats:p>This propensity score–matched retrospective cohort study used the TriNetX Global Collaborative Network to examine the association between low serum magnesium ( &amp;lt; 1.7 mg/dL on two measurements) and incident dementia among hospitalized COVID-19 survivors aged ≥ 55 years (2020–2023). A 1-year landmark period was imposed to reinforce temporal separation between exposure and outcome. The primary outcome was overall incident dementia over 5 years. Secondary outcomes included Alzheimer’s disease, vascular dementia, other dementia types, and mild cognitive impairment.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results</jats:title>\n                    <jats:p>\n                      After matching, 58,991 patients with low magnesium and 58,991 controls were included. Magnesium deficiency was associated with a higher risk of overall dementia [2.12% vs. 1.77%; hazard ratio (HR) 1.39, 95% confidence interval (CI) 1.28–1.51;\n                      <jats:italic>P</jats:italic>\n                      &amp;lt; 0.001;\n                      <jats:italic>E</jats:italic>\n                      -value 2.13). Among secondary outcomes, low magnesium was associated with higher risks of Alzheimer’s disease (HR 1.34;\n                      <jats:italic>P</jats:italic>\n                      = 0.005), vascular dementia (HR 1.50;\n                      <jats:italic>P</jats:italic>\n                      = 0.001), other dementia types (HR 1.38;\n                      <jats:italic>P</jats:italic>\n                      &amp;lt; 0.001), and mild cognitive impairment (HR 1.27;\n                      <jats:italic>P</jats:italic>\n                      &amp;lt; 0.001). The association between magnesium deficiency and overall incident dementia persisted across sensitivity analyses and sex-stratified subgroups.\n                    </jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Conclusion</jats:title>\n                    <jats:p>In this observational study, low serum magnesium was associated with increased long-term dementia risk among COVID-19 survivors. Because eligibility required repeated magnesium testing and follow-up healthcare visits were marginally more frequent in the low-magnesium group, selection bias and differential dementia detection cannot be excluded. These hypothesis-generating findings warrant prospective validation.</jats:p>\n                  </jats:sec>",
+        "DOI": "10.3389/fnut.2026.1871623",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Magnesium deficiency and long-term incident dementia among COVID-19 survivors: a propensity score-matched cohort study"
+        ],
+        "author": [
+          {
+            "given": "I-Yin",
+            "family": "Hung",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology, Chi Mei Medical Center",
+                "place": [
+                  "Tainan City, Taiwan"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Wei-Ting",
+            "family": "Wang",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology, E-Da Hospital, I-Shou University",
+                "place": [
+                  "Kaohsiung City, Taiwan"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Ping-Hsin",
+            "family": "Liu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology, E-Da Hospital, I-Shou University",
+                "place": [
+                  "Kaohsiung City, Taiwan"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Wan-Jung",
+            "family": "Cheng",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology, Chi Mei Medical Center, Liouying",
+                "place": [
+                  "Tainan City, Taiwan"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Frontiers in Nutrition"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              7,
+              1
+            ]
+          ]
+        },
+        "ISSN": [
+          "2296-861X"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              7,
+              1
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  4,
+                  3
+                ]
+              ],
+              "date-time": "2026-04-03T00:00:00Z",
+              "timestamp": 1775174400000
+            },
+            "content-version": "vor",
+            "delay-in-days": 2,
+            "URL": "http://creativecommons.org/licenses/by/4.0/"
+          },
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  4,
+                  1
+                ]
+              ],
+              "date-time": "2026-04-01T00:00:00Z",
+              "timestamp": 1775001600000
+            },
+            "content-version": "tdm",
+            "delay-in-days": 0,
+            "URL": "http://doi.wiley.com/10.1002/tdm_license_1.1"
+          }
+        ],
+        "abstract": "<jats:title>ABSTRACT</jats:title>\n                  <jats:p>\n                    Alveolar ridge preservation and regeneration remain critical challenges in implant dentistry and periodontics. This article presents a minimally invasive surgical approach for the management of complex buccal bone deficiencies using a novel biodegradable magnesium membrane. The Magnesium Membrane Shield Technique is designed to provide mechanical stability while gradually resorbing, thereby avoiding the need for secondary surgery and the additional morbidity associated with it. Its degradation involves the release of Mg\n                    <jats:sup>2+</jats:sup>\n                    ions, which have been reported to modulate biological processes relevant to bone healing. The present study describes the biological rationale, clinical application, and radiographic observations associated with the treatment of a severe buccal plate loss case. Within the limitations of the presented case, this approach resulted in uneventful healing and satisfactory functional aesthetic outcomes, contributing to the existing clinical experience with magnesium‐based biomaterials in GBR compared with conventional resorbable and non‐resorbable approaches.\n                  </jats:p>",
+        "DOI": "10.1002/ccr3.72443",
+        "type": "journal-article",
+        "is-referenced-by-count": 1,
+        "title": [
+          "The Magnesium Membrane Shield Technique: A Structured and Simplified Approach for Severe Buccal Bone Deficiency in the Aesthetic Zones"
+        ],
+        "author": [
+          {
+            "given": "Giorgio",
+            "family": "Tabanella",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "O.R.E.C. ‐ Oral Reconstruction and Education Center  Rome Italy"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-8250-723X",
+            "authenticated-orcid": false,
+            "given": "Željka Perić",
+            "family": "Kačarević",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Anatomy, Histology, Embriology, Pathology Anatomy and Pathology Histology, Faculty of Dental Medicine and Health Osijek J.J. Strossmayer University of Osijek  Osijek Croatia"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Clinical Case Reports"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              4
+            ]
+          ]
+        },
+        "ISSN": [
+          "2050-0904",
+          "2050-0904"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              4
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Background: Spinal fusion surgery, as one of the treatment options for back pain, often results in significant postoperative pain due to complexity and multiple incisions. Glutamate receptors such as NMDA are among the main receptors involved in this process, causing central hyperalgesia and sensitization and ultimately accelerating pain processing in the CNS. Therefore, NMDA receptor antagonists such as ketamine and magnesium sulfate can be considered as suitable options for treating pain caused by these surgeries. A prospective study was conducted to compare the effects of ketamine and magnesium sulfate on pain control in these patients. This double-blind clinical trial was performed on 72 patients undergoing fusion surgery, referred to the 5th Azar Medical &amp; Educational Center of Gorgan in 2020-2022.\r\nMethods: In group A, 50mg/kg of magnesium sulfate along with CVE=5 ml/kg was infused over 20 minutes, and then 500 mg/h of magnesium sulfate was given during and up to 48 hours after surgery. In group B, 0.5 mg/kg of ketamine was given as a bolus after patient positioning and 2 minutes before surgical incision, followed by 2.5 mcg/kg/h of ketamine during and up to 48 hours after surgery. Pain was evaluated using the NRS scale from admission to recovery up to 48 hours after surgery, and the amount of opioid consumption was recorded.\r\nResults: Both ketamine and magnesium sulfate led to a significant reduction in pain during the first 48 hours after surgery (P value &lt;0.0001). The speed of pain reduction in the first 6 hours was higher in women in the ketamine group and in men in the magnesium group, although the results were reversed in the second 6 hours. Pain assessment in opium addicts indicated the superiority of magnesium in the speed of pain reduction in patients during the first 12 hours. The amount of analgesic used during recovery was statistically similar in both groups (p=0.645), but during the 24 hours after surgery, the amount of opioid consumption used in the magnesium group was significantly lower (p=0.025). After 24 hours, none of the two groups needed analgesics. No severe side effects were observed in any of the patients in the two groups.\r\nConclusion: Magnesium sulfate not only works well with ketamine in controlling postoperative pain but can also perform better than ketamine in women and opioid addicts, leading to a reduction in the use of opioids and avoidance of ketamine's side effects. In addition to reducing pain and analgesic use, considering the benefits of magnesium in stabilizing hemodynamics and reducing anesthetic use, this drug can be a very suitable alternative to ketamine for a wider range of patients undergoing spinal surgery, including those with heart and mental illnesses.</jats:p>",
+        "DOI": "10.18502/aacc.v12i5.22426",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Comparative Effects of Ketamine Versus Magnesium Sulfate on Pain Management after Spine Surgery: A Double-Blind Randomized Clinical Trial"
+        ],
+        "author": [
+          {
+            "given": "Seyedbabak",
+            "family": "Mojaveraghili",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Mohammadali",
+            "family": "Izadfar",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Naser",
+            "family": "Behnampour",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Archives of Anesthesia and Critical Care"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              8,
+              26
+            ]
+          ]
+        },
+        "ISSN": [
+          "2423-5849"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              8,
+              26
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Tracheal extubation is associated with significant sympathetic stimulation leading to tachycardia and hypertension. These hemodynamic responses may be harmful, particularly in patients with cardiovascular or cerebrovascular disease. Various pharmacological agents have been investigated to attenuate these responses, among which magnesium sulphate and esmolol have demonstrated promising results. Aim: To compare the efficacy of intravenous magnesium sulphate and intravenous esmolol in attenuating hemodynamic responses during tracheal extubation in patients undergoing surgeries under general anaesthesia. Materials and Methods: This prospective randomized comparative study was conducted on 55 patients aged 18–60 years belonging to ASA physical status I and II undergoing elective surgeries under general anaesthesia. Patients were randomly divided into two groups: Group M (n=28) receiving intravenous magnesium sulphate and Group E (n=27) receiving intravenous esmolol prior to extubation. Hemodynamic parameters including heart rate (HR), systolic blood pressure (SBP), diastolic blood pressure (DBP), and mean arterial pressure (MAP) were recorded at baseline, at extubation, and at 1, 3, and 5 minutes after extubation. Statistical analysis was performed using appropriate tests with p &lt; 0.05 considered significant. Results: Both magnesium sulphate and esmolol attenuated the hemodynamic responses associated with tracheal extubation. However, the rise in heart rate and blood pressure was significantly lower in the magnesium sulphate group compared to the esmolol group at extubation and during the immediate post-extubation period (p &lt; 0.05). The incidence of adverse effects was minimal in both groups, although bradycardia was more frequently observed in patients receiving esmolol. Conclusion: Intravenous magnesium sulphate is more effective than intravenous esmolol in attenuating hemodynamic responses during tracheal extubation and provides better cardiovascular stability with minimal adverse effects.</jats:p>",
+        "DOI": "10.25258/ijddt.16.14s.13",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Intravenous Magnesium Sulphate versus Esmolol for Attenuation of Hemodynamic Responses During Tracheal Extubation: A Prospective Randomized Comparative Study"
+        ],
+        "author": [
+          {
+            "given": "Dr. Vinamra",
+            "family": "Tiwari",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Assistant Professor, Anaesthesia and Critical Care, Teerthankar Medical University, Moradabad, India."
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Dr. Shruti",
+            "family": "Tripathi",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Senior Resident, Anaesthesia and Critical Care, SRMS, Bareilly, India."
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal of Drug Delivery Technology"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              16
+            ]
+          ]
+        },
+        "ISSN": [
+          "0975-4415"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              16
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Hypomagnesemia is a characteristic feature of many diseases (migraine, diabetes mellitus, osteoporosis, asthma, preeclampsia, and cardiovascular diseases). Serum magnesium concentrations are closely linked to bone metabolism. Magnesium plays a pivotal role in ATP production and utilization. The authors present a literature review regarding studies on actual magnesium intake.</jats:p>",
+        "DOI": "10.33920/med-03-2606-04",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Magnesium deficiency: a dormant problem of the 21st century, or years of experience studying actual magne - sium intake"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0002-8979-8084",
+            "authenticated-orcid": false,
+            "given": "M. L.",
+            "family": "Maksimov",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "FSAEI CPE Russian Medical Academy of Continuous Professional Education of the Ministry of Health of Russia"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-5132-924X",
+            "authenticated-orcid": false,
+            "given": "V. A.",
+            "family": "Dudareva",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "FSBEI HE Rostov State Medical University of the Ministry of Health of the Russian Federation"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0002-0407-0092",
+            "authenticated-orcid": false,
+            "given": "E. R.",
+            "family": "Lvova",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "FSBEI HE Rostov State Medical University of the Ministry of Health of the Russian Federation"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0004-4009-3886",
+            "authenticated-orcid": false,
+            "given": "V. I.",
+            "family": "Sklyarova",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "FSBEI HE Rostov State Medical University of the Ministry of Health of the Russian Federation"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0002-6706-7798",
+            "authenticated-orcid": false,
+            "given": "O. E.",
+            "family": "Ryabysh",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "FSAEI CPE Russian Medical Academy of Continuous Professional Education of the Ministry of Health of Russia"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Glavvrač (Chief Medical Officer)"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              6,
+              30
+            ]
+          ]
+        },
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              6,
+              30
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  7,
+                  10
+                ]
+              ],
+              "date-time": "2026-07-10T00:00:00Z",
+              "timestamp": 1783641600000
+            },
+            "content-version": "vor",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0/"
+          }
+        ],
+        "abstract": "<jats:sec>\n                    <jats:title>Background</jats:title>\n                    <jats:p>Magnesium sulfate gargle is widely used as an intervention for preventing postoperative sore throat (POST) due to its analgesic effect achieved by inhibiting calcium influx mediated by peripheral NMDA receptors. This study aimed to investigate its optimal dosage following laryngeal mask airway (LMA) ventilation.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Methods</jats:title>\n                    <jats:p>A total of 239 patients aged 18–60 years, with ASA grades I-II, who under general anesthesia with laryngeal mask airway intubation were included. Patients were randomized to gargle 30 ml of either normal saline or magnesium sulfate at 10, 20, or 30 mg/kg 10–15 min before anesthesia, with the primary outcome being the incidence of POST assessed in the PACU and at 2, 6, and 24 h postoperatively. The secondary outcomes included LMA ventilation-related parameters and adverse events.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results</jats:title>\n                    <jats:p>\n                      The incidence of POST under different dosages of magnesium sulfate was 31.7%, 18.3%, 11.9%, and 6.7% in the PACU; 28.3%, 15.0%, 6.8%, and 6.7% at 2 h; 23.3%, 10.0%, 3.4%, and 3.3% at 6 h; and 15.0%, 5.0%, 3.4%, and 1.7% at 24 h postoperatively. As the dosage of magnesium sulfate gargle increased, the incidence of POST decreased (PACU,\n                      <jats:italic>P</jats:italic>\n                      = 0.002; 2 h postoperatively,\n                      <jats:italic>P</jats:italic>\n                      = 0.002; 6 h postoperatively,\n                      <jats:italic>P</jats:italic>\n                      &amp;lt; 0.001; 24 h postoperatively,\n                      <jats:italic>P</jats:italic>\n                      = 0.012). The ED90 values of magnesium sulfate gargle for preventing POST in the PACU and at 2 h postoperatively were 22.747 mg/kg (95% CI: 16.524–37.616) and 18.828 mg/kg (95% CI: 12.847–31.396), respectively. No differences were observed in LMA ventilation-related parameters and adverse events across groups.\n                    </jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Conclusion</jats:title>\n                    <jats:p>The prophylactic administration of magnesium sulfate gargle can effectively reduce the incidence of POST, with a dosage of 20 mg/kg identified as optimal.</jats:p>\n                  </jats:sec>",
+        "DOI": "10.3389/fphar.2026.1798716",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Magnesium sulfate gargle for preventing postoperative sore throat following laryngeal mask airway ventilation: a randomized, controlled, dose-finding trial"
+        ],
+        "author": [
+          {
+            "given": "Lei",
+            "family": "Guo",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology and Perioperative Medicine, General Hospital of Ningxia Medical University",
+                "place": [
+                  "Yinchuan, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Ling",
+            "family": "Ma",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology and Perioperative Medicine, General Hospital of Ningxia Medical University",
+                "place": [
+                  "Yinchuan, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Shaoling",
+            "family": "Ma",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology and Perioperative Medicine, General Hospital of Ningxia Medical University",
+                "place": [
+                  "Yinchuan, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Hanxiang",
+            "family": "Ma",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology and Perioperative Medicine, General Hospital of Ningxia Medical University",
+                "place": [
+                  "Yinchuan, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Qiming",
+            "family": "Ma",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology and Perioperative Medicine, General Hospital of Ningxia Medical University",
+                "place": [
+                  "Yinchuan, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Frontiers in Pharmacology"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              7,
+              10
+            ]
+          ]
+        },
+        "ISSN": [
+          "1663-9812"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              7,
+              10
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  5,
+                  5
+                ]
+              ],
+              "date-time": "2026-05-05T00:00:00Z",
+              "timestamp": 1777939200000
+            },
+            "content-version": "vor",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0/"
+          }
+        ],
+        "abstract": "<jats:sec>\n                    <jats:title>Objective</jats:title>\n                    <jats:p>To investigate the safety and efficacy of magnesium sulfate as an adjuvant in pulsed radiofrequency (PRF) stimulation of the greater occipital nerve for the treatment of occipital neuralgia.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Methods</jats:title>\n                    <jats:p>Consecutive patients diagnosed with neurogenic occipital neuralgia who attended the Pain Department of Changzhi People’s Hospital were recruited for this study, randomly assigned to control group and experimental group. The control group received PRF treatment on the affected side only, whereas the experimental group received an additional perineural injection of 5% magnesium sulfate (150 mg) around the greater occipital nerve immediately after PRF. NRS scores, pain duration, and pain frequency were compared between the two groups at baseline (T0), 30 days post-treatment (T1), and 60 days post-treatment (T2), at these identical time points, ultrasonography was performed to measure the thicknesses of the ipsilateral semispinalis capitis, obliquus capitis inferior, and deep fascia superficial to the obliquus capitis inferior, along with vertebral artery systolic flow parameters. Additionally, shear wave elastography (SWE) was used to measure the maximum shear wave velocity (SWVmax) and mean shear wave velocity (SWVmean) of the semispinalis capitis to assess cervical musculature status.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results</jats:title>\n                    <jats:p>\n                      A total of 91 patients completed the entire study, with 43 in the control group and 48 in the experimental group. No significant between-group differences were observed preoperatively in occipital neuralgia symptoms (NRS scores, pain duration, and frequency), thickness of the ipsilateral perineural muscles and fascia, shear wave elastography of the semispinalis capitis, or vertebral artery hemodynamic parameters (\n                      <jats:italic>P</jats:italic>\n                      &amp;gt;0.05). Pain symptoms were significantly reduced after treatment compared with preoperative levels in both groups(\n                      <jats:italic>P</jats:italic>\n                       &amp;lt; 0.05), and patients in the experimental group exhibited significantly alleviated pain symptoms compared with the control group (\n                      <jats:italic>P</jats:italic>\n                       &amp;lt; 0.05). No significant differences were detected in muscle, fascia, or vertebral artery parameters in the control group between pre- and post-treatment assessments (\n                      <jats:italic>P</jats:italic>\n                      &amp;gt;0.05). In contrast, all parameters of muscle, fascia, and vertebral artery in the experimental group were significantly improved post-treatment compared with baseline (\n                      <jats:italic>P</jats:italic>\n                       &amp;lt; 0.05).\n                    </jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Conclusion</jats:title>\n                    <jats:p>Local magnesium-sulfate injection enhances pulsed radiofrequency efficacy by relieving perineural muscle spasm and improving vertebral-artery hemodynamics, leading to sustained reductions in headache intensity, duration, and frequency with an excellent safety profile.</jats:p>\n                  </jats:sec>",
+        "DOI": "10.3389/fphys.2026.1838823",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Improvement of occipital neuralgia by pulsed radiofrequency of the greater occipital nerve combined with local magnesium sulfate injection: a randomized controlled study"
+        ],
+        "author": [
+          {
+            "given": "Jialei",
+            "family": "Zhang",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Pain Treatment, Changzhi People’s Hospital Affiliated to Changzhi Medical College",
+                "place": [
+                  "Changzhi, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Zhishan",
+            "family": "Zhang",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Pain Treatment, Changzhi People’s Hospital Affiliated to Changzhi Medical College",
+                "place": [
+                  "Changzhi, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Enquan",
+            "family": "Song",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Pain Treatment, Changzhi People’s Hospital Affiliated to Changzhi Medical College",
+                "place": [
+                  "Changzhi, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Jie",
+            "family": "Wu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Pain Treatment, Changzhi People’s Hospital Affiliated to Changzhi Medical College",
+                "place": [
+                  "Changzhi, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Frontiers in Physiology"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              5,
+              5
+            ]
+          ]
+        },
+        "ISSN": [
+          "1664-042X"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              5,
+              5
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  9,
+                  24
+                ]
+              ],
+              "date-time": "2026-09-24T00:00:00Z",
+              "timestamp": 1790208000000
+            },
+            "content-version": "vor",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0/"
+          }
+        ],
+        "abstract": "<jats:sec>\n                    <jats:title>Introduction</jats:title>\n                    <jats:p>Functional constipation is one of the most common disorders of gut–brain interaction. Adequate hydration is recommended as first-line therapy, yet evidence regarding the efficacy of sulfate- and magnesium-rich mineral water remains limited. Therefore, this study investigated its efficacy and safety in a nationwide decentralized randomized controlled trial.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Methods</jats:title>\n                    <jats:p>In this randomized, double-blind, controlled parallel-group trial, adults with chronic constipation according to the Rome IV criteria consumed either 1 L/day of sulfate- and magnesium-rich mineral water (HSM) or a low-mineralized control water (LSM) for 3 weeks following a one-week run-in period. Participants maintained a total daily fluid intake of at least 1,5L/day. The primary outcome was the change in weekly bowel movement frequency after 3 weeks. Additional analyses were conducted after 2 weeks of intervention. Secondary outcomes included stool consistency, responder rates, time to treatment response, constipation-related symptoms (PAC-SYM), constipation-related quality of life (PAC-QoL), gastrointestinal transit time, laxative use, and safety.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results</jats:title>\n                    <jats:p>\n                      After 2 weeks (additional analysis), bowel movement frequency increased significantly more in the HSM group than in the control group (mean change: 1.31 ± 3.24 vs. 0.34 ± 2.49 bowel movements/week;\n                      <jats:italic>p</jats:italic>\n                       = 0.043). This effect was more pronounced in participants with moderate-to-severe constipation (\n                      <jats:italic>p</jats:italic>\n                       = 0.022). No significant between-group difference was observed at the end of week 3 (\n                      <jats:italic>p</jats:italic>\n                       = 0.144). Time to treatment response was significantly shorter with HSM water than with control water (median 9 vs. 16 days;\n                      <jats:italic>p</jats:italic>\n                       = 0.042), accompanied by a higher responder rate in participants with moderate-to-severe constipation (\n                      <jats:italic>p</jats:italic>\n                       = 0.043). No significant between-group differences were observed for stool consistency, constipation symptoms, quality of life, or gastrointestinal transit time. Both interventions were well tolerated, and only mild transient adverse events were reported.\n                    </jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Discussion</jats:title>\n                    <jats:p>Daily consumption of 1 L of sulfate- and magnesium-rich mineral water, combined with adequate hydration, improved bowel movement frequency at week two and accelerated treatment response in adults with chronic constipation, whereas the between-group difference at the registered primary endpoint (week three) was not statistically significant. These findings suggest that sulfate- and magnesium-rich mineral water may serve as a safe, non-pharmacological dietary approach for the management of chronic constipation under real-world conditions.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Clinical trial registration</jats:title>\n                    <jats:p>\n                      <jats:ext-link>https://clinicaltrials.gov/</jats:ext-link>\n                      , DRKS00034871.\n                    </jats:p>\n                  </jats:sec>",
+        "DOI": "10.3389/fnut.2026.1924028",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Daily consumption of sulfate- and magnesium-rich mineral water enhances bowel function in adults with chronic constipation: a randomized double-blind real-world trial"
+        ],
+        "author": [
+          {
+            "given": "Katharina",
+            "family": "Mansouri",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Institute of Food and One Health, Leibniz University Hanover",
+                "place": [
+                  "Hanover, Germany"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Thierry",
+            "family": "Hanh",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Independent Researcher",
+                "place": [
+                  "Paris, France"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Ronja",
+            "family": "Meyer",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Institute of Food and One Health, Leibniz University Hanover",
+                "place": [
+                  "Hanover, Germany"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Andreas",
+            "family": "Hahn",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Institute of Food and One Health, Leibniz University Hanover",
+                "place": [
+                  "Hanover, Germany"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Frontiers in Nutrition"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              9,
+              24
+            ]
+          ]
+        },
+        "ISSN": [
+          "2296-861X"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              9,
+              24
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  3,
+                  3
+                ]
+              ],
+              "date-time": "2026-03-03T00:00:00Z",
+              "timestamp": 1772496000000
+            },
+            "content-version": "vor",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0/"
+          }
+        ],
+        "abstract": "<jats:p>Background/Objectives: There are conflicting results on the effects of ferric derisomaltose (FDM) vs. iron sucrose (IS) for treatment of iron deficiency anemia (IDA). We systematically assessed the efficacy and safety of these treatments. Methods: We searched Ovid MEDLINE, Web of Science, Pubmed, and Cochrane Central for randomized controlled trials (RCTs) comparing the efficacy and/or safety of FDM vs. IS in patients with IDA. The primary efficacy outcome was the change in hemoglobin (Hb) levels at week 4, and the safety outcome was serious or severe hypersensitivity reactions, as defined by a standardized set of Medical Dictionary for Regulatory Activities (MedDRA) terms. Inverse-variance random effects models were used for meta-analyses. Results: Five RCTs were included: two in general IDA (n = 1994), two in non-dialysis chronic kidney disease (n = 1542), and one in hemodialysis patients (n = 344). The evidence was very uncertain about the effect of FDM vs. IS for Hb change at week 4 (mean difference [MD] 0.09 g/dL, 95% CI −0.33 to 0.52; I2 = 84%, very low CoE), serious or severe hypersensitivity reactions (MedDRA A + B + C + D, relative risk [RR] 0.83, 95% CI 0.25 to 2.68; I2 = 0%, very low CoE), Hb change at week 8 (MD 0.04 g/dL, 95% CI −0.08 to 0.15; I2 = 0%, very low CoE), Hb increase of ≥2 g/dL at week 4 (RR 1.16, 95% CI 0.97 to 1.38; I2 = 70%, very low CoE), and anaphylactic reactions (MedDRA A, RR 0.38, 95% CI 0.08 to 1.72; I2 = 0%, very low CoE). Conclusions: We found that FDM vs. IS had little to no effect on outcomes for the treatment of IDA.</jats:p>",
+        "DOI": "10.3390/jcm15051919",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Ferric Derisomaltose Compared to Iron Sucrose in Iron Deficiency Anemia: A Meta-Analysis of Randomized Controlled Trials"
+        ],
+        "author": [
+          {
+            "ORCID": "https://orcid.org/0000-0003-4263-5234",
+            "authenticated-orcid": false,
+            "given": "Lokman H.",
+            "family": "Tanriverdi",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Medical Pharmacology, Faculty of Medicine, İnönü University, Malatya 44100, Türkiye"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-5916-0119",
+            "authenticated-orcid": false,
+            "given": "Ahmet",
+            "family": "Sarici",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Division of Hematology, Faculty of Medicine, İnönü University, Malatya 44100, Türkiye"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Feyzullah",
+            "family": "Aksan",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Internal Medicine, Faculty of Medicine, Stony Brook University, Stony Brook, NY 11794, USA"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-9999-4003",
+            "authenticated-orcid": false,
+            "given": "Adrian V.",
+            "family": "Hernandez",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Health Outcomes, Policy, and Evidence Synthesis (HOPES) Group, University of Connecticut School of Pharmacy, Storrs, CT 06269, USA"
+              },
+              {
+                "name": "Unidad de Revisiones Sistemáticas y Meta-Análisis (URSIGET), Vicerrectorado de Investigación, Universidad San Ignacio de Loyola (USIL), Lima 15024, Peru"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Journal of Clinical Medicine"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              3,
+              3
+            ]
+          ]
+        },
+        "ISSN": [
+          "2077-0383"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              3,
+              3
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  3,
+                  8
+                ]
+              ],
+              "date-time": "2026-03-08T00:00:00Z",
+              "timestamp": 1772928000000
+            },
+            "content-version": "vor",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0/"
+          }
+        ],
+        "abstract": "<jats:p>Background/Objectives: Postoperative pain in lower extremity orthopedic surgery remains inadequately controlled. Magnesium sulfate may serve as an effective adjunct to reduce pain and opioid use. To evaluate the efficacy and safety of intravenous magnesium sulfate (30 mg/kg) as an adjuvant to ketorolac. Methods: Randomized, double-blind, placebo-controlled, parallel-group superiority trial. Sixty adult patients undergoing elective lower limb orthopedic surgery were randomized (1:1) to receive either intravenous magnesium sulfate (30 mg/kg) or placebo over 60 min before surgery. All patients received standard anesthesia and postoperative ketorolac with morphine PCA. The primary outcomes were postoperative pain (VAS) and morphine consumption over 24 h. Secondary outcomes included time to first analgesic request, serum magnesium levels, and adverse events. Allocation was concealed via opaque envelopes, and blinding was maintained for participants, clinicians, assessors, and analysts. Results: All 60 patients completed the trial. The magnesium group showed significantly lower VAS scores and reduced 24 h morphine use (median 6 mg vs. 8 mg, p &lt; 0.001), with longer time to first analgesic request (540 vs. 300 min, p &lt; 0.001). Four patients (13%) in the magnesium group had transient hypotension; no serious adverse events occurred. Conclusions: Low-dose intravenous magnesium sulfate safely reduced pain and opioid needs in orthopedic surgery and may be considered in multimodal analgesia strategies.</jats:p>",
+        "DOI": "10.3390/jcm15052055",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Adjunctive Intravenous Magnesium Sulfate for Postoperative Pain and Opioid Reduction in Lower Extremity Orthopedic Surgery: A Double-Blind Randomized Controlled Trial"
+        ],
+        "author": [
+          {
+            "given": "Alvian Reza",
+            "family": "Muhammad",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology and Intensive Therapy, Faculty of Medicine, University of Indonesia-Dr. Cipto Mangunkusumo National General Hospital, Jakarta 10430, Indonesia"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Raden Besthadi",
+            "family": "Sukmono",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology and Intensive Therapy, Faculty of Medicine, University of Indonesia-Dr. Cipto Mangunkusumo National General Hospital, Jakarta 10430, Indonesia"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Aida Rosita",
+            "family": "Tantri",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Anesthesiology and Intensive Therapy, Faculty of Medicine, University of Indonesia-Dr. Cipto Mangunkusumo National General Hospital, Jakarta 10430, Indonesia"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0000-0002-5676-7804",
+            "authenticated-orcid": false,
+            "given": "Elvan",
+            "family": "Wiyarta",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Intensive Care Department, University of Indonesia Hospital, Depok 16424, Indonesia"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Journal of Clinical Medicine"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              3,
+              8
+            ]
+          ]
+        },
+        "ISSN": [
+          "2077-0383"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              3,
+              8
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Acute severe asthma remains a frequent emergency presentation requiring rapid bronchodilation and timely\nescalation of therapy. Salbutamol is a standard first-line bronchodilator, whereas magnesium sulphate has been\nstudied as either an alternative bronchodilator or an adjunct in severe exacerbations. This study evaluates\nmagnesium sulphate in comparison with salbutamol during acute asthma exacerbations. Direct comparative trials\nsuggest that nebulized magnesium sulphate may have bronchodilator activity, but salbutamol generally remains\nsuperior or at least more established as primary rescue therapy. Intravenous magnesium sulphate may show benefits\ncomparable to intravenous salbutamol in selected severe adult cases, while more recent inhaled adjunctive studies\nsuggest limited additional benefit overall, although higher nebulized doses may improve clinical scores in some\nadults with status asthmaticus. Hence this study is taken to compare nebulized magnesium sulphate versus salbutamol in acute severe status asthmaticus.</jats:p>",
+        "DOI": "10.25258/ijddt.16.15s.104",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Revisiting Bronchodilator Strategies in Adults Acute Severe Asthma: A Randomized Comparative Study of Inhalational Magnesium Sulphate and Salbutamol"
+        ],
+        "author": [
+          {
+            "given": "Dr. Bharath",
+            "family": "Angadi",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Associate Professor, Dept of Emergency Medicine, KLE Jagadguru Gangadhar Mahaswamigalu Moorusavirmath Medical College and Hospital, Hubli, KLE Academy of Higher Education and Research, Deemed to be University, Belagavi, Karnataka, India – 590010"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Dr. Prathibha",
+            "family": "Nag",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Assistant Professor, Dept of Respiratory Medicine, SDM College of Medical sciences and Hospital, Shri Dharmasthala Manjunatheshwara University, Dharwad, Karnataka, India- 580009"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Dr. Punith",
+            "family": "K G",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Associate Professor, Dept of Emergency Medicine, SDM College of Medical sciences and Hospital, Shri Dharmasthala Manjunatheshwara University, Dharwad, Karnataka, India- 580009"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          },
+          {
+            "given": "Dr. Srinivas",
+            "family": "R",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Associate Professor, Dept of Orthopaedics, Chettinad Hospital and Research institute, Kelambakkam, Chengalpattu District, Deemed university, Tamil Nadu, 603103"
+              }
+            ],
+            "role": [
+              {
+                "role": "author",
+                "vocabulary": "crossref"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "International Journal of Drug Delivery Technology"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              21
+            ]
+          ]
+        },
+        "ISSN": [
+          "0975-4415"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              21
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  9,
+                  15
+                ]
+              ],
+              "date-time": "2026-09-15T00:00:00Z",
+              "timestamp": 1789430400000
+            },
+            "content-version": "tdm",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0"
+          },
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  9,
+                  15
+                ]
+              ],
+              "date-time": "2026-09-15T00:00:00Z",
+              "timestamp": 1789430400000
+            },
+            "content-version": "vor",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0"
+          }
+        ],
+        "abstract": "<jats:title>Abstract</jats:title>\n                  <jats:sec>\n                    <jats:title>Background</jats:title>\n                    <jats:p>Post craniotomy, pain management can often be inadequate and that can increase the risk of post op complications and lengthens the recovery time. This study evaluates the impact of magnesium sulphate on overall anaesthetic requirements during surgery, postoperative pain score and analgesic needs of patients undergoing craniotomy.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Methods</jats:title>\n                    <jats:p>\n                      Study included 74 patients planned for craniotomy, divided into the study group MS (\n                      <jats:italic>n</jats:italic>\n                       = 37) and control group C (\n                      <jats:italic>n</jats:italic>\n                       = 37). Same anaesthetic technique was applied to all patients. In group MS, MgSO4 was administered intravenously as a bolus dose of 30 mg/kg over 10 min, followed by a maintenance dose of 10 mg/kg/hr IV until Dural closure. Group C received the same except 0.9% NaCl instead of MgSO4. Pain intensity (the primary objective) was assessed using a visual analogue scale (VAS) every 2 h for the first 8 h, then every 4 h up to 24 h. If the VAS score &gt; 3, tramadol was used\n                      <jats:sup>7</jats:sup>\n                      . Total rescue analgesic consumption was measured in both groups postoperatively within 24 h (the secondary objective).\n                    </jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results</jats:title>\n                    <jats:p>\n                      The study group (MS) although demographically similar, consistently demonstrated lower VAS scores compared to the control group (C), with statistically significant differences noted at each time point (\n                      <jats:italic>p</jats:italic>\n                       &lt; 0.05). The analgesia required over 24 h was significantly less in group MS (32.43 ± 24 mg) compared to group C (79.7 ± 36 mg) (\n                      <jats:italic>p</jats:italic>\n                       &lt; 0.001). The first rescue analgesia was needed after 2.03 ± 2.0 h in group MS and after 0.86 ± 0.34 h in group C (\n                      <jats:italic>p</jats:italic>\n                       &lt; 0.001). Conclusion: MgSO4 infusion resulted in lower VAS Score, an increased time before the first rescue analgesic requirement, a reduced total dose of rescue analgesic required in the first 24 h postoperatively, and an improved postoperative pain profile.\n                    </jats:p>\n                  </jats:sec>",
+        "DOI": "10.1186/s41984-026-00635-6",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Effect of magnesium sulphate on total anaesthetic requirements and postoperative analgesia in craniotomy patients: a prospective randomized interventional study"
+        ],
+        "author": [
+          {
+            "given": "Nidhi",
+            "family": "Varma",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Manoj",
+            "family": "Giri",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "ORCID": "https://orcid.org/0009-0009-9307-3391",
+            "authenticated-orcid": false,
+            "given": "Palak",
+            "family": "Matanhelia",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Mamta",
+            "family": "Harjai",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Soumya Sankar",
+            "family": "Nath",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Egyptian Journal of Neurosurgery"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              9,
+              15
+            ]
+          ]
+        },
+        "ISSN": [
+          "2520-8225"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              9,
+              15
+            ]
+          ]
+        }
+      },
+      {
+        "abstract": "<jats:p>Introduction: Iron-deficiency anemia affects roughly one-third of adolescent girls and, by entering reproductive life with depleted iron stores, propagates intergenerational maternal risk. Standard weekly iron-folic acid (IFA) supplementation is undermined by poor adherence. We evaluated whether adding a peer-led nutritional-education program to IFA improves hematologic and psychosocial outcomes more than IFA alone.\r\nMethods: In a single-blind, parallel-group cluster randomized controlled trial in urban Palembang, Indonesia, 16 school clusters were randomized 1:1 to peer-led education plus weekly IFA (60 mg iron, 2.8 mg folic acid) or IFA alone. We enrolled 320 post-menarcheal girls aged 13–17 years with baseline hemoglobin 8.0–11.9 g/dL. Co-primary outcomes were hemoglobin and serum ferritin; the secondary outcome was the WHO-5 Well-Being Index, assessed at baseline, 3 and 6 months. Generalized linear mixed models with cluster random intercepts (intention-to-treat) were used.\r\nResults: At 6 months the intervention produced adjusted mean differences of +1.42 g/dL hemoglobin (95% CI 1.05–1.79; Cohen's d 2.11), +13.5 µg/L ferritin (10.2–16.8; d 2.75) and +23.4 WHO-5 points (19.8–27.0; d 3.14), all p&lt;0.001. Anemia resolved in 89.3% versus 33.1% (RR 2.70, 95% CI 2.13–3.42; NNT 2). Adherence was higher with the intervention (92.5% vs 74.3%; OR 4.25). The multivariable model discriminated resolution well (AUC 0.89, 0.85–0.93). No severe adverse events occurred.\r\nConclusion: A peer-led nutritional-education program markedly enhanced the efficacy of standard IFA, normalizing hemoglobin, replenishing iron stores and improving psychosocial well-being in anemic adolescent girls. This low-cost, scalable, school-based strategy is a promising preconception reproductive-health intervention for Indonesia and similar settings.</jats:p>",
+        "DOI": "10.59345/sjog.v3i2.279",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Peer-Led Nutritional Education Plus Iron-Folic Acid for Adolescent Iron-Deficiency Anemia: A Cluster Randomized Controlled Trial in Indonesia"
+        ],
+        "author": [
+          {
+            "given": "Indri Yani",
+            "family": "Septiana",
+            "sequence": "first",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Annisa",
+            "family": "Annisa",
+            "sequence": "additional",
+            "affiliation": [],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Sriwijaya Journal of Obstetrics and Gynecology"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              7,
+              6
+            ]
+          ]
+        },
+        "ISSN": [
+          "2986-9838"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              7,
+              6
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  4,
+                  26
+                ]
+              ],
+              "date-time": "2026-04-26T00:00:00Z",
+              "timestamp": 1777161600000
+            },
+            "content-version": "unspecified",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0"
+          }
+        ],
+        "abstract": "<jats:p>Objective:&amp;nbsp;To analyze the effect of Buzhong Yiqi Decoction combined with abdominal massage in the treatment of constipation due to spleen deficiency and qi depression. Methods: From July 2024 to June 2025, 82 patients with constipation due to spleen deficiency and qi depression were selected for data research in our hospital. They were divided into groups using the random number table method, with 41 cases in each group. The experimental group was treated with Buzhong Yiqi Decoction combined with abdominal massage, and the control group was treated with abdominal massage. The data differences between the groups were compared.&amp;nbsp;Results:&amp;nbsp;Compared with the control group, the TCM syndrome scores of the experimental group were significantly lower after treatment, the total effective rate of treatment was significantly higher, the recurrence rate was significantly lower, the number of spontaneous complete defecation times per week after treatment was significantly more, the CCS score was significantly lower after treatment, and the BSFS score was significantly higher after treatment, P&amp;nbsp;&lt;&amp;nbsp;0.05. Comparing the TCM syndrome scores, spontaneous complete defecation times per week, CCS scores, and BSFS scores before treatment between the two groups, P&amp;nbsp;&gt;&amp;nbsp;0.05. Conclusion:&amp;nbsp;The application of Buzhong Yiqi Decoction combined with abdominal massage to treat constipation due to spleen deficiency and qi depression has an ideal effect.</jats:p>",
+        "DOI": "10.18063/apm.v11i4.1867",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "A Randomized Controlled Trial of Buzhong Yiqi Decoction Combined with Abdominal Massage in the Treatment of Constipation Due to Spleen Deficiency and Qi Depression"
+        ],
+        "author": [
+          {
+            "given": "Zhaojun",
+            "family": "Pan",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Dongting Street Community Health Service Center, Wuxi 214000, Jiangsu, China"
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Advances in Precision Medicine"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              26
+            ]
+          ]
+        },
+        "ISSN": [
+          "2424-8592",
+          "2424-9106"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              4,
+              26
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  5,
+                  28
+                ]
+              ],
+              "date-time": "2026-05-28T00:00:00Z",
+              "timestamp": 1779926400000
+            },
+            "content-version": "vor",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0/"
+          }
+        ],
+        "abstract": "<jats:sec>\n                    <jats:title>Objective</jats:title>\n                    <jats:p>To investigate the effect and safety of astragalus injection at Neiguan (PC6) for chronic heart failure (CHF; HF) with qi-deficiency and blood-stasis syndrome, and its effect on the renin-angiotensin-aldosterone system (RAAS).</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Methods</jats:title>\n                    <jats:p>A randomized, double-blind, placebo-controlled, parallel-group trial was conducted. Patients with CHF presenting with qi-deficiency and blood-stasis syndrome were randomly assigned in a 1:1 ratio to either the experimental group or control group using a random number table. The experimental group received conventional standard therapy plus astragalus injection at PC6, whereas the control group received conventional standard therapy plus placebo. Traditional Chinese Medicine (TCM) syndrome scores, B-type natriuretic peptide (BNP) levels, left ventricular ejection fraction (LVEF), Minnesota Living with Heart Failure Questionnaire (MLHFQ) scores, 6-min walk distance (6MWD), New York Heart Association (NYHA) functional class, plasma renin (PRA), angiotensin II (Ang II), aldosterone (ALD), were compared between groups at baseline and post-treatment. 3-month major adverse cardiac events (MACE), including all-cause mortality and HF-related readmission. Adverse events and safety indicators were also monitored.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Results</jats:title>\n                    <jats:p>\n                      A total of 200 patients were included in the final analysis, 100 in each group. Baseline characteristics were not significantly different between the two groups (\n                      <jats:italic>p</jats:italic>\n                       &amp;gt; 0.05), except for the grouped distribution of patients stratified by LVEF level. Compared with the control group after treatment, the experimental group exhibited significantly reductions in TCM syndrome scores, BNP, MLHFQ scores, NYHA functional class, PRA, Ang II and ALD (\n                      <jats:italic>p</jats:italic>\n                       &amp;lt; 0.05), as well as significantly greater increases in LVEF and 6MWD (\n                      <jats:italic>p</jats:italic>\n                       &amp;lt; 0.05). There was no significant difference in readmission between the two groups (\n                      <jats:italic>p</jats:italic>\n                       &amp;gt; 0.05). No adverse events were observed in either group.\n                    </jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Conclusion</jats:title>\n                    <jats:p>Acupoint injection at PC6 with astragalus injection combined with conventional standard therapy can effectively improve cardiac function, exercise tolerance and quality of life in patients with CHF with qi-deficiency and blood-stasis syndrome. It is a safe and effective adjuvant treatment for CHF.</jats:p>\n                  </jats:sec>\n                  <jats:sec>\n                    <jats:title>Clinical trial registration</jats:title>\n                    <jats:p>\n                      Registration number: ITMCTR2026000404.\n                      <jats:ext-link>https://itmctr.ccebtcm.org.cn/mgt/project/user/user-project-view/1be0197d-9db9-434d-a2d1-fa4e5bccbc44</jats:ext-link>\n                    </jats:p>\n                  </jats:sec>",
+        "DOI": "10.3389/fmed.2026.1836620",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Effect and safety of Neiguan acupoint injection with astragalus injection for chronic heart failure with qi-deficiency and blood-stasis syndrome: a randomized controlled trial"
+        ],
+        "author": [
+          {
+            "given": "Dongmei",
+            "family": "Gou",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Department of Cardiology, Traditional Chinese Medicine Hospital of Renshou County",
+                "place": [
+                  "Renshou, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Maomei",
+            "family": "He",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Cardiology, Traditional Chinese Medicine Hospital of Renshou County",
+                "place": [
+                  "Renshou, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jiaquan",
+            "family": "Zhuo",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Department of Cardiology, Traditional Chinese Medicine Hospital of Renshou County",
+                "place": [
+                  "Renshou, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Frontiers in Medicine"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              5,
+              28
+            ]
+          ]
+        },
+        "ISSN": [
+          "2296-858X"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              5,
+              28
+            ]
+          ]
+        }
+      },
+      {
+        "license": [
+          {
+            "start": {
+              "date-parts": [
+                [
+                  2026,
+                  6,
+                  26
+                ]
+              ],
+              "date-time": "2026-06-26T00:00:00Z",
+              "timestamp": 1782432000000
+            },
+            "content-version": "vor",
+            "delay-in-days": 0,
+            "URL": "https://creativecommons.org/licenses/by/4.0/"
+          }
+        ],
+        "abstract": "<jats:p>\n                    Magnesium (Mg) deficiency is a major nutritional constraint in acidic orchard soils and can impair both vegetative growth and fruit quality in passion fruits (\n                    <jats:italic>Passiflora edulis</jats:italic>\n                    ). However, the physiological and molecular mechanisms underlying Mg deficiency responses in passion fruit remain insufficiently understood. This study employed a comprehensive approach, integrating physiological assessments with metabolomic and transcriptomic profiling, to explore the responses to Mg deficiency in the leaves and fruits of purple passion fruit. Our findings revealed that Mg deficiency detrimentally affected chloroplast ultrastructure, significantly decreased SPAD values by an average of 16.1% and net photosynthetic rates by an average of 55.0% in leaves, and led to the accumulation of starch and soluble sugars (increased by approximately 26.4% and 11.9%, respectively) in source leaves. In fruit peels, Mg deficiency resulted in a significant reduction in anthocyanin content by approximately 46.3% and a 2.4-fold increase in chlorophyll content, leading to a 79.5% decrease in the anthocyanin-to-chlorophyll ratio and producing a commercially undesirable green coloration. Through integrative multi-omics analysis, we identified the specific alteration of the galactose metabolism pathway under Mg deficiency, which facilitated the synthesis of melibiose, fructose, and succinate as potential osmoprotectants. These results suggest that Mg deficiency compromises both the marketable appearance and nutritional quality of passion fruit, while simultaneously triggering carbon reallocation as an underlying potential mechanism. In conclusion, the metabolism of galactose may enhance plant adaptation to magnesium deficiency stress, thereby offering a physiological foundation for developing optimal magnesium fertilization strategies in passion fruit orchards cultivated in acidic soils.\n                  </jats:p>",
+        "DOI": "10.3389/fpls.2026.1878176",
+        "type": "journal-article",
+        "is-referenced-by-count": 0,
+        "title": [
+          "Multi-omics analysis reveals galactose metabolism as a key regulatory pathway of stress adaptation to magnesium deficiency in passion fruit"
+        ],
+        "author": [
+          {
+            "given": "Wei",
+            "family": "Li",
+            "sequence": "first",
+            "affiliation": [
+              {
+                "name": "Fujian Academy of Agricultural Sciences, Institute of Quality Standards & Testing Technology for Agro-Produets, Fujian Key Laboratory of Agro-Products Quality & Safety",
+                "place": [
+                  "Fuzhou, Fujian, China"
+                ]
+              },
+              {
+                "name": "International Magnesium Institute, College of Resources and Environmental Sciences, Fujian Agriculture and Forestry University",
+                "place": [
+                  "Fuzhou, Fujian, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Qiufang",
+            "family": "Zhu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Fujian Academy of Agricultural Sciences, Institute of Quality Standards & Testing Technology for Agro-Produets, Fujian Key Laboratory of Agro-Products Quality & Safety",
+                "place": [
+                  "Fuzhou, Fujian, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Xiwen",
+            "family": "Hao",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "College of Resources and Environmental Sciences, China Agricultural University",
+                "place": [
+                  "Beijing, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Biao",
+            "family": "Huang",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Fujian Academy of Agricultural Sciences, Institute of Quality Standards & Testing Technology for Agro-Produets, Fujian Key Laboratory of Agro-Products Quality & Safety",
+                "place": [
+                  "Fuzhou, Fujian, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Jiuliang",
+            "family": "Xu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "College of Resources and Environmental Sciences, China Agricultural University",
+                "place": [
+                  "Beijing, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Tong",
+            "family": "Wang",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "International Magnesium Institute, College of Resources and Environmental Sciences, Fujian Agriculture and Forestry University",
+                "place": [
+                  "Fuzhou, Fujian, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Ziwen",
+            "family": "Ren",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "Fujian Academy of Agricultural Sciences, Institute of Quality Standards & Testing Technology for Agro-Produets, Fujian Key Laboratory of Agro-Products Quality & Safety",
+                "place": [
+                  "Fuzhou, Fujian, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Xuexian",
+            "family": "Li",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "College of Resources and Environmental Sciences, China Agricultural University",
+                "place": [
+                  "Beijing, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Liangquan",
+            "family": "Wu",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "International Magnesium Institute, College of Resources and Environmental Sciences, Fujian Agriculture and Forestry University",
+                "place": [
+                  "Fuzhou, Fujian, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          },
+          {
+            "given": "Fusuo",
+            "family": "Zhang",
+            "sequence": "additional",
+            "affiliation": [
+              {
+                "name": "International Magnesium Institute, College of Resources and Environmental Sciences, Fujian Agriculture and Forestry University",
+                "place": [
+                  "Fuzhou, Fujian, China"
+                ]
+              },
+              {
+                "name": "College of Resources and Environmental Sciences, China Agricultural University",
+                "place": [
+                  "Beijing, China"
+                ]
+              }
+            ],
+            "role": [
+              {
+                "vocabulary": "crossref",
+                "role": "author"
+              }
+            ]
+          }
+        ],
+        "container-title": [
+          "Frontiers in Plant Science"
+        ],
+        "issued": {
+          "date-parts": [
+            [
+              2026,
+              6,
+              26
+            ]
+          ]
+        },
+        "ISSN": [
+          "1664-462X"
+        ],
+        "published": {
+          "date-parts": [
+            [
+              2026,
+              6,
+              26
+            ]
+          ]
+        }
+      }
+    ],
+    "items-per-page": 20,
+    "query": {
+      "start-index": 0,
+      "search-terms": null
+    }
+  }
+}

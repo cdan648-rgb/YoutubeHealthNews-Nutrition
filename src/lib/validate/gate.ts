@@ -80,6 +80,15 @@ const PRESCRIPTIVE_PATTERNS: readonly { readonly pattern: RegExp; readonly label
 const DOSAGE_PATTERN = /\d+(?:[.,]\d+)?\s*(?:mg|mcg|µg|g|kg|ml|IU|đơn vị)(?![\p{L}\d])/giu;
 
 export type GateInput = {
+  /**
+   * Where the article came from.
+   *
+   * Not a strictness dial — it selects rules that only make sense for one kind. A
+   * research article must not embed a video it does not have, must carry the single-study
+   * caveat, and must cite the paper it reports on; a YouTube article must embed its video
+   * and must separate the presenter's claims from established ones.
+   */
+  readonly sourceKind?: 'youtube' | 'research';
   readonly title: string;
   readonly dek: string;
   readonly slug: string;
@@ -108,6 +117,15 @@ export type GateInput = {
   readonly unreachableReferenceUrls?: readonly string[];
   /** Restricted topics the extraction stage detected. Any hit is a hard failure. */
   readonly detectedRestrictedTopics?: readonly string[];
+  /**
+   * URLs that MUST appear among the references.
+   *
+   * Used by the research path for the paper's own landing page. A research article that
+   * does not link the study it reports on gives the reader no way to check it, which is
+   * the entire justification for publishing it — so its absence is a hard failure rather
+   * than a missing nicety.
+   */
+  readonly requiredReferenceUrls?: readonly string[];
 };
 
 /** Longest shared word run between two texts. Used for the copy-overlap check. */
@@ -168,9 +186,11 @@ export function validateArticle(input: GateInput): ValidationReport {
   }
 
   /* ------------------------------- structure -------------------------------- */
-  for (const issue of checkBodyStructure(input.body, input.references)) {
+  const sourceKind = input.sourceKind ?? 'youtube';
+
+  for (const issue of checkBodyStructure(input.body, input.references, sourceKind)) {
     // The speaker-attribution rule is the one structural check we treat as soft: a
-    // well-sourced article that happens not to quote the video is not dangerous.
+    // well-sourced article that happens not to paraphrase the video is not dangerous.
     if (issue.code === 'no_speaker_attribution') {
       soft(issue.code, issue.message);
     } else {
@@ -275,8 +295,25 @@ export function validateArticle(input: GateInput): ValidationReport {
     }
   }
 
+  const citedUrls = new Set(input.references.map((reference) => reference.url));
+  for (const url of input.requiredReferenceUrls ?? []) {
+    if (!citedUrls.has(url)) {
+      hard('missing_required_reference', 'article does not cite the source it reports on', url);
+    }
+  }
+
   if (input.references.length < 2) {
-    soft('few_references', `only ${input.references.length} external reference(s)`);
+    // For a research piece the paper itself is one of those references, so fewer than two
+    // means the article rests on the abstract alone with nothing corroborating it. That is
+    // exactly the "single study reported as settled" failure the section exists to prevent.
+    if (sourceKind === 'research') {
+      hard(
+        'few_references',
+        `a research article needs the paper plus at least one corroborating source; found ${input.references.length}`,
+      );
+    } else {
+      soft('few_references', `only ${input.references.length} external reference(s)`);
+    }
   }
 
   /* ------------------------------ copy overlap ------------------------------ */

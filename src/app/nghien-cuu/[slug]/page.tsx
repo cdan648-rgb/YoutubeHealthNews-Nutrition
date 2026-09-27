@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { ArticleBody, ReferenceList } from '@/components/article/ArticleBody';
+import { ArticleBody, ReferenceList, SingleStudyCaveat } from '@/components/article/ArticleBody';
 import { SourceHero } from '@/components/article/SourceHero';
 import { ArticleCard, SectionHeading } from '@/components/cards/ArticleCard';
 import { NewsletterInline } from '@/components/newsletter/NewsletterInline';
@@ -187,10 +187,15 @@ export default async function ResearchArticlePage({ params }: Params) {
 
           {article.researchSource !== null && <PaperPanel paper={article.researchSource} />}
 
+          {/* Unconditional, and before the body: the reader meets the caveat before the
+              findings, not after them. */}
+          <SingleStudyCaveat />
+
           <ArticleBody
             blocks={article.body}
             references={article.references}
             sourceVideo={article.sourceVideo}
+            researchSource={article.researchSource}
           />
 
           <ReferenceList references={article.references} />

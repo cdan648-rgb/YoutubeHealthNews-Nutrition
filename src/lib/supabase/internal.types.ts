@@ -366,6 +366,19 @@ export type InternalDatabase = {
         Args: { decision_day: string; max_lookback?: number };
         Returns: number;
       };
+      /**
+       * Claims a paper before generation. All five dedup checks run inside one statement,
+       * so the answer is authoritative rather than a hint. See the migration.
+       */
+      claim_research_source: {
+        Args: { p: Json };
+        Returns: { id: string | null; outcome: 'claimed' | 'duplicate' | 'similar' }[];
+      };
+      /** Undoes a claim, but only for a row that was never used and has no article. */
+      release_research_source: {
+        Args: { p_id: string };
+        Returns: boolean;
+      };
     };
     Enums: {
       video_status: VideoStatusEnum;

@@ -1,0 +1,2844 @@
+{
+  "header": {
+    "type": "esummary",
+    "version": "0.3"
+  },
+  "result": {
+    "40535201": {
+      "uid": "40535201",
+      "pubdate": "2026 Mar",
+      "epubdate": "2025 Jun 16",
+      "source": "Obstet Med",
+      "authors": [
+        {
+          "name": "Morton A",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Morton A",
+      "title": "Magnesium deficiency and dilated cardiomyopathy diagnosed peripartum.",
+      "sorttitle": "magnesium deficiency and dilated cardiomyopathy diagnosed peripartum",
+      "volume": "19",
+      "issue": "1",
+      "pages": "21-29",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "101464191",
+      "issn": "1753-495X",
+      "essn": "1753-4968",
+      "pubtype": [
+        "Journal Article",
+        "Review"
+      ],
+      "recordstatus": "PubMed",
+      "pubstatus": "258",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "40535201"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC12170560"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC12170560;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1177/1753495X251349950"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "10.1177_1753495X251349950"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2025/03/16 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2025/05/29 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2025/06/19 07:54"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2025/06/19 07:53"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2025/06/19 05:21"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/06/16 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 112,
+      "fulljournalname": "Obstetric medicine",
+      "elocationid": "doi: 10.1177/1753495X251349950",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2025/06/16 00:00",
+      "sortfirstauthor": "Morton A",
+      "vernaculartitle": ""
+    },
+    "41419681": {
+      "uid": "41419681",
+      "pubdate": "2026 May",
+      "epubdate": "2025 Dec 20",
+      "source": "Biol Trace Elem Res",
+      "authors": [
+        {
+          "name": "Lei Y",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Diao J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Xu M",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Tu Q",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Mao X",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Huang N",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Jiang Q",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Jiang Q",
+      "title": "Association between Magnesium Depletion Score and Hypertension: Insights from a Large-Scale Population-Based Study and Bioinformatics Analysis.",
+      "sorttitle": "association between magnesium depletion score and hypertension insights from a large scale population based study and bioinformatics analysis",
+      "volume": "204",
+      "issue": "5",
+      "pages": "3253-3266",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "7911509",
+      "issn": "0163-4984",
+      "essn": "1559-0720",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "256",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "41419681"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1007/s12011-025-04890-w"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "10.1007/s12011-025-04890-w"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2025/09/10 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2025/10/23 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/05/06 12:34"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2025/12/20 00:41"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2025/12/19 23:36"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": "",
+      "fulljournalname": "Biological trace element research",
+      "elocationid": "doi: 10.1007/s12011-025-04890-w",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/05/01 00:00",
+      "sortfirstauthor": "Lei Y",
+      "vernaculartitle": ""
+    },
+    "41669894": {
+      "uid": "41669894",
+      "pubdate": "2026 May 1",
+      "epubdate": "2026 Feb 10",
+      "source": "J Hypertens",
+      "authors": [
+        {
+          "name": "Fogacci F",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Giovannini M",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Grandi E",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "D'Addato S",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Borghi C",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Cicero AFG",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Brisighella Heart Study group",
+          "authtype": "CollectiveName",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Cicero AFG",
+      "title": "Magnesium depletion score is associated with arterial stiffness: data from the Brisighella Heart Study.",
+      "sorttitle": "magnesium depletion score is associated with arterial stiffness data from the brisighella heart study",
+      "volume": "44",
+      "issue": "5",
+      "pages": "771-777",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "8306882",
+      "issn": "0263-6352",
+      "essn": "1473-5598",
+      "pubtype": [
+        "Journal Article",
+        "Research Support, Non-U.S. Gov't"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "256",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "41669894"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13034741"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13034741;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1097/HJH.0000000000004253"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "00004872-990000000-00838"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2025/09/21 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2025/12/24 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/03/25 07:09"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/02/11 06:30"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/02/11 05:33"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/03/30 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 40,
+      "fulljournalname": "Journal of hypertension",
+      "elocationid": "doi: 10.1097/HJH.0000000000004253",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/05/01 00:00",
+      "sortfirstauthor": "Fogacci F",
+      "vernaculartitle": ""
+    },
+    "41724097": {
+      "uid": "41724097",
+      "pubdate": "2026 May 1",
+      "epubdate": "2026 Feb 17",
+      "source": "Water Res",
+      "authors": [
+        {
+          "name": "Birnhack L",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Nativ P",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Lahav O",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Lahav O",
+      "title": "Magnesium enrichment of desalinated water: Technologies, mechanisms, and practical considerations - a critical review.",
+      "sorttitle": "magnesium enrichment of desalinated water technologies mechanisms and practical considerations a critical review",
+      "volume": "295",
+      "issue": "",
+      "pages": "125588",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "0105072",
+      "issn": "0043-1354",
+      "essn": "1879-2448",
+      "pubtype": [
+        "Journal Article",
+        "Review"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "256",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "41724097"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1016/j.watres.2026.125588"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "S0043-1354(26)00271-X"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2025/12/17 00:00"
+        },
+        {
+          "pubstatus": "revised",
+          "date": "2026/02/15 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/02/16 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/03/13 00:50"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/02/23 01:34"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/02/22 18:07"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": "",
+      "fulljournalname": "Water research",
+      "elocationid": "doi: 10.1016/j.watres.2026.125588",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/05/01 00:00",
+      "sortfirstauthor": "Birnhack L",
+      "vernaculartitle": ""
+    },
+    "41802533": {
+      "uid": "41802533",
+      "pubdate": "2026 Jul",
+      "epubdate": "2026 Mar 7",
+      "source": "Am J Med",
+      "authors": [
+        {
+          "name": "Yin Y",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Morgan CJ",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Costello RB",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Fonarow GC",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Cheng Y",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Tekle S",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Faselis C",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Lam PH",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Sheriff HM",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Rosanoff A",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Anker SD",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Raman VK",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Moore HJ",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Vargas JD",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Patel SS",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Sen S",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Liu S",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Zullo A",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Heidenreich PA",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Gottlieb SS",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Deedwania P",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Wu WC",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Zeng-Treitler Q",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Ahmed A",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Ahmed A",
+      "title": "Serum Magnesium and Outcomes in U.S. Veterans with Heart Failure.",
+      "sorttitle": "serum magnesium and outcomes in u s veterans with heart failure",
+      "volume": "139",
+      "issue": "7",
+      "pages": "884-894",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "0267200",
+      "issn": "0002-9343",
+      "essn": "1555-7162",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "256",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "41802533"
+        },
+        {
+          "idtype": "mid",
+          "idtypen": 8,
+          "value": "NIHMS2155063"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13571438"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13571438;manuscript-id: NIHMS2155063;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1016/j.amjmed.2026.02.021"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "S0002-9343(26)00151-8"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2026/02/17 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/02/17 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/05/28 00:29"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/03/10 01:06"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/03/09 20:12"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/09/13 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 23,
+      "fulljournalname": "The American journal of medicine",
+      "elocationid": "doi: 10.1016/j.amjmed.2026.02.021",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/07/01 00:00",
+      "sortfirstauthor": "Yin Y",
+      "vernaculartitle": ""
+    },
+    "41829832": {
+      "uid": "41829832",
+      "pubdate": "2026 Mar 5",
+      "epubdate": "2026 Mar 5",
+      "source": "Plants (Basel)",
+      "authors": [
+        {
+          "name": "Vašíček J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Kulhánek M",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Šulcová K",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Hladík J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Černý J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Balík J",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Balík J",
+      "title": "Addressing Magnesium Deficiency Through Crop Biofortification: Plant-Soil-Human Perspective-A Review.",
+      "sorttitle": "addressing magnesium deficiency through crop biofortification plant soil human perspective a review",
+      "volume": "15",
+      "issue": "5",
+      "pages": "",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "101596181",
+      "issn": "2223-7747",
+      "essn": "2223-7747",
+      "pubtype": [
+        "Journal Article",
+        "Review"
+      ],
+      "recordstatus": "PubMed",
+      "pubstatus": "3",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "41829832"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC12986988"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC12986988;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.3390/plants15050801"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "plants15050801"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2026/01/28 00:00"
+        },
+        {
+          "pubstatus": "revised",
+          "date": "2026/02/25 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/03/03 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/03/14 06:33"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/03/14 06:32"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/03/14 01:10"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/03/05 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 152,
+      "fulljournalname": "Plants (Basel, Switzerland)",
+      "elocationid": "doi: 10.3390/plants15050801",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/03/05 00:00",
+      "sortfirstauthor": "Vašíček J",
+      "vernaculartitle": ""
+    },
+    "41837770": {
+      "uid": "41837770",
+      "pubdate": "2026 Mar",
+      "epubdate": "",
+      "source": "Aging Cell",
+      "authors": [
+        {
+          "name": "Zhang R",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Ge M",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Hu M",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Zhao Y",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Chong B",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Li W",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Yu J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Lu Y",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "He S",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Wang J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Yue J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Chen HN",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Xu H",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Peng Y",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Lei P",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Liu Z",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Dai L",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Dai L",
+      "title": "Magnesium Deficiency Accelerates Gut Aging and Increases Susceptibility to Colitis.",
+      "sorttitle": "magnesium deficiency accelerates gut aging and increases susceptibility to colitis",
+      "volume": "25",
+      "issue": "3",
+      "pages": "e70446",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "101130839",
+      "issn": "1474-9718",
+      "essn": "1474-9726",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "4",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "41837770"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13093417"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13093417;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1111/acel.70446"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "revised",
+          "date": "2026/02/07 00:00"
+        },
+        {
+          "pubstatus": "received",
+          "date": "2025/09/14 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/03/03 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/03/16 21:59"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/03/16 21:58"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/03/16 09:54"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/03/16 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 63,
+      "fulljournalname": "Aging cell",
+      "elocationid": "doi: 10.1111/acel.70446",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/03/01 00:00",
+      "sortfirstauthor": "Zhang R",
+      "vernaculartitle": ""
+    },
+    "41859661": {
+      "uid": "41859661",
+      "pubdate": "2026",
+      "epubdate": "2026 Mar 4",
+      "source": "Front Nutr",
+      "authors": [
+        {
+          "name": "Ji L",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Yu H",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Wang R",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Yan H",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Yin X",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Guo S",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Wang R",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Wang R",
+      "title": "Targeting magnesium homeostasis: a novel therapeutic strategy for liver diseases.",
+      "sorttitle": "targeting magnesium homeostasis a novel therapeutic strategy for liver diseases",
+      "volume": "13",
+      "issue": "",
+      "pages": "1709477",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "101642264",
+      "issn": "2296-861X",
+      "essn": "2296-861X",
+      "pubtype": [
+        "Journal Article",
+        "Review"
+      ],
+      "recordstatus": "PubMed",
+      "pubstatus": "258",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "41859661"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC12995791"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC12995791;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.3389/fnut.2026.1709477"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2025/09/20 00:00"
+        },
+        {
+          "pubstatus": "revised",
+          "date": "2026/01/31 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/02/19 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/03/20 07:11"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/03/20 07:10"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/03/20 04:56"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/03/04 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 105,
+      "fulljournalname": "Frontiers in nutrition",
+      "elocationid": "doi: 10.3389/fnut.2026.1709477",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/03/04 00:00",
+      "sortfirstauthor": "Ji L",
+      "vernaculartitle": ""
+    },
+    "41872423": {
+      "uid": "41872423",
+      "pubdate": "2026 Mar 24",
+      "epubdate": "2026 Mar 24",
+      "source": "Curr Nutr Rep",
+      "authors": [
+        {
+          "name": "Papagiannidou A",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Mitropoulou M",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Papantzikos K",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Petropoulou D",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Tsilingiris D",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Magkos F",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Dalamaga M",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Dalamaga M",
+      "title": "Hypomagnesemia: A Clinical and Nutritional Update.",
+      "sorttitle": "hypomagnesemia a clinical and nutritional update",
+      "volume": "15",
+      "issue": "1",
+      "pages": "",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "101587480",
+      "issn": "",
+      "essn": "2161-3311",
+      "pubtype": [
+        "Journal Article",
+        "Review"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "3",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "41872423"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13009017"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13009017;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1007/s13668-026-00745-5"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "10.1007/s13668-026-00745-5"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2026/02/05 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/02/17 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/06/27 12:39"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/03/24 07:41"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/03/24 00:27"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/03/24 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 189,
+      "fulljournalname": "Current nutrition reports",
+      "elocationid": "doi: 10.1007/s13668-026-00745-5",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/03/24 00:00",
+      "sortfirstauthor": "Papagiannidou A",
+      "vernaculartitle": ""
+    },
+    "41937759": {
+      "uid": "41937759",
+      "pubdate": "2026",
+      "epubdate": "2026 Mar 19",
+      "source": "Front Plant Sci",
+      "authors": [
+        {
+          "name": "Alisaac E",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Zheng X",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Fischer B",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Jarausch B",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Gauweiler P",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Spitaler U",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Janik K",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Fontanesi L",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Gruna R",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Beyerer J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Maixner M",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Töpfer R",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Trapp O",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Kicherer A",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Kicherer A",
+      "title": "Hyperspectral differentiation of three grapevine yellows diseases and symptomatically similar stresses.",
+      "sorttitle": "hyperspectral differentiation of three grapevine yellows diseases and symptomatically similar stresses",
+      "volume": "17",
+      "issue": "",
+      "pages": "1794713",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "101568200",
+      "issn": "1664-462X",
+      "essn": "1664-462X",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "recordstatus": "PubMed",
+      "pubstatus": "258",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "41937759"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13044154"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13044154;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.3389/fpls.2026.1794713"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2026/01/23 00:00"
+        },
+        {
+          "pubstatus": "revised",
+          "date": "2026/02/11 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/02/24 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/04/06 12:37"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/04/06 12:36"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/04/06 06:03"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/03/19 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 62,
+      "fulljournalname": "Frontiers in plant science",
+      "elocationid": "doi: 10.3389/fpls.2026.1794713",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/03/19 00:00",
+      "sortfirstauthor": "Alisaac E",
+      "vernaculartitle": ""
+    },
+    "41938509": {
+      "uid": "41938509",
+      "pubdate": "2026",
+      "epubdate": "2026 Mar 17",
+      "source": "Int J Med Sci",
+      "authors": [
+        {
+          "name": "Hsiao PJ",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Tsou LL",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Yang CC",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Huang LY",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Wang RL",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Chan JS",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Wu KL",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Kao YH",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Chou CL",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Chou CL",
+      "title": "Magnesium Oxide Use and Clinical Outcomes in CKD Patients: Evidence from a Nationwide Population-Based Cohort Study in Taiwan.",
+      "sorttitle": "magnesium oxide use and clinical outcomes in ckd patients evidence from a nationwide population based cohort study in taiwan",
+      "volume": "23",
+      "issue": "4",
+      "pages": "1519-1534",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "101213954",
+      "issn": "",
+      "essn": "1449-1907",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "258",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "41938509"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13048899"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13048899;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.7150/ijms.125059"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "ijmsv23p1519"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2025/09/11 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/02/03 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/04/06 12:37"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/04/06 12:36"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/04/06 06:10"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/03/17 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 40,
+      "fulljournalname": "International journal of medical sciences",
+      "elocationid": "doi: 10.7150/ijms.125059",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/03/17 00:00",
+      "sortfirstauthor": "Hsiao PJ",
+      "vernaculartitle": ""
+    },
+    "41985648": {
+      "uid": "41985648",
+      "pubdate": "2026 May 10",
+      "epubdate": "2026 Apr 13",
+      "source": "Eur J Pharmacol",
+      "authors": [
+        {
+          "name": "Chen J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Luo R",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Huang J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Xie M",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Liu C",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Huang Y",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Ding H",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Zhang C",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Li W",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Xu B",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Xu B",
+      "title": "Normalization of magnesium deficiency with magnesium-L-Threonate alleviates bladder overactivity in cyclophosphamide-induced cystitis: Mechanisms of inflammatory modulation and barrier restoration.",
+      "sorttitle": "normalization of magnesium deficiency with magnesium l threonate alleviates bladder overactivity in cyclophosphamide induced cystitis mechanisms of inflammatory modulation and barrier restoration",
+      "volume": "1023",
+      "issue": "",
+      "pages": "178833",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "1254354",
+      "issn": "0014-2999",
+      "essn": "1879-0712",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "256",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "41985648"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1016/j.ejphar.2026.178833"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "S0014-2999(26)00315-8"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2025/11/18 00:00"
+        },
+        {
+          "pubstatus": "revised",
+          "date": "2026/03/29 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/03/30 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/05/03 05:27"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/04/16 13:09"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/04/15 19:38"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": "",
+      "fulljournalname": "European journal of pharmacology",
+      "elocationid": "doi: 10.1016/j.ejphar.2026.178833",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/05/10 00:00",
+      "sortfirstauthor": "Chen J",
+      "vernaculartitle": ""
+    },
+    "42064495": {
+      "uid": "42064495",
+      "pubdate": "2026 Mar",
+      "epubdate": "2026 Mar 30",
+      "source": "Cureus",
+      "authors": [
+        {
+          "name": "Nafea S",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Iguh C",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Waseem F",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Babar T",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Masood MH",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Ali MA",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Bashir Ahmed F",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Qasem H",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "George Cherian N",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Ibrahem Atoom G",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Ibrahim Atoum B",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Ibrahim Atoum B",
+      "title": "Association of Long-Term Proton Pump Inhibitor Use With Nutrient Deficiencies: A Retrospective Cross-Sectional Study.",
+      "sorttitle": "association of long term proton pump inhibitor use with nutrient deficiencies a retrospective cross sectional study",
+      "volume": "18",
+      "issue": "3",
+      "pages": "e106137",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "101596737",
+      "issn": "2168-8184",
+      "essn": "2168-8184",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "recordstatus": "PubMed",
+      "pubstatus": "258",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "42064495"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13127095"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13127095;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.7759/cureus.106137"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "accepted",
+          "date": "2026/03/29 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/05/01 06:35"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/05/01 06:34"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/05/01 05:15"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/03/30 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 24,
+      "fulljournalname": "Cureus",
+      "elocationid": "doi: 10.7759/cureus.106137",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/03/30 00:00",
+      "sortfirstauthor": "Nafea S",
+      "vernaculartitle": ""
+    },
+    "42084330": {
+      "uid": "42084330",
+      "pubdate": "2026 Apr 30",
+      "epubdate": "",
+      "source": "Eur J Endocrinol",
+      "authors": [
+        {
+          "name": "Palermo A",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Naciu AM",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Zavatta G",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Sargentini E",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Menale C",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Yavropoulou MP",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Cipriani C",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Tabacco G",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Anastasilakis AD",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Anastasilakis AD",
+      "title": "Magnesium as an endocrine modulator: physiological roles, clinical evidence, and therapeutic perspectives.",
+      "sorttitle": "magnesium as an endocrine modulator physiological roles clinical evidence and therapeutic perspectives",
+      "volume": "194",
+      "issue": "5",
+      "pages": "R98-R122",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "9423848",
+      "issn": "0804-4643",
+      "essn": "1479-683X",
+      "pubtype": [
+        "Journal Article",
+        "Review"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "4",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "42084330"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1093/ejendo/lvag076"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "8667638"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2026/02/09 00:00"
+        },
+        {
+          "pubstatus": "revised",
+          "date": "2026/04/10 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/04/27 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/05/21 18:32"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/05/05 12:38"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/05/05 08:53"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": "",
+      "fulljournalname": "European journal of endocrinology",
+      "elocationid": "doi: 10.1093/ejendo/lvag076",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/04/30 00:00",
+      "sortfirstauthor": "Palermo A",
+      "vernaculartitle": ""
+    },
+    "42132340": {
+      "uid": "42132340",
+      "pubdate": "2026 Apr-Jun",
+      "epubdate": "2026 May 14",
+      "source": "Sci Prog",
+      "authors": [
+        {
+          "name": "Wang Y",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Wu J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Zhang Y",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Yu P",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Wen G",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Li K",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Zhang X",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Xiang R",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Zheng Z",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Zheng Z",
+      "title": "Magnesium depletion score and circadian syndrome: Mediated by body mass index.",
+      "sorttitle": "magnesium depletion score and circadian syndrome mediated by body mass index",
+      "volume": "109",
+      "issue": "2",
+      "pages": "368504261451366",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "0411361",
+      "issn": "0036-8504",
+      "essn": "2047-7163",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "256",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "42132340"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13180079"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13180079;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1177/00368504261451366"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "medline",
+          "date": "2026/05/14 14:51"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/05/14 14:50"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/05/14 08:33"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/05/14 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 54,
+      "fulljournalname": "Science progress",
+      "elocationid": "doi: 10.1177/00368504261451366",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/04/01 00:00",
+      "sortfirstauthor": "Wang Y",
+      "vernaculartitle": ""
+    },
+    "42459797": {
+      "uid": "42459797",
+      "pubdate": "2026",
+      "epubdate": "2026 Jul 1",
+      "source": "Front Nutr",
+      "authors": [
+        {
+          "name": "Hung IY",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Wang WT",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Liu PH",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Cheng WJ",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Cheng WJ",
+      "title": "Magnesium deficiency and long-term incident dementia among COVID-19 survivors: a propensity score-matched cohort study.",
+      "sorttitle": "magnesium deficiency and long term incident dementia among covid 19 survivors a propensity score matched cohort study",
+      "volume": "13",
+      "issue": "",
+      "pages": "1871623",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "101642264",
+      "issn": "2296-861X",
+      "essn": "2296-861X",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "recordstatus": "PubMed",
+      "pubstatus": "258",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "42459797"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13368526"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13368526;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.3389/fnut.2026.1871623"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2026/05/03 00:00"
+        },
+        {
+          "pubstatus": "revised",
+          "date": "2026/05/31 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/06/15 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/07/16 06:39"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/07/16 06:38"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/07/16 04:39"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/07/01 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 37,
+      "fulljournalname": "Frontiers in nutrition",
+      "elocationid": "doi: 10.3389/fnut.2026.1871623",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/07/01 00:00",
+      "sortfirstauthor": "Hung IY",
+      "vernaculartitle": ""
+    },
+    "42474889": {
+      "uid": "42474889",
+      "pubdate": "2026 Oct",
+      "epubdate": "2026 Jul 20",
+      "source": "Biometals",
+      "authors": [
+        {
+          "name": "Andrade FN",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Menezes-Santos M",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Goes AC",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Santos RKF",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "da Costa SSL",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Dos Santos SH",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "de Sousa Rocha V",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "E Silva AMO",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Pires LV",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Pires LV",
+      "title": "The dietary calcium-to-magnesium ratio and its association with glycemic control in type 2 diabetes: a cross-sectional study.",
+      "sorttitle": "dietary calcium to magnesium ratio and its association with glycemic control in type 2 diabetes a cross sectional study",
+      "volume": "39",
+      "issue": "5",
+      "pages": "1835-1846",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "9208478",
+      "issn": "0966-0844",
+      "essn": "1572-8773",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "256",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "42474889"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13518385"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13518385;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1007/s10534-026-00834-6"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "10.1007/s10534-026-00834-6"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2025/07/17 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/05/27 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/08/26 17:37"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/07/20 12:40"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/07/20 11:18"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/07/20 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 62,
+      "fulljournalname": "Biometals : an international journal on the role of metal ions in biology, biochemistry, and medicine",
+      "elocationid": "doi: 10.1007/s10534-026-00834-6",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/10/01 00:00",
+      "sortfirstauthor": "Andrade FN",
+      "vernaculartitle": ""
+    },
+    "42484803": {
+      "uid": "42484803",
+      "pubdate": "2026 Jul 22",
+      "epubdate": "2026 Jul 22",
+      "source": "Curr Nutr Rep",
+      "authors": [
+        {
+          "name": "Sankararaman S",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Memel Z",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Dubroff J",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Rocha JP",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Rocha JP",
+      "title": "Magnesium: Hype and Health Benefits.",
+      "sorttitle": "magnesium hype and health benefits",
+      "volume": "15",
+      "issue": "1",
+      "pages": "",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "101587480",
+      "issn": "",
+      "essn": "2161-3311",
+      "pubtype": [
+        "Journal Article",
+        "Review"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "3",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "42484803"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13391447"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13391447;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1007/s13668-026-00786-w"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "10.1007/s13668-026-00786-w"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2026/05/22 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/07/16 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/07/22 12:38"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/07/22 12:37"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/07/22 11:08"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/07/22 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 111,
+      "fulljournalname": "Current nutrition reports",
+      "elocationid": "doi: 10.1007/s13668-026-00786-w",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/07/22 00:00",
+      "sortfirstauthor": "Sankararaman S",
+      "vernaculartitle": ""
+    },
+    "42522535": {
+      "uid": "42522535",
+      "pubdate": "2026 Jun 30",
+      "epubdate": "2026 Jun 30",
+      "source": "Dermatol Online J",
+      "authors": [
+        {
+          "name": "Chalupczak N",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Podolsky AS",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Lipner SR",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Lipner SR",
+      "title": "Magnesium dysregulation and risk of inflammatory skin disease: A multicenter cohort study.",
+      "sorttitle": "magnesium dysregulation and risk of inflammatory skin disease a multicenter cohort study",
+      "volume": "32",
+      "issue": "3",
+      "pages": "",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "9610776",
+      "issn": "",
+      "essn": "1087-2108",
+      "pubtype": [
+        "Journal Article",
+        "Multicenter Study"
+      ],
+      "recordstatus": "PubMed - indexed for MEDLINE",
+      "pubstatus": "3",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "42522535"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.25251/nnzpm9sp"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "498"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "accepted",
+          "date": "2026/01/26 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/07/29 18:39"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/07/29 06:35"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/07/29 04:43"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": "",
+      "fulljournalname": "Dermatology online journal",
+      "elocationid": "doi: 10.25251/nnzpm9sp",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/06/30 00:00",
+      "sortfirstauthor": "Chalupczak N",
+      "vernaculartitle": ""
+    },
+    "42609580": {
+      "uid": "42609580",
+      "pubdate": "2026",
+      "epubdate": "2026 Aug 17",
+      "source": "Obstet Gynecol Int",
+      "authors": [
+        {
+          "name": "Badalyan H",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Grigoryan A",
+          "authtype": "Author",
+          "clusterid": ""
+        },
+        {
+          "name": "Okoev G",
+          "authtype": "Author",
+          "clusterid": ""
+        }
+      ],
+      "lastauthor": "Okoev G",
+      "title": "Retrospective-Prospective Observational Study of Serum Magnesium Level Dynamics and Their Correction in Physiological and Complicated Pregnancies.",
+      "sorttitle": "retrospective prospective observational study of serum magnesium level dynamics and their correction in physiological and complicated pregnancies",
+      "volume": "2026",
+      "issue": "",
+      "pages": "4276911",
+      "lang": [
+        "eng"
+      ],
+      "nlmuniqueid": "101517078",
+      "issn": "1687-9589",
+      "essn": "1687-9597",
+      "pubtype": [
+        "Journal Article"
+      ],
+      "recordstatus": "PubMed",
+      "pubstatus": "258",
+      "articleids": [
+        {
+          "idtype": "pubmed",
+          "idtypen": 1,
+          "value": "42609580"
+        },
+        {
+          "idtype": "pmc",
+          "idtypen": 8,
+          "value": "PMC13479107"
+        },
+        {
+          "idtype": "pmcid",
+          "idtypen": 5,
+          "value": "pmc-id: PMC13479107;"
+        },
+        {
+          "idtype": "doi",
+          "idtypen": 3,
+          "value": "10.1155/ogi/4276911"
+        },
+        {
+          "idtype": "pii",
+          "idtypen": 4,
+          "value": "OGI4276911"
+        }
+      ],
+      "history": [
+        {
+          "pubstatus": "received",
+          "date": "2025/10/28 00:00"
+        },
+        {
+          "pubstatus": "revised",
+          "date": "2026/07/01 00:00"
+        },
+        {
+          "pubstatus": "accepted",
+          "date": "2026/07/23 00:00"
+        },
+        {
+          "pubstatus": "medline",
+          "date": "2026/08/18 13:57"
+        },
+        {
+          "pubstatus": "pubmed",
+          "date": "2026/08/18 13:56"
+        },
+        {
+          "pubstatus": "entrez",
+          "date": "2026/08/18 05:05"
+        },
+        {
+          "pubstatus": "pmc-release",
+          "date": "2026/08/17 00:00"
+        }
+      ],
+      "references": [],
+      "attributes": [
+        "Has Abstract"
+      ],
+      "pmcrefcount": 34,
+      "fulljournalname": "Obstetrics and gynecology international",
+      "elocationid": "doi: 10.1155/ogi/4276911",
+      "doctype": "citation",
+      "srccontriblist": [],
+      "booktitle": "",
+      "medium": "",
+      "edition": "",
+      "publisherlocation": "",
+      "publishername": "",
+      "srcdate": "",
+      "reportnumber": "",
+      "availablefromurl": "",
+      "locationlabel": "",
+      "doccontriblist": [],
+      "docdate": "",
+      "bookname": "",
+      "chapter": "",
+      "sortpubdate": "2026/08/17 00:00",
+      "sortfirstauthor": "Badalyan H",
+      "vernaculartitle": ""
+    },
+    "uids": [
+      "41837770",
+      "40535201",
+      "41669894",
+      "41724097",
+      "42484803",
+      "42132340",
+      "41419681",
+      "41859661",
+      "41802533",
+      "41829832",
+      "41938509",
+      "42084330",
+      "41985648",
+      "41872423",
+      "42522535",
+      "42609580",
+      "42474889",
+      "42064495",
+      "41937759",
+      "42459797"
+    ]
+  }
+}

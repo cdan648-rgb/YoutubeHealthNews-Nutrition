@@ -523,3 +523,209 @@ describe('the seed articles remain publishable', () => {
     },
   );
 });
+
+/**
+ * The research path.
+ *
+ * A research source routes through the research prompts and the research branch of the
+ * gate: no video embed, a caution callout, no speaker attribution, and the paper's own URL
+ * cited. The mock returns a research-shaped body, so the whole path is exercised without an
+ * API call.
+ */
+describe('the research path', () => {
+  const PAPER_URL = 'https://europepmc.org/article/MED/40000001';
+
+  const RESEARCH_SOURCE: PipelineSource = {
+    kind: 'research',
+    title: 'Magnesium supplementation and insulin sensitivity: a randomized controlled trial',
+    sourceText:
+      'This randomized controlled trial enrolled adults and measured insulin sensitivity after ' +
+      'magnesium supplementation. Fasting glucose and insulin resistance improved in the ' +
+      'intervention arm. The authors note the modest sample and call for independent ' +
+      'replication before any change to practice.',
+    keywords: [],
+    durationSeconds: null,
+    publishedAt: '2026-06-15',
+    channelTitle: 'Nutrients',
+    paperUrl: PAPER_URL,
+    journal: 'Nutrients',
+    authors: ['A Researcher', 'B Researcher'],
+  };
+
+  function researchBody(): Block[] {
+    const para = (
+      text: string,
+      attribution: 'general' | 'established' = 'general',
+      ref?: number,
+    ) =>
+      ref === undefined
+        ? { t: 'p' as const, text, attribution }
+        : { t: 'p' as const, text, attribution, ref };
+    const filler = (n: number) =>
+      para(
+        `Doan ${n} trinh bay boi canh cua nghien cuu va y nghia cua ket qua doi voi nguoi doc pho thong. `.repeat(
+          7,
+        ) + 'Ket qua don le luon can duoc dien giai mot cach than trong va kiem chung doc lap.',
+      );
+    return [
+      { t: 'source_note' },
+      para('Mot thu nghiem ngau nhien co doi chung vua duoc cong bo ve magie va do nhay insulin.'),
+      para(
+        'Nghien cuu nay ghi nhan cai thien o nhom can thiep so voi nhom chung.',
+        'established',
+        0,
+      ),
+      { t: 'h2', text: 'Nghien cuu da lam gi' },
+      filler(1),
+      filler(2),
+      { t: 'h2', text: 'Ket qua chinh' },
+      {
+        t: 'key_facts',
+        title: 'Nhung diem chinh',
+        items: ['Diem mot ghi nho', 'Diem hai ghi nho'],
+      },
+      filler(3),
+      { t: 'h2', text: 'Gioi han cua nghien cuu' },
+      filler(4),
+      {
+        t: 'callout',
+        tone: 'caution',
+        title: 'Mot nghien cuu don le',
+        text: 'Ket qua can duoc cac nhom doc lap kiem chung lai truoc khi thay doi thuc hanh.',
+      },
+      { t: 'h2', text: 'Y nghia voi nguoi doc' },
+      filler(5),
+      { t: 'disclaimer' },
+    ];
+  }
+
+  function researchResponses(): StageResponses {
+    return {
+      extraction: {
+        topic: 'Magie va insulin',
+        plainLanguageTopic: 'Magie va duong huyet',
+        proposedCategorySlug: 'vi-chat-vitamin',
+        isFactCheck: false,
+        restrictedTopics: [],
+        outline: [
+          { heading: 'Nghien cuu', intent: 'mo ta' },
+          { heading: 'Ket qua', intent: 'mo ta' },
+          { heading: 'Gioi han', intent: 'mo ta' },
+          { heading: 'Y nghia', intent: 'mo ta' },
+        ],
+        claims: [
+          {
+            text: 'Nhom can thiep cai thien do nhay insulin',
+            kind: 'speaker_claim',
+            needsCitation: true,
+            numbers: [],
+          },
+          {
+            text: 'Magie tham gia chuyen hoa glucose',
+            kind: 'general_knowledge',
+            needsCitation: true,
+            numbers: [],
+          },
+          {
+            text: 'Co mau cua nghien cuu con nho',
+            kind: 'speaker_claim',
+            needsCitation: false,
+            numbers: [],
+          },
+        ],
+      },
+      verification: {
+        verifiedClaims: [
+          {
+            claimText: 'Magie tham gia chuyen hoa glucose',
+            resolution: 'cite',
+            suggestedUrl: 'https://medlineplus.gov/ency/article/002423.htm',
+            suggestedPublisher: 'MedlinePlus',
+            suggestedTitle: 'Magnesium in diet',
+            reason: 'kien thuc nen',
+          },
+        ],
+      },
+      draft: {
+        title: 'Magie va do nhay insulin: mot thu nghiem ngau nhien co doi chung',
+        dek: 'Mot thu nghiem ngau nhien co doi chung ghi nhan magie co the cai thien do nhay insulin, nhung co mau con nho va ket qua can duoc kiem chung doc lap truoc khi ap dung.',
+        slug: 'magie-va-do-nhay-insulin',
+        categorySlug: 'vi-chat-vitamin',
+        isFactCheck: false,
+        body: researchBody(),
+        references: [
+          { label: '1', title: 'The trial', publisher: 'Europe PMC', url: PAPER_URL },
+          {
+            label: '2',
+            title: 'Magnesium in diet',
+            publisher: 'MedlinePlus',
+            url: 'https://medlineplus.gov/ency/article/002423.htm',
+          },
+        ],
+      },
+      seo: {
+        metaTitle: 'Magie va do nhay insulin: mot thu nghiem moi',
+        metaDescription:
+          'Mot thu nghiem ngau nhien co doi chung ve magie va do nhay insulin: ket qua, gioi han va vi sao can than trong, kem nguon tu Europe PMC.',
+        keywords: ['magie', 'insulin'],
+      },
+    };
+  }
+
+  function researchDeps() {
+    return deps({ allowedReferenceHosts: [...ALLOWED_HOSTS, 'europepmc.org'] });
+  }
+
+  it('publishes a well-formed research article via the research prompts', async () => {
+    const mock = mockOpenRouter(researchResponses());
+    const outcome = await generateArticle(RESEARCH_SOURCE, {
+      ...researchDeps(),
+      fetchImpl: mock.fetchImpl,
+    });
+    if (outcome.decision === 'failed') throw new Error(`unexpected failure: ${outcome.message}`);
+    expect(outcome.decision).toBe('publish');
+    expect(outcome.report.passed).toBe(true);
+  });
+
+  it('sends the research house rules to the model', async () => {
+    const mock = mockOpenRouter(researchResponses());
+    await generateArticle(RESEARCH_SOURCE, { ...researchDeps(), fetchImpl: mock.fetchImpl });
+    // The system prompt must carry the research-specific constraints, not just HOUSE_RULES.
+    expect(mock.bodies.length).toBeGreaterThan(0);
+    const first = JSON.parse(mock.bodies[0] ?? '{}') as {
+      messages?: { role: string; content: string }[];
+    };
+    const system = first.messages?.find((message) => message.role === 'system')?.content ?? '';
+    // RESEARCH_RULES opens with this heading; its presence proves the research system
+    // prompt was used rather than the plain HOUSE_RULES.
+    expect(system).toContain('BỐI CẢNH RIÊNG CHO BÀI VIẾT VỀ NGHIÊN CỨU');
+  });
+
+  it('fails a research article that omits the paper it reports on', async () => {
+    const responses = researchResponses();
+    (responses.draft as { references: unknown[] }).references = [
+      {
+        label: '1',
+        title: 'Magnesium in diet',
+        publisher: 'MedlinePlus',
+        url: 'https://medlineplus.gov/ency/article/002423.htm',
+      },
+      {
+        label: '2',
+        title: 'Minerals',
+        publisher: 'MedlinePlus',
+        url: 'https://medlineplus.gov/minerals.html',
+      },
+    ];
+    const mock = mockOpenRouter(responses);
+    const outcome = await generateArticle(RESEARCH_SOURCE, {
+      ...researchDeps(),
+      fetchImpl: mock.fetchImpl,
+    });
+    if (outcome.decision === 'failed') throw new Error('unexpected failure');
+    expect(outcome.decision).toBe('needs_review');
+    expect(outcome.report.issues.map((issue) => issue.code)).toContain(
+      'missing_required_reference',
+    );
+  });
+});

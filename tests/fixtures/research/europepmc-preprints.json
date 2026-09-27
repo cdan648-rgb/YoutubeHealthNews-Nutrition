@@ -1,0 +1,963 @@
+{
+  "version": "6.9",
+  "hitCount": 312,
+  "nextCursorMark": "AoIIQGyJLSg1NjMyMzM0Mg==",
+  "nextPageUrl": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=%28magnesium+OR+%22vitamin+D%22%29+AND+%28SRC%3APPR%29+AND+%28FIRST_PDATE%3A%5B2026-06-01+TO+2026-09-27%5D%29&cursorMark=AoIIQGyJLSg1NjMyMzM0Mg%3D%3D&resultType=core&pageSize=10&format=json",
+  "request": {
+    "queryString": "(magnesium OR \"vitamin D\") AND (SRC:PPR) AND (FIRST_PDATE:[2026-06-01 TO 2026-09-27])",
+    "resultType": "core",
+    "cursorMark": "*",
+    "pageSize": 10,
+    "sort": "",
+    "synonym": false
+  },
+  "resultList": {
+    "result": [
+      {
+        "id": "PPR1321997",
+        "source": "PPR",
+        "doi": "10.20944/preprints202609.1518.v1",
+        "title": "Dose-Dependent Febrile Response to Transcranial Pulse Stimulation Reveals Reversible Iatrogenic Calcification Misattributed to Multiple Sclerosis Progression",
+        "authorString": "Kistenmacher A, Lenz C.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Kistenmacher A",
+              "lastName": "Kistenmacher",
+              "firstName": "Ann",
+              "initials": "A"
+            },
+            {
+              "fullName": "Lenz C",
+              "lastName": "Lenz",
+              "firstName": "Christoph",
+              "initials": "C"
+            }
+          ]
+        },
+        "pubYear": "2026",
+        "abstractText": "<h4>Background: </h4> /Objectives: In multiple sclerosis (MS), deterioration occurring independently of new focal inflammatory activity may be attributed to disease progression, and treatment escalated on that basis. This case report describes a patient in whom that attribution misdirected treatment for nearly six years, and how a patient-initiated investigation—triggered by an anomalous dose-dependent response to transcranial pulse stimulation (TPS)—revealed a reversible, iatrogenic mechanism underlying the decline. Case Presentation: A 51-year-old male with relapsing-remitting MS and undiagnosed genetic polymorphisms (VDR Bsm1 +/+; CACNA1C +/+; CBS/MTRR transsulfuration variants) underwent a high-dose vitamin D protocol (80,000 IU/day) for five years and eight months, despite an already-optimal baseline 25-hydroxyvitamin D and mineral dysregulation (hypercalciuria, hyperphosphaturia, hypercortisolism) documented eight years earlier. The protocol's premise—that the patient was vitamin D resistant—was undercut by his own data: this was supraphysiological dosing layered onto a pre-existing mineral-handling disorder. The subsequent decline—acrocyanosis, nephrocalcinosis, scoliosis, tissue necrosis, and wheelchair dependence—was attributed to MS progression and met with escalating interventions rather than investigation of the underlying metabolic driver. Throughout, the kidney functioned as the sentinel organ: renal pathology was documented from adolescence, biochemically demonstrable nearly a decade before the protocol, and progressed to radiographic capsular linear calcification during treatment. The decisive diagnostic signal was a reproducible, dose-dependent acute response to transcranial pulse stimulation, characterized by chills within 1–2 hours progressing to fever with rigors. <h4>Methods:</h4> Genetic profiling across six metabolic systems (including vitamin D clearance, vitamin K cycle, magnesium, calcium signaling, detoxification, and immune regulation) via two independent direct-to-consumer platforms, longitudinal organic acids testing, serial mineral/hormonal panels, and toxic metal provocation (DMPS) were undertaken. <h4>Results:</h4> Metabolic profiling confirmed progressive mitochondrial dysfunction and transsulfuration collapse during high-dose vitamin D; DMPS provocation documented a residual mercury burden (96 μg/g creatinine; reference &lt; 0.8) despite years of chelation—a finding consistent with sequestration of mercury within ectopic calcium-phosphate deposits. Following vitamin D cessation and metabolic correction (vitamin K2, magnesium, mitochondrial support), the patient improved substantially within six weeks—from wheelchair dependence to independent swimming (500 m) and 30 m assisted walking—with near resolution of scoliosis and healing of necrotic tissue. <h4>Conclusions:</h4> This patient's decline was consistent with a reversible, iatrogenic calcium-phosphate dysregulation driven by high-dose vitamin D in a genetically susceptible host. A multi-hit genomic architecture—spanning impaired vitamin D clearance (CYP24A1/VDR), impaired vitamin K-dependent calcification inhibition (VKORC1/GGCX/CYP4F2), magnesium wasting (TRPM6/CNNM2/SLC41A1), calcium channel variants (CACNA1C/TRPM3), and detoxification failure (GSTM1 Null)—is offered as one hypothesis to explain why this outcome occurred in this patient. The variant calls derive from two independent direct-to-consumer genotyping platforms and require clinical-grade confirmation before they can support established mechanistic claims. If confirmed, this architecture would render the outcome biochemically predictable - the foreseeable consequence of supraphysiological vitamin D dosing in a genetically susceptible host - rather than idiosyncratic. The case illustrates how a symptom-based diagnostic label can misdirect treatment while the treatable mechanistic driver goes unaddressed and argues for interrogation of the kidney's mineral-handling status before any high-dose vitamin D or neuromodulatory intervention. We hypothesize—on the basis of the dose-dependent, febrile responses to TPS, and given TPS's shockwave lineage originally engineered to fragment calcific deposits—that TPS dose-sensitivity may serve as a diagnostic tool to identify patients whose deterioration is driven by metabolic-perfusion failure rather than by the condition named in their diagnosis, and that a subset of demyelinating lesions may harbor a calcium-phosphate component warranting prospective investigation. These are offered as hypotheses requiring validation, not established conclusions.",
+        "pubTypeList": {
+          "pubType": [
+            "Preprint"
+          ]
+        },
+        "bookOrReportDetails": {
+          "publisher": "Preprints.org",
+          "yearOfPublication": 2026
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.20944/preprints202609.1518.v1"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "N",
+        "hasTextMinedTerms": "N",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "N",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "N",
+        "dateOfCreation": "2026-09-19",
+        "firstPublicationDate": "2026-09-17",
+        "firstIndexDate": "2026-09-19",
+        "versionList": {
+          "version": [
+            {
+              "id": "PPR1321997",
+              "source": "PPR",
+              "versionNumber": 1,
+              "firstPublishDate": "2026-09-17",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "N"
+            }
+          ]
+        },
+        "versionNumber": 1,
+        "hasEvaluations": "N"
+      },
+      {
+        "id": "PPR1263830",
+        "source": "PPR",
+        "doi": "10.32388/swbgwr.4",
+        "title": "Calcium Magnesium Balance and Its Impact on Human Health",
+        "authorString": "Chambers P, Wimalawansa S.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Chambers P",
+              "lastName": "Chambers",
+              "firstName": "Patrick",
+              "initials": "P",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0000-0003-2927-3187"
+              }
+            },
+            {
+              "fullName": "Wimalawansa S",
+              "lastName": "Wimalawansa",
+              "firstName": "Sunil",
+              "initials": "S"
+            }
+          ]
+        },
+        "authorIdList": {
+          "authorId": [
+            {
+              "type": "ORCID",
+              "value": "0000-0003-2927-3187"
+            }
+          ]
+        },
+        "pubYear": "2026",
+        "abstractText": "Magnesium is essential for vitamin D₃ metabolism and optimum functions. It supports enzymes that synthesize 25(OH)D and calcitriol and facilitates receptor binding and genomic interactions. Optimizing the serum Ca: Mg ratio enhances vitamin D efficacy and improves clinical outcomes. In addition, Mg is vital for G-protein-coupled receptor functions, CYP450 enzyme activity, activation of B vitamins, epigenetic methylation, glucose metabolism, and mitigating oxidative stress and inflammaging. Assessing serum Mg (mmol/L) offers a more physiologically relevant measure than dietary intake (mg/day). Ca: Mg intake ratio of 2:1 yields an iCa: iMg ratio within the optimal range; however, since Mg is distributed in both plasma and red blood cells while Ca is largely extracellular, a 3:2 is a better indicator of homeostasis than the recommended 2:1. Calcium and magnesium function as physiological opposites; their optimal serum ratio of 1.7-2.6 is a key indicator of health. An imbalanced Ca: Mg ratio—outside this range—increases risks of diseases, like cancer, cardiovascular, dementia, autoimmune disease, infections (including COVID-19 complications), and post-COVID syndrome. Magnesium deficiency likely contributes to the prevalence of type 2 diabetes. Evidence from laboratory reference ranges, NHANES data, and peer-reviewed studies underscores the need for clinical validation of these observations. Globally, magnesium deficiency remains prevalent and understudied in clinical trials. Study data support that maintaining optimal blood Ca: Mg ratios benefits the prevention of cancer and other common disorders. Optimizing the serum Ca: Mg ratio is a cost-effective, globally impactful strategy to improve metabolic health and reduce chronic disease risk.",
+        "pubTypeList": {
+          "pubType": [
+            "Preprint"
+          ]
+        },
+        "bookOrReportDetails": {
+          "publisher": "Qeios",
+          "yearOfPublication": 2026
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.32388/swbgwr.4"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "N",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "N",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "N",
+        "dateOfCreation": "2026-07-02",
+        "firstPublicationDate": "2026-07-01",
+        "firstIndexDate": "2026-07-02",
+        "versionList": {
+          "version": [
+            {
+              "id": "PPR1038312",
+              "source": "PPR",
+              "versionNumber": 1,
+              "firstPublishDate": "2025-06-18",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "Y"
+            },
+            {
+              "id": "PPR1078764",
+              "source": "PPR",
+              "versionNumber": 2,
+              "firstPublishDate": "2025-09-03",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "Y"
+            },
+            {
+              "id": "PPR1118218",
+              "source": "PPR",
+              "versionNumber": 3,
+              "firstPublishDate": "2025-11-12",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "Y"
+            },
+            {
+              "id": "PPR1263830",
+              "source": "PPR",
+              "versionNumber": 4,
+              "firstPublishDate": "2026-07-01",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "N"
+            }
+          ]
+        },
+        "versionNumber": 4,
+        "hasEvaluations": "N"
+      },
+      {
+        "id": "PPR1283694",
+        "source": "PPR",
+        "doi": "10.21203/rs.3.rs-10191104/v1",
+        "title": "Micronutrient Deficiencies and Conception in Idiopathic Infertility: A Prospective Single-Centre Cohort Study",
+        "authorString": "Abdellatif A.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Abdellatif A",
+              "lastName": "Abdellatif",
+              "firstName": "Ahmed",
+              "initials": "A"
+            }
+          ]
+        },
+        "pubYear": "2026",
+        "abstractText": "<title>Abstract</title>  <p>  <bold>STRUCTURED ABSTRACT</bold>  <bold>Objective</bold>  To determine the prevalence of micronutrient deficiencies in women with confirmed idiopathic infertility, document laboratory improvement following individualised supplementation, and assess the association between deficiency correction and clinical pregnancy rates over 6 to 12 months.  <bold>Design</bold>  Prospective, single-centre, interventional cohort study. <h4>Setting:</h4> primary care fertility clinic, Dubai, United Arab Emirates, September 2023 to December 2024. STROBE-compliant.  <bold>Subjects</bold>  Twenty-seven women aged 18 to 40 years with confirmed idiopathic infertility after full standard workup per WHO 2021 criteria. Excluded: polycystic ovary syndrome, endometriosis, thyroid dysfunction, uterine anomaly, male-factor infertility, recent supplementation. No dropouts.  <bold>Exposure</bold>  Individualised supplementation targeting identified deficiencies: oral or intravenous iron; cholecalciferol; methylfolate; hydroxocobalamin and cyanocobalamin; calcium carbonate; magnesium glycinate; zinc picolinate. Structured dietary counselling provided to all.  <bold>Main Outcome Measures</bold>  Primary: confirmed clinical pregnancy (serum beta-hCG 25 mIU/mL or greater on two measurements 48 hours apart, with transvaginal ultrasound confirmation). Secondary: laboratory normalisation, time to conception, subgroup conception rates by age, infertility duration, prior IVF attempts, and chronic disease status.  <bold>Results</bold>  All 27 participants had at least one deficiency. Iron deficiency was most prevalent (70.4%), followed by vitamin D (55.6%), folate (51.9%), calcium (48.1%), vitamin B12 (25.9%), magnesium (25.9%), and zinc (22.2%). All values improved significantly after supplementation (all p less than 0.001); ferritin rose from 12.3 to 56.2 ng/mL and 25-hydroxyvitamin D from 18.4 to 35.8 ng/mL. Twenty of 27 women (74.1%) achieved confirmed pregnancy within 12 months. On exploratory logistic regression, infertility duration (OR 1.35, 95% CI 1.05 to 1.78) and absence of chronic disease (OR 2.10, 95% CI 1.02 to 4.34) were independent predictors (AUC 0.78). Ten of 20 conceptions occurred without concurrent assisted reproductive technology.  <bold>Conclusion</bold>  Micronutrient deficiencies were near-universal and largely undetected in this cohort. Supplementation was associated with a 74.1% clinical pregnancy rate. These hypothesis-generating findings support routine nutritional screening in the idiopathic infertility workup, pending larger randomised trials with live-birth endpoints.  </p>",
+        "pubTypeList": {
+          "pubType": [
+            "Preprint"
+          ]
+        },
+        "bookOrReportDetails": {
+          "publisher": "Research Square",
+          "yearOfPublication": 2026
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.21203/rs.3.rs-10191104/v1"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "N",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "N",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "N",
+        "dateOfCreation": "2026-07-24",
+        "firstPublicationDate": "2026-07-23",
+        "firstIndexDate": "2026-07-24",
+        "versionList": {
+          "version": [
+            {
+              "id": "PPR1283694",
+              "source": "PPR",
+              "versionNumber": 1,
+              "firstPublishDate": "2026-07-23",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "N"
+            }
+          ]
+        },
+        "versionNumber": 1,
+        "hasEvaluations": "N"
+      },
+      {
+        "id": "PPR1252225",
+        "source": "PPR",
+        "doi": "10.32388/u5jtwn",
+        "title": "Magnesium and Rapamycin in Long Covid and Longevity: A Mechanistic and Therapeutic Approach",
+        "authorString": "Chambers P.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Chambers P",
+              "lastName": "Chambers",
+              "firstName": "Patrick",
+              "initials": "P",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0000-0003-2927-3187"
+              }
+            }
+          ]
+        },
+        "authorIdList": {
+          "authorId": [
+            {
+              "type": "ORCID",
+              "value": "0000-0003-2927-3187"
+            }
+          ]
+        },
+        "pubYear": "2026",
+        "abstractText": "A global shortfall in magnesium (Mg) is linked to long Covid and a shortened lifespan. Calcium (Ca) competes with Mg for the same receptor and the West ingests too much calcium and the East too little. An intake of Ca:Mg (weight to weight) close to 2:1 has been promulgated as the best measure of balance, but on a Western diet 3:2 might be a better target. RBC Mg sits at the nexus of intracellular Mg and serum Mg. This enables easy determination of serum Ca:Mg that reflects the intake ratio and general health status.  Nutrient sensitive mTOR (mammalian target of rapamycin) and energy sensitive AMPK are inversely related. A balanced mTOR:AMPK ratio, is linked to healthy aging. Multiple studies in yeast, worms, flies, and rodents support the efficacy of rapamycin as a longevity agent. Any inhibition of mTOR by rapamycin can upregulate kinases that activate mTOR via alternate pathways. Whether this occurs with low-dose, intermittent rapamycin is unknown. But Mg is perfectly placed to block this. Rapamycin is a top down longevity agent, while Mg empowers longevity from the bottom up. They collaborate without competing. Efficacies may merge at the IFN-γ, indoleamine dioxygenase (IDO), kynurenine, aryl hydrocarbon receptor (AhR) interface. Persistence of any intracellular pathogen, e.g., SARS CoV2, can prolong IFN-γ activation of IDO. IDO metabolizes tryptophan (T) and upregulates the kynurenine (K) pathway, leaving less T for the indole (longevity biomarker) and serotonin pathways. An elevated K/T is linked to cancer, autoimmune disease, cardiovascular disease, dementia, diabetes, obesity, and chronic inflammation in general. Furthermore, Mg-dependent vitamin D immunomodulates IFN-γ.",
+        "pubTypeList": {
+          "pubType": [
+            "Preprint"
+          ]
+        },
+        "bookOrReportDetails": {
+          "publisher": "Qeios",
+          "yearOfPublication": 2026
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.32388/u5jtwn"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "Y",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "N",
+        "license": "cc by",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "N",
+        "dateOfCreation": "2026-06-16",
+        "firstPublicationDate": "2026-06-15",
+        "firstIndexDate": "2026-06-16",
+        "versionList": {
+          "version": [
+            {
+              "id": "PPR1252225",
+              "source": "PPR",
+              "versionNumber": 1,
+              "firstPublishDate": "2026-06-15",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "Y"
+            },
+            {
+              "id": "PPR1263829",
+              "source": "PPR",
+              "versionNumber": 2,
+              "firstPublishDate": "2026-07-01",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "Y"
+            },
+            {
+              "id": "PPR1290337",
+              "source": "PPR",
+              "versionNumber": 3,
+              "firstPublishDate": "2026-08-03",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "N"
+            }
+          ]
+        },
+        "versionNumber": 1,
+        "hasEvaluations": "Y"
+      },
+      {
+        "id": "PPR1320560",
+        "source": "PPR",
+        "doi": "10.21203/rs.3.rs-10840100/v1",
+        "title": "Effect of Structured, Diet-Focused Educational Intervention on Knowledge, Attitude, and Practice Related to Vitamin D Among Medical Science Students: A Randomized Controlled Trial",
+        "authorString": "Matin H, Karimi M, Olia JBH.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Matin H",
+              "lastName": "Matin",
+              "firstName": "Habibeh",
+              "initials": "H"
+            },
+            {
+              "fullName": "Karimi M",
+              "lastName": "Karimi",
+              "firstName": "Mehrdad",
+              "initials": "M"
+            },
+            {
+              "fullName": "Olia JBH",
+              "lastName": "Olia",
+              "firstName": "Jaleh Bagheri Hamzyan",
+              "initials": "JBH"
+            }
+          ]
+        },
+        "pubYear": "2026",
+        "abstractText": "<title>Abstract</title>  <p>Introduction:  Vitamin D deficiency is a major public health problem worldwide, with a particularly high incidence among university students in the Middle East and Iran. Despite adequate general knowledge, there are still significant gaps in knowledge and practice in the field of vitamin D nutrition among medical science students. This study evaluated the effectiveness of a structured dietary education intervention on knowledge, attitudes, and practice (KAP) related to vitamin D in Northwestern Iran as part of a larger registry study that also assessed biochemical and academic outcomes (reported separately). Methodology:  A parallel, double-blind, randomized controlled trial with pre- and post-intervention evaluation was conducted in 132 medical science students at Khoy University of Medical Sciences, West Azerbaijan, Iran, who were randomly assigned to an intervention (n = 66) or control (n = 66) group by stratified block randomization with secret allocation. Participants in the intervention group received four structured 60-minute sessions over four consecutive weeks that combined foundational content on vitamin D physiology and sun exposure with a primary focus on dietary sources and culinary strategies for increasing vitamin D intake. Vitamin D-related KAP was assessed at baseline and three months post-intervention using the validated D-KAP-38 questionnaire; no biochemical (serum 25-hydroxyvitamin D) or dietary intake measures were obtained. Analysis of covariance (ANCOVA) was used to compare post-intervention scores while controlling for baseline differences. Results  .At baseline, participants demonstrated relatively high general knowledge (86.16 ± 15.16%) but substantially lower nutritional knowledge (58.86 ± 22.26%) and practice scores (52.10 ± 7.89%). Following the intervention, the intervention group showed statistically significant improvements across all four D-KAP-38 subscales compared with controls: general knowledge (Δ = 9.02%, p < 0.001), nutritional knowledge (Δ = 17.88%, p < 0.001), attitude (Δ = 7.39%, p < 0.001), and practice (Δ = 7.84%, p < 0.001). ANCOVA confirmed significant between-group differences for all subscales (all p < 0.001, partial η² = 0.214–0.277; post-hoc power > 0.99 for all models). Conclusion  A four-session, diet-focused educational intervention significantly improved self-reported vitamin D-related knowledge, attitudes, and practice among medical science students in Northwestern Iran, with the greatest gain in nutritional knowledge—historically the weakest component of vitamin D literacy. Because outcomes reported here are knowledge- and self-report-based, they should be interpreted as evidence of improved KAP; whether these improvements are consistent with improved biochemical vitamin D status will be investigated in the companion report of the same study. Trial registration  This trial was registered with the Iranian Registry of Clinical Trials(IRCT) under registration number IRCT2026061206975N1 (registration ID 90841), approved retroactively on 6 August 2026 ( 15 Mordad 1405). Registration occurred after completion of participant recruitment ( 4 January 2025 to 5 May 2025) this retrospective registration is disclosed here in accordance with ICMJE and CONSORT reporting recommendations. Trial registration  Iranian Registry of Clinical Trials (IRCT2026061206975N1), registered retroactively on August 6, 2026.</p>",
+        "pubTypeList": {
+          "pubType": [
+            "Preprint"
+          ]
+        },
+        "bookOrReportDetails": {
+          "publisher": "Research Square",
+          "yearOfPublication": 2026
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.21203/rs.3.rs-10840100/v1"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "N",
+        "hasTextMinedTerms": "N",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "N",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "N",
+        "dateOfCreation": "2026-09-17",
+        "firstPublicationDate": "2026-09-16",
+        "firstIndexDate": "2026-09-17",
+        "versionList": {
+          "version": [
+            {
+              "id": "PPR1320560",
+              "source": "PPR",
+              "versionNumber": 1,
+              "firstPublishDate": "2026-09-16",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "N"
+            }
+          ]
+        },
+        "versionNumber": 1,
+        "hasEvaluations": "N"
+      },
+      {
+        "id": "PPR1326293",
+        "source": "PPR",
+        "doi": "10.64898/2026.09.22.753468",
+        "title": "Activation of vitamin D signaling suppresses platinum-induced ovarian cancer stem cell plasticity",
+        "authorString": "Metcalfe TX, Xanders S, Kinne RA, Rajendran S, Zhang S, Hollenhorst PC, Gaspar-Maia A, O’Hagan HM, Nephew KP.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Metcalfe TX",
+              "lastName": "Metcalfe",
+              "firstName": "Tara",
+              "initials": "TX"
+            },
+            {
+              "fullName": "Xanders S",
+              "lastName": "Xanders",
+              "firstName": "Sophie",
+              "initials": "S"
+            },
+            {
+              "fullName": "Kinne RA",
+              "lastName": "Kinne",
+              "firstName": "Renee",
+              "initials": "RA"
+            },
+            {
+              "fullName": "Rajendran S",
+              "lastName": "Rajendran",
+              "firstName": "Saranya",
+              "initials": "S"
+            },
+            {
+              "fullName": "Zhang S",
+              "lastName": "Zhang",
+              "firstName": "Shu",
+              "initials": "S"
+            },
+            {
+              "fullName": "Hollenhorst PC",
+              "lastName": "Hollenhorst",
+              "firstName": "Peter",
+              "initials": "PC"
+            },
+            {
+              "fullName": "Gaspar-Maia A",
+              "lastName": "Gaspar-Maia",
+              "firstName": "Alexandre",
+              "initials": "A"
+            },
+            {
+              "fullName": "O’Hagan HM",
+              "lastName": "O’Hagan",
+              "firstName": "Heather",
+              "initials": "HM"
+            },
+            {
+              "fullName": "Nephew KP",
+              "lastName": "Nephew",
+              "firstName": "Kenneth",
+              "initials": "KP"
+            }
+          ]
+        },
+        "pubYear": "2026",
+        "abstractText": "Advanced-stage high grade serous ovarian cancer (HGSC) initially responds to platinum-based chemotherapy; however, most HGSC tumors recur and develop chemotherapy-resistance, making recurrent ovarian cancer (OC) a fatal disease. Ovarian cancer stem cells (OCSCs), a subpopulation of cells capable of surviving treatment and repopulating tumors, contribute to disease relapse, and understanding the mechanisms(s) responsible for OCSC survival is critical for developing strategies to overcome acquired resistance and prevent tumor recurrence. However, whether platinum-induced OCSC enrichment results from the selection of pre-existing OCSCs or chemotherapy-induced cellular plasticity, and the molecular mechanisms underlying these processes, remain poorly understood. Here, we demonstrated that cisplatin treatment not only enriched for OCSCs but promoted the conversion of ALDH-cells to ALDH+ cells, revealing chemotherapy-induced plasticity as a potential mechanism for OCSC expansion. This conversion was associated with nuclear receptor signaling pathways, vitamin D receptor signaling (VDR/RXR) and retinoic acid receptor signaling (RAR/RXR). Importantly, activation of VDR/RXR signaling with vitamin D reduced stemness phenotypes and the cisplatin induced conversion to ALDH+ cells. In addition, vitamin D combined with cisplatin decreased tumor volume in vivo compared to either treatment alone. In contrast, cisplatin treatment increased RAR/RXR signaling, supporting an associative role for ligand-dependent nuclear receptor signaling in OCSC plasticity. Together, these findings reveal that platinum chemotherapy can actively promote the acquisition of stem-like properties and identifies VDR/RXR signaling as a potential regulatory mechanism of OCSC plasticity. Targeting this pathway with vitamin D may provide a therapeutic strategy to target OCSCs and improve responses to platinum-based chemotherapy.",
+        "pubTypeList": {
+          "pubType": [
+            "Preprint"
+          ]
+        },
+        "bookOrReportDetails": {
+          "publisher": "bioRxiv",
+          "yearOfPublication": 2026
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.64898/2026.09.22.753468"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "N",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "N",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "N",
+        "dateOfCreation": "2026-09-24",
+        "firstPublicationDate": "2026-09-23",
+        "firstIndexDate": "2026-09-24",
+        "hasEvaluations": "N"
+      },
+      {
+        "id": "PPR1311871",
+        "source": "PPR",
+        "doi": "10.64898/2026.09.02.748895",
+        "title": "Vitamin D counters bone invasion by mammary cancer through inhibition of inflammation and epithelial-to-mesenchymal transition",
+        "authorString": "Li J, Luco A, Camirand A, Kremer R.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Li J",
+              "lastName": "Li",
+              "firstName": "Jiarong",
+              "initials": "J"
+            },
+            {
+              "fullName": "Luco A",
+              "lastName": "Luco",
+              "firstName": "Aimée-Lee",
+              "initials": "A"
+            },
+            {
+              "fullName": "Camirand A",
+              "lastName": "Camirand",
+              "firstName": "Anne",
+              "initials": "A"
+            },
+            {
+              "fullName": "Kremer R",
+              "lastName": "Kremer",
+              "firstName": "Richard",
+              "initials": "R"
+            }
+          ]
+        },
+        "pubYear": "2026",
+        "abstractText": "<h4>ABSTRACT</h4>  Vitamin D deficiency is associated with poor outcome in several cancers in humans, and administration of vitamin D or analogs has been shown to decrease tumor progression and metastasis in animal mammary cancer models. We previously demonstrated significant acceleration of carcinogenesis in vitamin D-deficient mouse mammary tumor virus-polyoma middle T (MMTV-PyMT) mammary cancer model as well as of its spontaneous metastasis to lungs. While vitamin D also plays a role in skeletal metastasis, detailed mechanisms of its promotion of bone invasion and metastatic events are not completely elucidated. In the present study we used tibially-injected MMTV-PyMT mammary tumor cells to analyse how dietary-induced vitamin D deficiency in non-immunodeficient FVB mice accelerates bone invasion. Mechanistically, we observed vitamin D deficiency to increase pro-inflammation cytokines and nestin expression in internal bone surface and marrow, and to increase epithelial-to-mesenchymal transition (EMT) through Zeb1 transcription factor.  In vitro , treatment of MMTV-PyMT tumor cells with CXCL12 was observed to stimulate Zeb1 expression, and this effect was efficiently countered by 1,25(OH)  2 D treatment. Analysis of cytokines in MMTV-PyMT mammary tumor cells  in vitro showed significant reduction in several pro-inflammatory cytokines with 1,25(OH)  2 D treatment (GM-CSF, ICAM-1, IL-1ra, IP-10, JE, MCP-5, MIP-1α, MIP-1β, MIP-2, RANTES and CXCL12), a crucial observation in view of the current evidence that inflammation is one of the hallmarks of cancer. Furthermore, vitamin D repleteness is associated with very high expression of Socs1 (suppressor of cytokine signalling 1), an inhibitor of JAK/STAT pathway which prevents excessive inflammatory responses and has a tumor-suppressive role. These findings provide a strong link between vitamin D deficiency and acceleration of inflammation-driven bone invasion, and nestin and EMT. The evidence suggests that vitamin D-repleteness in breast cancer patients could enhance the efficacy of co-administered therapies in preventing invasion of skeletal sites.  <h4>LAY SUMMARY</h4>  Vitamin D deficiency, a very common occurrence in the modern world, is associated with poor outcome for several cancers among which colorectal, breast, kidney and thyroid. We previously showed that a vitamin D-deficient diet caused significant acceleration of carcinogenesis and lung metastasis in mouse. Vitamin D also plays a role in skeletal metastasis, however, mechanisms are not yet elucidated. Here, we demonstrate that vitamin D deficiency acts through pro-inflammation factors to help skeletal progression of mammary cancer. Evidence suggests that adequate vitamin D status in breast cancer patients could enhance efficacy of co-administered therapies in preventing deadly invasion of bone.",
+        "pubTypeList": {
+          "pubType": [
+            "Preprint"
+          ]
+        },
+        "bookOrReportDetails": {
+          "publisher": "bioRxiv",
+          "yearOfPublication": 2026
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.64898/2026.09.02.748895"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "N",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "N",
+        "license": "cc by-nc-nd",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "N",
+        "dateOfCreation": "2026-09-04",
+        "firstPublicationDate": "2026-09-03",
+        "firstIndexDate": "2026-09-04",
+        "hasEvaluations": "N"
+      },
+      {
+        "id": "PPR1325243",
+        "source": "PPR",
+        "doi": "10.20944/preprints202609.2030.v1",
+        "title": "The Vitamin D–Multiple Sclerosis Paradox in the Arabian Gulf: A Critical Synthesis of Lifestyle Transition, Genetic Susceptibility, and Gene–Environment Interactions",
+        "authorString": "Alsharoqi IA, Bohlega SA.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Alsharoqi IA",
+              "lastName": "Alsharoqi",
+              "firstName": "Isa Ahmed",
+              "initials": "IA"
+            },
+            {
+              "fullName": "Bohlega SA",
+              "lastName": "Bohlega",
+              "firstName": "Saeed",
+              "initials": "SA"
+            }
+          ]
+        },
+        "pubYear": "2026",
+        "abstractText": "<h4>Background: </h4> Gulf Cooperation Council (GCC) populations combine intense ultraviolet B (UVB) radiation with widespread hypovitaminosis D and multiple sclerosis (MS) burden. We examine this Arabian Gulf vitamin D–MS paradox as an exposure–biology–inference problem rather than a single causal pathway. <h4>Methods:</h4> We conducted a structured narrative review and regional synthesis using a structured search of PubMed/MEDLINE, Embase, Scopus, Web of Science, and regional sources (January 1990–August 2026), followed by a targeted September 2026 update incorporating the Bahrain Research Square preprint. Evidence was appraised for ascertainment, assay heterogeneity, temporality, confounding, ancestry transferability, replication, and intervention design. <h4>Results:</h4> Low 25-hydroxyvitamin D [25(OH)D] recurs across the GCC despite abundant UVB. In Bahrain, mean 25(OH)D was lower during April–September than October–March (21.1±17.4 vs 34.7±21.2 nmol/L); secondary calculation gave a difference of −13.6 nmol/L (95% CI −17.3 to −9.9; Cohen’s d=0.72). A September 2026 preprint identified 876 actively followed Bahraini patients, corresponding to crude registry-based prevalence of 117.2 per 100,000 (95% CI 109.4–125.0), and 48 new diagnoses during March 2025–March 2026, yielding incidence of 6.4 per 100,000 (95% CI 4.7–8.5). Centralized national referral and DMT delivery support high completeness of the contemporary clinical numerator, while denominator projection and lack of age/sex standardization remain limitations. Regional genetic, EBV, obesity, smoking, diagnostic-era, and treatment-related evidence supports a multifactorial model. <h4>Conclusions:</h4> Vitamin D is a plausible modifiable component of multifactorial MS susceptibility, not a stand-alone explanation for GCC epidemiological change. Deficiency should be corrected for general health, but no MS-specific serum target or lifelong high-dose regimen is established. Contemporary Bahrain data strengthen evidence of substantial national MS burden while showing that higher prevalence need not imply a proportional rise in annual incidence. Ancestry-aware longitudinal GCC studies are needed.",
+        "pubTypeList": {
+          "pubType": [
+            "Preprint"
+          ]
+        },
+        "bookOrReportDetails": {
+          "publisher": "Preprints.org",
+          "yearOfPublication": 2026
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.20944/preprints202609.2030.v1"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "N",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "N",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "N",
+        "dateOfCreation": "2026-09-24",
+        "firstPublicationDate": "2026-09-23",
+        "firstIndexDate": "2026-09-24",
+        "versionList": {
+          "version": [
+            {
+              "id": "PPR1325243",
+              "source": "PPR",
+              "versionNumber": 1,
+              "firstPublishDate": "2026-09-23",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "N"
+            }
+          ]
+        },
+        "versionNumber": 1,
+        "hasEvaluations": "N"
+      },
+      {
+        "id": "PPR1316411",
+        "source": "PPR",
+        "doi": "10.21203/rs.3.rs-10711947/v1",
+        "title": "Vitamin D Deficiency and Central Precocious Puberty in Girls During the COVID-19 Pandemic: Clinical Features, Diagnostic Thresholds, and Mechanisms",
+        "authorString": "Li Z, Chen Y, Pan M.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "Li Z",
+              "lastName": "Li",
+              "firstName": "Zhishu",
+              "initials": "Z"
+            },
+            {
+              "fullName": "Chen Y",
+              "lastName": "Chen",
+              "firstName": "Yaoyao",
+              "initials": "Y"
+            },
+            {
+              "fullName": "Pan M",
+              "lastName": "Pan",
+              "firstName": "Minli",
+              "initials": "M"
+            }
+          ]
+        },
+        "pubYear": "2026",
+        "abstractText": "<title>Abstract</title>  <p>  <bold>Background</bold>  The COVID-19 pandemic brought unprecedented changes in children's lifestyles, potentially exacerbating the increasing prevalence of precocious puberty. Vitamin D, beyond its classical role in calcium metabolism, influences gonadal function through the vitamin D receptor (VDR). This study aimed to investigate the relationship between serum 25-hydroxyvitamin D [25(OH)D] levels and central precocious puberty (CPP) in girls aged 6–8 years during the pandemic, establish a diagnostic threshold for differentiating CPP from isolated premature thelarche (IPT), and explore the potential mechanisms of vitamin D in hypothalamic-pituitary-gonadal axis (HPGA) regulation.  <bold>Methods</bold>  We conducted a single-center retrospective study of 175 girls (aged 6.0–8.0 years) with precocious puberty who attended the pediatric endocrinology clinic at Ruian People's Hospital between January 2020 and December 2022. Participants were classified into CPP (n=85) and IPT (n=90) groups based on gonadotropin-releasing hormone (GnRH) stimulation test results. Serum 25(OH)D, basal luteinizing hormone (LH), estradiol, pelvic ultrasound parameters, bone age (BA), and predicted adult height (PAH) were compared between groups. Pearson correlation, multivariable logistic regression, and receiver operating characteristic (ROC) curve analyses were performed. Results Serum 25(OH)D levels were significantly lower in the CPP group than in the IPT group [18.60 (16.25, 22.00) vs. 25.25 (21.70, 29.63) ng/mL, P<0.001]. The prevalence of vitamin D deficiency (<20 ng/mL) was significantly higher in the CPP group (62.4% vs. 16.7%, P<0.001), and no patient in the CPP group achieved vitamin D sufficiency (≥30 ng/mL) compared with 23.3% in the IPT group. Pearson correlation analysis showed that 25(OH)D levels were negatively correlated with uterine volume (r=−0.382, P<0.001), follicle count >4 mm (r=−0.353, P<0.001), bone age (r=−0.322, P<0.001), and PAH impairment (r=−0.206, P=0.006). Multivariable logistic regression identified LH (OR=5.894, 95% CI: 1.585–21.919, P=0.008), uterine volume (OR=3.115, 95% CI: 1.872–5.183, P<0.001), and follicle count >4 mm (OR=1.796, 95% CI: 1.279–2.520, P=0.001) as independent risk factors for CPP, whereas 25(OH)D (OR=0.764, 95% CI: 0.662–0.882, P<0.001) was an independent protective factor. ROC analysis demonstrated that 25(OH)D had an area under the curve (AUC) of 0.827 (95% CI: 0.764–0.890, P<0.001), with an optimal cutoff of 22.25 ng/mL (sensitivity 81.2%, specificity 68.9%).  <bold>Conclusions</bold>  During the COVID-19 pandemic, vitamin D deficiency was an independent risk factor for CPP in girls. A serum 25(OH)D level <20 ng/mL may serve as a clinically actionable early warning indicator, and the cutoff of 22.25 ng/mL provides moderate-to-good diagnostic value for distinguishing CPP from IPT. Routine monitoring of 25(OH)D is recommended in girls with precocious puberty, and vitamin D supplementation should be considered as an adjunctive strategy during GnRH analog therapy.  </p>",
+        "pubTypeList": {
+          "pubType": [
+            "Preprint"
+          ]
+        },
+        "bookOrReportDetails": {
+          "publisher": "Research Square",
+          "yearOfPublication": 2026
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.21203/rs.3.rs-10711947/v1"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "N",
+        "hasTextMinedTerms": "N",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "N",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "N",
+        "dateOfCreation": "2026-09-11",
+        "firstPublicationDate": "2026-09-10",
+        "firstIndexDate": "2026-09-11",
+        "versionList": {
+          "version": [
+            {
+              "id": "PPR1316411",
+              "source": "PPR",
+              "versionNumber": 1,
+              "firstPublishDate": "2026-09-10",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "N"
+            }
+          ]
+        },
+        "versionNumber": 1,
+        "hasEvaluations": "N"
+      },
+      {
+        "id": "PPR1308480",
+        "source": "PPR",
+        "doi": "10.21203/rs.3.rs-10848747/v1",
+        "title": "Association of Vitamin D and Serum Calcium Status with Recurrent Low Back Pain in Patients with Normal Radiological Findings: A Case-Control Study",
+        "authorString": "LONE M, Arjumand M, Tantray M.",
+        "authorList": {
+          "author": [
+            {
+              "fullName": "LONE M",
+              "lastName": "LONE",
+              "firstName": "MUSHARAF",
+              "initials": "M",
+              "authorId": {
+                "type": "ORCID",
+                "value": "0009-0008-3826-4331"
+              }
+            },
+            {
+              "fullName": "Arjumand M",
+              "lastName": "Arjumand",
+              "firstName": "Mir",
+              "initials": "M"
+            },
+            {
+              "fullName": "Tantray M",
+              "lastName": "Tantray",
+              "firstName": "Mehraj",
+              "initials": "M"
+            }
+          ]
+        },
+        "authorIdList": {
+          "authorId": [
+            {
+              "type": "ORCID",
+              "value": "0009-0008-3826-4331"
+            }
+          ]
+        },
+        "pubYear": "2026",
+        "abstractText": "<title>Abstract</title>  <p>  <bold>Background</bold>  Low back pain is a common and disabling musculoskeletal condition. Although structural abnormalities are frequently investigated using radiological imaging, a substantial proportion of patients experience recurrent symptoms despite apparently normal radiological findings. Vitamin D and calcium have important roles in bone mineralization, calcium homeostasis, neuromuscular function and musculoskeletal health. Their contribution to recurrent low back pain in patients without demonstrable radiological abnormalities remains clinically relevant, particularly in populations at increased risk of vitamin D deficiency.  <bold>Objective</bold>  To assess and compare serum 25-hydroxyvitamin D and serum calcium concentrations among patients with recurrent low back pain and normal lumbosacral radiographs and age- and sex-matched healthy controls.  <bold>Methods</bold>  A prospective observational case-control study was conducted at Habsara Wellness Centre from 15 December 2024 to 15 June 2025 under the academic affiliation of Guru Kashi University. The study included 375 participants, comprising 125 patients with recurrent low back pain and 250 age- and sex-matched healthy controls. Cases were adults aged 20 to 60 years with recurrent low back pain and normal lumbosacral radiographs. Participants with metabolic bone disease, malignancy, spinal trauma, autoimmune disease, infection, pregnancy or lactation, recent calcium or vitamin D supplementation, and selected disorders affecting calcium metabolism were excluded. Serum 25-hydroxyvitamin D and calcium were measured using automated laboratory methods. Vitamin D deficiency was defined as a serum 25-hydroxyvitamin D concentration below 20 ng/mL. Group comparisons were performed using the statistical methods specified in the dissertation, with statistical significance defined as p < 0.05.  <bold>Results</bold>  Vitamin D deficiency was substantially more frequent among patients with recurrent low back pain than among controls. Among female patients, 72% had vitamin D concentrations below 20 ng/mL, compared with 18% of female controls. Among male patients, 65% were reported to be deficient compared with 15% of male controls. The reported differences were highly significant (p < 0.001). Mean serum vitamin D concentrations were 14.2 ± 4.5 ng/mL among female patients and 19.5 ± 5.8 ng/mL among male patients, compared with 34.5 ± 6.2 ng/mL and 36.8 ± 5.9 ng/mL among female and male controls, respectively. Serum calcium concentrations were also lower among patients. Female patients had a reported mean calcium concentration of 8.6 ± 0.4 mg/dL and male patients 9.1 ± 0.3 mg/dL, compared with 9.6 ± 0.5 mg/dL and 9.4 ± 0.3 mg/dL among female and male controls, respectively. The reported difference in calcium between groups was statistically significant (p < 0.01). A moderate inverse correlation between vitamin D and CRP was reported in the overall dissertation analysis, although inflammatory markers are outside the primary scope of the present manuscript.  <bold>Conclusion</bold>  Patients with recurrent low back pain and normal radiological findings demonstrated substantially lower serum vitamin D concentrations and lower serum calcium concentrations than healthy controls. The findings support an association between vitamin D deficiency, lower serum calcium status and recurrent low back pain in this study population. Further longitudinal and interventional studies incorporating parathyroid hormone, bone mineral density, dietary intake, sunlight exposure and standardized pain assessment are required to determine causality and clarify the clinical significance of these biochemical abnormalities.  </p>",
+        "pubTypeList": {
+          "pubType": [
+            "Preprint"
+          ]
+        },
+        "bookOrReportDetails": {
+          "publisher": "Research Square",
+          "yearOfPublication": 2026
+        },
+        "fullTextUrlList": {
+          "fullTextUrl": [
+            {
+              "availability": "Free",
+              "availabilityCode": "F",
+              "documentStyle": "doi",
+              "site": "DOI",
+              "url": "https://doi.org/10.21203/rs.3.rs-10848747/v1"
+            }
+          ]
+        },
+        "isOpenAccess": "N",
+        "inEPMC": "N",
+        "inPMC": "N",
+        "citedByCount": 0,
+        "hasReferences": "Y",
+        "hasTextMinedTerms": "Y",
+        "hasDbCrossReferences": "N",
+        "hasPDF": "N",
+        "hasBook": "N",
+        "hasSuppl": "N",
+        "hasLabsLinks": "N",
+        "hasData": "N",
+        "license": "cc by",
+        "authMan": "N",
+        "epmcAuthMan": "N",
+        "nihAuthMan": "N",
+        "hasTMAccessionNumbers": "N",
+        "dateOfCreation": "2026-09-01",
+        "firstPublicationDate": "2026-08-31",
+        "firstIndexDate": "2026-09-01",
+        "versionList": {
+          "version": [
+            {
+              "id": "PPR1308480",
+              "source": "PPR",
+              "versionNumber": 1,
+              "firstPublishDate": "2026-08-31",
+              "pubTypeList": {
+                "pubType": [
+                  "preprint"
+                ]
+              },
+              "hasEvaluations": "N"
+            }
+          ]
+        },
+        "versionNumber": 1,
+        "hasEvaluations": "N"
+      }
+    ]
+  }
+}

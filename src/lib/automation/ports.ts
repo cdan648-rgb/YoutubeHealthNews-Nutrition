@@ -266,19 +266,28 @@ export function createPorts(client: InternalClient = internalClient()): Schedule
       const streak = await self.noSourceStreak(day);
       if (streak < threshold) return { kind: 'none', streak };
 
-      // Research fallback is Phase 7; until it is wired, a dry spell records no_source and
-      // the streak keeps climbing, which is the correct conservative behaviour.
+      // The dry spell is long enough. The paper is claimed inside the database before any
+      // generation call is made, so a duplicate costs one round trip rather than an article.
       const { claimResearchSource } = await import('@/lib/research/select');
-      const paper = await claimResearchSource(client);
-      if (paper === null) {
-        await log({
-          code: 'research_none_found',
-          level: 'warn',
-          stage: 'source',
-          message: 'no eligible paper found',
-        });
-        return { kind: 'none', streak };
-      }
+      const paper = await claimResearchSource(client, {
+        today: day,
+        log: (entry) =>
+          log({
+            code: entry.code,
+            stage: 'source',
+            ...(entry.level === undefined ? {} : { level: entry.level }),
+            ...(entry.message === undefined ? {} : { message: entry.message }),
+            ...(entry.context === undefined ? {} : { context: entry.context }),
+          }),
+      });
+      if (paper === null) return { kind: 'none', streak };
+
+      await log({
+        code: 'research_selected',
+        stage: 'source',
+        message: `rank ${paper.rank} of ${paper.poolSize}, score ${paper.score}`,
+        context: { researchSourceId: paper.id, score: paper.score, rank: paper.rank },
+      });
       return { kind: 'research', researchSourceId: paper.id, title: paper.title };
     },
 
@@ -496,10 +505,20 @@ async function buildPipelineSource(
 
   const { data } = await serviceClient()
     .from('research_sources')
-    .select('title, abstract, journal, publication_date')
+    .select('title, abstract, journal, publication_date, source_url, authors')
     .eq('id', source.researchSourceId)
     .maybeSingle();
   if (data === null || data === undefined) return null;
+
+  const authors = Array.isArray(data.authors)
+    ? data.authors
+        .map((author) => {
+          if (author === null || typeof author !== 'object' || Array.isArray(author)) return '';
+          const name = (author as { name?: unknown }).name;
+          return typeof name === 'string' ? name : '';
+        })
+        .filter((name) => name !== '')
+    : [];
 
   return {
     kind: 'research',
@@ -509,6 +528,10 @@ async function buildPipelineSource(
     durationSeconds: null,
     publishedAt: data.publication_date ?? new Date().toISOString(),
     channelTitle: data.journal ?? 'tạp chí khoa học',
+    // The gate requires this URL among the references, so the article always links the study.
+    paperUrl: data.source_url,
+    journal: data.journal,
+    authors,
   };
 }
 

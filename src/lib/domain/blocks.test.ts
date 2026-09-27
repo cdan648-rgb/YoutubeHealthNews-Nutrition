@@ -160,6 +160,57 @@ describe('checkBodyStructure', () => {
   });
 });
 
+describe('checkBodyStructure — research articles', () => {
+  /** A research body: no video embed, no speaker paragraph, a caution callout present. */
+  function researchBody(): Block[] {
+    return validBody()
+      .filter((block) => block.t !== 'video_embed')
+      .map((block) =>
+        block.t === 'p' && block.attribution === 'speaker'
+          ? { t: 'p' as const, text: block.text, attribution: 'general' as const }
+          : block,
+      );
+  }
+
+  it('accepts a valid research body (no video, no speaker, has a caution callout)', () => {
+    expect(checkBodyStructure(researchBody(), [ref], 'research')).toHaveLength(0);
+  });
+
+  it('does NOT require a video_embed', () => {
+    const codes = checkBodyStructure(researchBody(), [ref], 'research').map((issue) => issue.code);
+    expect(codes).not.toContain('missing_video_embed');
+  });
+
+  it('flags a video_embed that should not be there', () => {
+    const body = [...researchBody(), { t: 'video_embed' } as Block];
+    const codes = checkBodyStructure(body, [ref], 'research').map((issue) => issue.code);
+    expect(codes).toContain('unexpected_video_embed');
+  });
+
+  it('flags a missing single-study caution callout', () => {
+    const body = researchBody().filter(
+      (block) => !(block.t === 'callout' && block.tone === 'caution'),
+    );
+    const codes = checkBodyStructure(body, [ref], 'research').map((issue) => issue.code);
+    expect(codes).toContain('missing_study_caveat');
+  });
+
+  it('flags a paragraph attributed to a speaker who does not exist', () => {
+    const body = researchBody().map((block, index) =>
+      index === 3 && block.t === 'p'
+        ? { t: 'p' as const, text: block.text, attribution: 'speaker' as const }
+        : block,
+    );
+    const codes = checkBodyStructure(body, [ref], 'research').map((issue) => issue.code);
+    expect(codes).toContain('speaker_attribution_without_speaker');
+  });
+
+  it('does not demand speaker attribution on a research article', () => {
+    const codes = checkBodyStructure(researchBody(), [ref], 'research').map((issue) => issue.code);
+    expect(codes).not.toContain('no_speaker_attribution');
+  });
+});
+
 describe('plain-text projection', () => {
   it('includes prose and panels but not structural markers', () => {
     const text = blocksToPlainText(validBody());

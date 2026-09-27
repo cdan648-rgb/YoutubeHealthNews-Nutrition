@@ -397,3 +397,101 @@ describe('structure and identity', () => {
     );
   });
 });
+
+/**
+ * The research-article branch of the gate.
+ *
+ * A research piece is built from a paper, not a video, so three rules differ: it must not
+ * embed a video it does not have, it must cite the paper's own landing page, and two
+ * corroborating references are a hard floor rather than a soft nicety — a single study
+ * reported with nothing beside it is exactly the failure the section exists to prevent.
+ *
+ * The baseline reuses the magnesium seed body with the video_embed removed and its speaker
+ * paragraph neutralised, so a "clean" research article is genuinely publishable.
+ */
+describe('the research branch', () => {
+  const PAPER_URL = 'https://europepmc.org/article/MED/40000001';
+
+  const studyCaveat: Block = {
+    t: 'callout',
+    tone: 'caution',
+    title: 'Một nghiên cứu đơn lẻ',
+    text: 'Kết quả này cần được các nghiên cứu độc lập khác kiểm chứng lại trước khi trở thành cơ sở cho thực hành.',
+  };
+
+  function researchBody(): Block[] {
+    // Drop the video, neutralise the speaker paragraph, and add the caution callout a
+    // research piece must carry. The magnesium seed was written for a YouTube article, so
+    // it has none of these — which is the point: the research rules are genuinely different.
+    return [
+      studyCaveat,
+      ...(seed.body as Block[])
+        .filter((block) => block.t !== 'video_embed')
+        .map((block) =>
+          block.t === 'p' && block.attribution === 'speaker'
+            ? { t: 'p' as const, text: block.text, attribution: 'general' as const }
+            : block,
+        ),
+    ];
+  }
+
+  const paperRef: Reference = {
+    label: '1',
+    title: 'A randomized trial',
+    publisher: 'Europe PMC',
+    url: PAPER_URL,
+  };
+
+  function researchInput(overrides: Partial<GateInput> = {}): GateInput {
+    return baseInput({
+      sourceKind: 'research',
+      body: researchBody(),
+      references: [paperRef, seed.references[0] as Reference],
+      requiredReferenceUrls: [PAPER_URL],
+      allowedReferenceHosts: [...ALLOWED_HOSTS, 'europepmc.org'],
+      ...overrides,
+    });
+  }
+
+  it('passes a well-formed research article', () => {
+    const report = validateArticle(researchInput());
+    expect(report.passed).toBe(true);
+  });
+
+  it('fails when the paper it reports on is not cited', () => {
+    const codes = hardFailureCodes(
+      validateArticle(researchInput({ references: [seed.references[0] as Reference] })),
+    );
+    expect(codes).toContain('missing_required_reference');
+  });
+
+  it('treats fewer than two references as a HARD failure, unlike a YouTube article', () => {
+    const codes = hardFailureCodes(researchInputWithOneRef());
+    expect(codes).toContain('few_references');
+
+    function researchInputWithOneRef() {
+      return validateArticle(
+        researchInput({ references: [paperRef], requiredReferenceUrls: [PAPER_URL] }),
+      );
+    }
+  });
+
+  it('fails a research article that embeds a video', () => {
+    const body = [...researchBody(), { t: 'video_embed' } as Block];
+    const codes = hardFailureCodes(validateArticle(researchInput({ body })));
+    expect(codes).toContain('unexpected_video_embed');
+  });
+
+  it('fails a research article that attributes a claim to a non-existent speaker', () => {
+    let converted = false;
+    const body = researchBody().map((block) => {
+      if (!converted && block.t === 'p') {
+        converted = true;
+        return { t: 'p' as const, text: block.text, attribution: 'speaker' as const };
+      }
+      return block;
+    });
+    const codes = hardFailureCodes(validateArticle(researchInput({ body })));
+    expect(codes).toContain('speaker_attribution_without_speaker');
+  });
+});

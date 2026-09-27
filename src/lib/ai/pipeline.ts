@@ -19,12 +19,15 @@ import type { Reference } from '@/lib/domain/blocks';
 import { complete, OpenRouterError, type UsageStats } from './openrouter';
 import {
   HOUSE_RULES,
+  RESEARCH_RULES,
   draftJsonSchema,
   draftPrompt,
   draftSchema,
   extractionJsonSchema,
   extractionPrompt,
   extractionSchema,
+  researchDraftPrompt,
+  researchExtractionPrompt,
   seoJsonSchema,
   seoPrompt,
   seoSchema,
@@ -54,6 +57,16 @@ export type PipelineSource = {
   readonly durationSeconds: number | null;
   readonly publishedAt: string;
   readonly channelTitle: string;
+  /**
+   * Research-only fields.
+   *
+   * Present when `kind` is `'research'`. `paperUrl` is required there and is enforced as a
+   * reference by the gate, so the article always links the study it reports on — without
+   * that link the piece gives the reader nothing to check.
+   */
+  readonly paperUrl?: string;
+  readonly journal?: string | null;
+  readonly authors?: readonly string[];
 };
 
 export type PipelineDeps = {
@@ -110,17 +123,36 @@ export async function generateArticle(
 
   try {
     /* ------------------------------- 1. extract ------------------------------ */
+    // The house rules apply verbatim to both paths. Research adds constraints; it never
+    // relaxes one.
+    const system =
+      source.kind === 'research'
+        ? `${HOUSE_RULES}
+
+${RESEARCH_RULES}`
+        : HOUSE_RULES;
+
     if (working.extraction === undefined) {
       const result = await complete({
-        system: HOUSE_RULES,
-        user: extractionPrompt({
-          title: source.title,
-          descriptionClean: source.sourceText,
-          keywords: source.keywords,
-          durationSeconds: source.durationSeconds,
-          publishedAt: source.publishedAt,
-          categories: deps.categories,
-        }),
+        system,
+        user:
+          source.kind === 'research'
+            ? researchExtractionPrompt({
+                title: source.title,
+                abstract: source.sourceText,
+                journal: source.journal ?? null,
+                publicationDate: source.publishedAt,
+                authors: source.authors ?? [],
+                categories: deps.categories,
+              })
+            : extractionPrompt({
+                title: source.title,
+                descriptionClean: source.sourceText,
+                keywords: source.keywords,
+                durationSeconds: source.durationSeconds,
+                publishedAt: source.publishedAt,
+                categories: deps.categories,
+              }),
         jsonSchema: extractionJsonSchema,
         schemaName: 'extraction',
         validator: extractionSchema,
@@ -135,7 +167,7 @@ export async function generateArticle(
     /* -------------------------------- 2. verify ------------------------------ */
     if (working.verification === undefined) {
       const result = await complete({
-        system: HOUSE_RULES,
+        system,
         user: verificationPrompt({
           claims: extraction.claims,
           allowedHosts: deps.allowedReferenceHosts,
@@ -191,17 +223,31 @@ export async function generateArticle(
     /* --------------------------------- 4. write ----------------------------- */
     if (working.draft === undefined) {
       const result = await complete({
-        system: HOUSE_RULES,
-        user: draftPrompt({
-          extraction,
-          verification: usableVerification,
-          sourceTitle: source.title,
-          descriptionClean: source.sourceText,
-          channelTitle: source.channelTitle,
-          wordCountMin: WORD_COUNT_MIN,
-          wordCountMax: WORD_COUNT_MAX,
-          allowedCategorySlugs: deps.categories.map((category) => category.slug),
-        }),
+        system,
+        user:
+          source.kind === 'research'
+            ? researchDraftPrompt({
+                extraction,
+                verification: usableVerification,
+                paperTitle: source.title,
+                paperUrl: source.paperUrl ?? '',
+                journal: source.journal ?? null,
+                publicationDate: source.publishedAt,
+                authors: source.authors ?? [],
+                abstract: source.sourceText,
+                wordCountMin: WORD_COUNT_MIN,
+                wordCountMax: WORD_COUNT_MAX,
+              })
+            : draftPrompt({
+                extraction,
+                verification: usableVerification,
+                sourceTitle: source.title,
+                descriptionClean: source.sourceText,
+                channelTitle: source.channelTitle,
+                wordCountMin: WORD_COUNT_MIN,
+                wordCountMax: WORD_COUNT_MAX,
+                allowedCategorySlugs: deps.categories.map((category) => category.slug),
+              }),
         jsonSchema: draftJsonSchema,
         schemaName: 'draft',
         validator: draftSchema,
@@ -216,7 +262,7 @@ export async function generateArticle(
     /* ---------------------------------- 5. seo ------------------------------ */
     if (working.seo === undefined) {
       const result = await complete({
-        system: HOUSE_RULES,
+        system,
         user: seoPrompt({ title: draft.title, dek: draft.dek, topic: extraction.topic }),
         jsonSchema: seoJsonSchema,
         schemaName: 'seo',
@@ -242,6 +288,13 @@ export async function generateArticle(
       }
     });
 
+    // The paper's own landing page must be cited. Requiring it here — rather than only
+    // asking for it in the prompt — is what makes the rule hold when the model forgets.
+    const requiredReferenceUrls =
+      source.kind === 'research' && source.paperUrl !== undefined && source.paperUrl !== ''
+        ? [source.paperUrl]
+        : [];
+
     const report = validateArticle({
       title: draft.title,
       dek: draft.dek,
@@ -256,6 +309,8 @@ export async function generateArticle(
       unverifiableReferenceUrls: referenceStatus.unverifiable,
       unreachableReferenceUrls: referenceStatus.unreachable,
       detectedRestrictedTopics: extraction.restrictedTopics,
+      sourceKind: source.kind,
+      requiredReferenceUrls,
     });
 
     const normalisedDraft: Draft = { ...draft, slug, references: finalReferences };

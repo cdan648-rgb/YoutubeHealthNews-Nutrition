@@ -87,3 +87,12 @@ export function listFixtureFiles(): string[] {
     .filter((name) => name.endsWith('.json'))
     .sort();
 }
+
+/* ------------------------------- research -------------------------------- */
+
+const RESEARCH_DIR = join(HERE, 'research');
+
+/** Load one captured research API payload by basename (without the .json extension). */
+export function loadResearchFixture(name: string): unknown {
+  return JSON.parse(readFileSync(join(RESEARCH_DIR, `${name}.json`), 'utf8'));
+}

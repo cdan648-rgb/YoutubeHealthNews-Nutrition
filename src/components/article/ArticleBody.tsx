@@ -1,6 +1,6 @@
 import type { Block, Reference } from '@/lib/domain/blocks';
-import type { SourceVideo } from '@/lib/domain/types';
-import { MEDICAL_DISCLAIMER, SOURCE_CHANNEL } from '@/lib/site';
+import type { ResearchSource, SourceVideo } from '@/lib/domain/types';
+import { MEDICAL_DISCLAIMER, SINGLE_STUDY_CAVEAT, SOURCE_CHANNEL } from '@/lib/site';
 import { CategorySvg, type Motif } from '@/components/visual/CategorySvg';
 import { VideoEmbedFacade } from './VideoEmbedFacade';
 
@@ -20,6 +20,8 @@ type Props = {
   readonly blocks: readonly Block[];
   readonly references: readonly Reference[];
   readonly sourceVideo: SourceVideo | null;
+  /** Set for a research article, so `source_note` describes the paper instead of a video. */
+  readonly researchSource?: ResearchSource | null;
 };
 
 function ReferenceMark({ index, reference }: { index: number; reference: Reference | undefined }) {
@@ -142,6 +144,36 @@ function PullQuote({
   );
 }
 
+/**
+ * The paper a research article reports on.
+ *
+ * Deliberately says what the article was written FROM — the abstract — rather than implying
+ * the full text was read. That distinction is the difference between a description and an
+ * overclaim, and it is not something a reader can check for themselves.
+ */
+function PaperSourceNote({ paper }: { paper: ResearchSource }) {
+  return (
+    <aside className="border-rule bg-surface my-8 rounded-lg border p-5">
+      <p className="font-display text-ink-3 text-xs font-semibold tracking-wider uppercase">
+        Nguồn của bài viết này
+      </p>
+      <p className="mt-2 text-[15px] leading-relaxed">
+        Bài viết được tổng hợp từ phần tóm tắt (abstract) công khai của công trình{' '}
+        <a
+          href={paper.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-accent-ink font-medium underline underline-offset-2"
+        >
+          “{paper.title}”
+        </a>
+        {paper.journal === null ? '' : `, công bố trên ${paper.journal}`}. Chúng tôi tường thuật nội
+        dung của nghiên cứu này, không đưa ra khuyến nghị điều trị.
+      </p>
+    </aside>
+  );
+}
+
 function SourceNote({ video }: { video: SourceVideo | null }) {
   if (video === null) return null;
   return (
@@ -188,7 +220,7 @@ function Figure({ motif, caption, alt }: { motif: Motif; caption: string; alt: s
   );
 }
 
-export function ArticleBody({ blocks, references, sourceVideo }: Props) {
+export function ArticleBody({ blocks, references, sourceVideo, researchSource }: Props) {
   return (
     <div className="text-[17px] leading-[1.75] sm:text-[18px]">
       {blocks.map((block, index) => {
@@ -248,12 +280,35 @@ export function ArticleBody({ blocks, references, sourceVideo }: Props) {
               </div>
             );
           case 'source_note':
-            return <SourceNote key={index} video={sourceVideo} />;
+            return researchSource === null || researchSource === undefined ? (
+              <SourceNote key={index} video={sourceVideo} />
+            ) : (
+              <PaperSourceNote key={index} paper={researchSource} />
+            );
           case 'disclaimer':
             return <Disclaimer key={index} />;
         }
       })}
     </div>
+  );
+}
+
+/**
+ * The single-study caveat, rendered by the research template rather than by a block.
+ *
+ * Outside the body on purpose. A block would be model-supplied, and a generation that
+ * omitted it would be caught by the gate but would still have to be regenerated; as a fixed
+ * part of the template it is simply always there, in our wording, on every research article
+ * — the same reasoning as the unconditional credit line on a hero image.
+ */
+export function SingleStudyCaveat() {
+  return (
+    <aside className="border-research/40 bg-research/5 my-8 rounded-lg border p-5" role="note">
+      <h2 className="font-display text-research text-sm font-bold tracking-wide uppercase">
+        {SINGLE_STUDY_CAVEAT.title}
+      </h2>
+      <p className="mt-2 text-[15px] leading-relaxed">{SINGLE_STUDY_CAVEAT.body}</p>
+    </aside>
   );
 }
 

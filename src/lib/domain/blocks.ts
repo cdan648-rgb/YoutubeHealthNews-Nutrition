@@ -127,18 +127,36 @@ export type Reference = z.infer<typeof referenceSchema>;
 export const bodySchema = z.array(blockSchema).min(6);
 
 /**
- * Structural rules every article body must satisfy, independent of where it came
- * from. Kept separate from the per-block schemas so the reasons are inspectable and
- * so each can be reported individually rather than as one opaque failure.
+ * Structural rules every article body must satisfy. Kept separate from the per-block
+ * schemas so the reasons are inspectable and so each can be reported individually
+ * rather than as one opaque failure.
  */
 export type BodyStructureIssue = {
   readonly code: string;
   readonly message: string;
 };
 
+/**
+ * Which kind of source the body was written from.
+ *
+ * Most rules are shared, but three are genuinely source-specific rather than
+ * configurable strictness:
+ *
+ *   A YouTube article MUST embed the video and MUST distinguish what the presenter said
+ *   from what is established, because those are the two things a reader needs in order to
+ *   judge it.
+ *
+ *   A research article MUST NOT embed a video, because there is none — a `video_embed`
+ *   block would render nothing, and its presence means the generator was confused about
+ *   what it was writing. It must also carry the single-study caveat, and it must not
+ *   attribute anything to a "speaker", because a paper has authors, not a presenter.
+ */
+export type BodySourceKind = 'youtube' | 'research';
+
 export function checkBodyStructure(
   blocks: readonly Block[],
   references: readonly Reference[],
+  sourceKind: BodySourceKind = 'youtube',
 ): BodyStructureIssue[] {
   const issues: BodyStructureIssue[] = [];
   const count = (type: BlockType) => blocks.filter((block) => block.t === type).length;
@@ -152,13 +170,39 @@ export function checkBodyStructure(
   if (count('key_facts') < 1) {
     issues.push({ code: 'missing_key_facts', message: 'article needs a key-facts panel' });
   }
-  for (const required of ['video_embed', 'source_note', 'disclaimer'] as const) {
-    if (count(required) !== 1) {
+  const required =
+    sourceKind === 'youtube'
+      ? (['video_embed', 'source_note', 'disclaimer'] as const)
+      : (['source_note', 'disclaimer'] as const);
+
+  for (const marker of required) {
+    if (count(marker) !== 1) {
       issues.push({
-        code: `missing_${required}`,
-        message: `article needs exactly one ${required} block, found ${count(required)}`,
+        code: `missing_${marker}`,
+        message: `article needs exactly one ${marker} block, found ${count(marker)}`,
       });
     }
+  }
+
+  if (sourceKind === 'research' && count('video_embed') > 0) {
+    issues.push({
+      code: 'unexpected_video_embed',
+      message: 'a research article has no source video, so a video_embed block cannot render',
+    });
+  }
+
+  // The single-study caveat. Required as a caution callout rather than trusted to the
+  // prose, because "one study is not a conclusion" is the single most important thing a
+  // reader of a research piece needs to be told, and a rule that is checked is the only
+  // kind that survives a bad generation.
+  if (
+    sourceKind === 'research' &&
+    !blocks.some((block) => block.t === 'callout' && block.tone === 'caution')
+  ) {
+    issues.push({
+      code: 'missing_study_caveat',
+      message: 'a research article needs a caution callout explaining what one study can establish',
+    });
   }
 
   // Every reference pointer must resolve. A dangling index would render as a
@@ -194,10 +238,23 @@ export function checkBodyStructure(
     }
   });
 
-  if (!blocks.some((block) => block.t === 'p' && block.attribution === 'speaker')) {
+  const speakerParagraphs = blocks.filter(
+    (block) => block.t === 'p' && block.attribution === 'speaker',
+  ).length;
+
+  if (sourceKind === 'youtube' && speakerParagraphs === 0) {
     issues.push({
       code: 'no_speaker_attribution',
       message: 'article never distinguishes what the video says from established information',
+    });
+  }
+
+  // "Theo video" on a research article would attribute a paper's finding to a presenter
+  // who was never involved in it.
+  if (sourceKind === 'research' && speakerParagraphs > 0) {
+    issues.push({
+      code: 'speaker_attribution_without_speaker',
+      message: `a research article has no presenter, but ${speakerParagraphs} paragraph(s) are attributed to one`,
     });
   }
 
