@@ -1,0 +1,64 @@
+# ---- secrets: never commit ----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.secrets/
+
+# ---- dependencies ----
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+# ---- next.js ----
+.next/
+out/
+build/
+dist/
+next-env.d.ts
+
+# ---- testing / coverage ----
+coverage/
+.nyc_output/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# ---- supabase ----
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+.branches/
+
+# ---- vercel ----
+.vercel/
+
+# ---- typescript ----
+*.tsbuildinfo
+
+# ---- editors / os ----
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# ---- logs ----
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ---- local scratch ----
+/tmp/
+/scratch/

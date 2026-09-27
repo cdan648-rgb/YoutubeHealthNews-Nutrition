@@ -1,0 +1,86 @@
+@import 'tailwindcss';
+
+/*
+  Design tokens. Phase 3 builds the full system on top of these; they are
+  defined now so nothing in the codebase ever hard-codes a hex value.
+  Restrained and clinical on purpose: a single teal accent, warm paper, and red
+  reserved exclusively for the fact-check badge so ordinary health content never
+  reads as alarming.
+*/
+@theme {
+  --color-ink: #0f1417;
+  --color-ink-2: #3c4349;
+  --color-ink-3: #6b747c;
+  --color-paper: #fbfaf8;
+  --color-surface: #ffffff;
+  --color-rule: #e4e0da;
+  --color-accent: #0e7c86;
+  --color-accent-ink: #0a5a61;
+  --color-accent-wash: #e8f3f4;
+  --color-fact: #b4530a;
+  --color-research: #3b4c7a;
+
+  --font-sans: var(--font-be-vietnam-pro), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-noto-serif), ui-serif, Georgia, serif;
+}
+
+:root {
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-ink: #f2f0ec;
+    --color-ink-2: #c3c8cc;
+    --color-ink-3: #8d959b;
+    --color-paper: #0f1417;
+    --color-surface: #171d21;
+    --color-rule: #2b3338;
+    --color-accent: #4fbcc4;
+    --color-accent-ink: #8fd6db;
+    --color-accent-wash: #16282b;
+    --color-fact: #e5923f;
+    --color-research: #8fa3d8;
+    color-scheme: dark;
+  }
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-serif);
+  /* Vietnamese has tall stacked diacritics; a looser line-height keeps them from
+     colliding with the line above. */
+  line-height: 1.7;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-sans);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

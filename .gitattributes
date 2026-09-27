@@ -1,0 +1,9 @@
+# Normalise to LF in the repository. Without this, files authored on Windows are
+# stored with CRLF and `prettier --check` fails on the Linux CI runner.
+* text=auto eol=lf
+
+# Binary / generated
+*.png binary
+*.jpg binary
+*.woff2 binary
+package-lock.json -diff linguist-generated

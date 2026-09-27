@@ -1,0 +1,107 @@
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import nextPlugin from '@next/eslint-plugin-next';
+import prettier from 'eslint-config-prettier';
+import globals from 'globals';
+
+/**
+ * The timezone guardrail.
+ *
+ * Every publishing decision in this system is made on an Asia/Ho_Chi_Minh
+ * calendar date. To keep that correct there must be exactly ONE implementation
+ * of the UTC -> Hanoi-date conversion, so these rules make it a lint error to:
+ *
+ *   - write the IANA id anywhere except the time modules,
+ *   - hard-code a +07:00 offset in any form (string or seconds/ms),
+ *   - use a timezone-dependent Date getter (getDate/getHours/... read the HOST
+ *     timezone, which on Vercel is UTC and in local dev is NZ/VN — a classic
+ *     source of off-by-one-day bugs).
+ *
+ * See plan sections "Timezone rule" and R6.
+ */
+const timezoneGuardrails = [
+  {
+    selector: 'Literal[value="Asia/Ho_Chi_Minh"]',
+    message:
+      'Do not inline the IANA timezone id. Import the helpers from @/lib/time instead — there must be exactly one place that converts an instant to a Hanoi calendar date.',
+  },
+  {
+    selector: 'Literal[value=/^[+-]0?7:?0?0?$/]',
+    message:
+      'Do not hard-code a +07 offset. Use the IANA id via @/lib/time so the code stays correct if Vietnam ever adopts DST.',
+  },
+  {
+    selector: 'Literal[value=25200]',
+    message: 'Do not hard-code 25200 (7h in seconds). Use @/lib/time.',
+  },
+  {
+    selector: 'Literal[value=25200000]',
+    message: 'Do not hard-code 25200000 (7h in ms). Use @/lib/time.',
+  },
+  {
+    selector: 'MemberExpression[property.name=/^get(Date|Day|Hours|Month|FullYear|Minutes)$/]',
+    message:
+      'Timezone-dependent Date getter. These read the HOST timezone (UTC on Vercel), not Hanoi. Use @/lib/time.',
+  },
+];
+
+export default tseslint.config(
+  { ignores: ['.next/**', 'node_modules/**', 'coverage/**', 'next-env.d.ts'] },
+
+  js.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
+
+  {
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+
+  {
+    plugins: { '@next/next': nextPlugin },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+    },
+  },
+
+  {
+    rules: {
+      'no-restricted-syntax': ['error', ...timezoneGuardrails],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
+      '@typescript-eslint/consistent-type-imports': 'error',
+      eqeqeq: ['error', 'always'],
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+    },
+  },
+
+  // The single sanctioned home of the timezone conversion.
+  {
+    files: ['src/lib/time.ts', 'src/lib/time.test.ts'],
+    rules: { 'no-restricted-syntax': 'off' },
+  },
+
+  // Plain-JS tooling files: no type-aware linting (they are outside the tsconfig
+  // project), and console output is the whole point of the scripts.
+  //
+  // Note the two separate config objects: spreading `disableTypeChecked` and then
+  // declaring `rules` in the SAME object would replace its rules wholesale and
+  // re-enable every type-aware rule.
+  {
+    files: ['scripts/**/*.mjs', '**/*.config.mjs', '**/*.config.ts'],
+    ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    files: ['scripts/**/*.mjs', '**/*.config.mjs', '**/*.config.ts'],
+    languageOptions: { globals: globals.nodeBuiltin },
+    rules: { 'no-console': 'off' },
+  },
+
+  prettier,
+);
