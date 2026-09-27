@@ -349,7 +349,16 @@ export type InternalDatabase = {
       };
     };
     Views: Record<never, never>;
-    Functions: Record<never, never>;
+    Functions: {
+      /**
+       * Atomically claims the next video to process. Implemented in SQL because the read
+       * and the write must be one statement — see the migration for why.
+       */
+      claim_next_video: {
+        Args: { fresh_window_days?: number };
+        Returns: { id: string; youtube_video_id: string; title: string }[];
+      };
+    };
     Enums: {
       video_status: VideoStatusEnum;
       run_result: RunResultEnum;

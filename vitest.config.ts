@@ -5,6 +5,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      // `server-only` throws on import outside a React Server Component context, which is
+      // exactly what it is for — but it makes server modules untestable under Vitest.
+      // Stubbing it here does not weaken the guarantee: the guard's real job is to fail
+      // the Next.js *client* bundle build, and that still happens.
+      'server-only': fileURLToPath(new URL('./tests/helpers/server-only-stub.ts', import.meta.url)),
     },
   },
   test: {

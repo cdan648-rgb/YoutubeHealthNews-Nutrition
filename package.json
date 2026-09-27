@@ -23,7 +23,8 @@
     "test:db": "node scripts/run-db-tests.mjs",
     "test:db:list": "node scripts/run-db-tests.mjs --list",
     "seed": "tsx scripts/seed-articles.ts",
-    "seed:sql": "tsx scripts/seed-articles.ts --sql"
+    "seed:sql": "tsx scripts/seed-articles.ts --sql",
+    "ingest": "tsx scripts/backfill-youtube.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
