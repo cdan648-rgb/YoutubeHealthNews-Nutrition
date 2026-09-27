@@ -88,6 +88,17 @@ export function hanoiParts(instant: Date = new Date()): {
   };
 }
 
+/**
+ * The current year in Hanoi.
+ *
+ * Exists so a footer copyright line does not reach for `getFullYear()`, which reads the
+ * host timezone — UTC on Vercel. For three hours either side of New Year the two
+ * disagree, and the site's year should follow the publication's calendar.
+ */
+export function hanoiYear(instant: Date = new Date()): number {
+  return hanoiParts(instant).year;
+}
+
 /** Shift a Hanoi calendar date by whole days, staying in the calendar (never in UTC). */
 export function addHanoiDays(date: HanoiDate, days: number): HanoiDate {
   const [year, month, day] = date.split('-').map((part) => Number.parseInt(part, 10)) as [

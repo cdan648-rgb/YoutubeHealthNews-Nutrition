@@ -107,7 +107,7 @@ export default tseslint.config(
     ...tseslint.configs.disableTypeChecked,
   },
   {
-    files: ['scripts/**/*.mjs', '**/*.config.mjs', '**/*.config.ts'],
+    files: ['scripts/**/*.mjs', 'scripts/**/*.ts', '**/*.config.mjs', '**/*.config.ts'],
     languageOptions: { globals: globals.nodeBuiltin },
     rules: { 'no-console': 'off' },
   },

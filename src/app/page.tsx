@@ -1,99 +1,126 @@
-import { hanoiDate, hanoiHour } from '@/lib/time';
+import Link from 'next/link';
+import { ArticleCard, SectionHeading } from '@/components/cards/ArticleCard';
+import { CategorySvg } from '@/components/visual/CategorySvg';
+import { NewsletterInline } from '@/components/newsletter/NewsletterInline';
+import { listArticles, listResearchArticles } from '@/lib/repositories/articles';
+import { countArticlesPerCategory, listCategories } from '@/lib/repositories/categories';
+import { routes } from '@/lib/site';
 
-// Rendered per request so the publishing clock below reflects the real current
-// Hanoi time. Prerendered at build time it would silently freeze, which would
-// make this placeholder actively misleading about the thing it exists to show.
-export const dynamic = 'force-dynamic';
+/**
+ * Homepage.
+ *
+ * Revalidated rather than dynamic: the automation publishes at most once a day and
+ * triggers an on-demand revalidation when it does, so the hourly window here is only a
+ * safety net for anything that misses the webhook.
+ */
+export const revalidate = 3600;
 
-const PHASES: ReadonlyArray<{ n: number; name: string; done: boolean }> = [
-  { n: 0, name: 'Nền tảng & công cụ (scaffold, CI, timezone guardrail)', done: true },
-  { n: 1, name: 'Cơ sở dữ liệu, ràng buộc, RLS', done: false },
-  { n: 2, name: 'Thời gian & lịch đăng bài (Asia/Ho_Chi_Minh)', done: false },
-  { n: 3, name: 'Hệ thống thiết kế & giao diện', done: false },
-  { n: 4, name: '5 bài viết hạt giống', done: false },
-  { n: 5, name: 'Thu thập dữ liệu YouTube', done: false },
-  { n: 6, name: 'Sinh nội dung AI & kiểm định', done: false },
-  { n: 7, name: 'Tự động hoá hằng ngày', done: false },
-  { n: 8, name: 'Bài viết từ nghiên cứu khoa học', done: false },
-  { n: 9, name: 'Bản tin email', done: false },
-  { n: 10, name: 'Tối ưu & triển khai', done: false },
-];
+export default async function HomePage() {
+  // One round trip each, in parallel — the four queries are independent.
+  const [articles, research, categories, counts] = await Promise.all([
+    listArticles({ limit: 13 }),
+    listResearchArticles(3),
+    listCategories(),
+    countArticlesPerCategory(),
+  ]);
 
-export default function HomePage() {
-  const now = new Date();
-  const today = hanoiDate(now);
-  const hour = hanoiHour(now);
+  const [lead, ...rest] = articles;
+  const grid = rest.slice(0, 6);
+  const latest = rest.slice(6, 12);
+
+  if (lead === undefined) {
+    return (
+      <main id="main" className="mx-auto max-w-2xl px-4 py-24 text-center sm:px-6">
+        <h1 className="font-display text-2xl font-bold">Chưa có bài viết nào</h1>
+        <p className="text-ink-2 mt-3">
+          Trang tin đang được chuẩn bị. Bài viết đầu tiên sẽ xuất hiện tại đây.
+        </p>
+      </main>
+    );
+  }
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-20">
-      <p className="font-display text-accent text-xs font-semibold tracking-[0.18em] uppercase">
-        Giai đoạn 0 · Nền tảng
-      </p>
+    <main id="main" className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+      {/* Lead story */}
+      <section aria-labelledby="lead-story" className="border-rule border-b pb-10">
+        <h1 id="lead-story" className="sr-only">
+          Tin chính
+        </h1>
+        <ArticleCard article={lead} size="lead" priority />
+      </section>
 
-      <h1 className="font-display mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
-        Sức Khoẻ Giải Mã
-      </h1>
+      {/* Category navigation. Repeated from the header because a reader arriving on
+          the homepage from search has not necessarily noticed the nav. */}
+      <nav aria-label="Duyệt theo chuyên mục" className="border-rule border-b py-6">
+        <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
+          {categories.map((category) => (
+            <li key={category.slug}>
+              <Link
+                href={routes.category(category.slug)}
+                className="border-rule hover:border-accent hover:bg-accent-wash flex h-full flex-col gap-1.5 rounded-lg border p-3 transition-colors"
+              >
+                <span className="text-accent size-7">
+                  <CategorySvg motif={category.iconKey} className="size-full" />
+                </span>
+                <span className="font-display text-[13px] leading-tight font-semibold">
+                  {category.name}
+                </span>
+                <span className="text-ink-3 mt-auto text-[11px]">
+                  {counts.get(category.slug) ?? 0} bài
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-      <p className="text-ink-2 mt-4 text-lg">
-        Bản tin độc lập về sức khoẻ và khoa học, tổng hợp từ nội dung công khai của kênh YouTube{' '}
-        <em>Bác sĩ Trần Văn Phúc Official</em>.
-      </p>
+      {grid.length > 0 && (
+        <section aria-labelledby="featured" className="py-10">
+          <SectionHeading title="Bài viết nổi bật" href={routes.latest()} />
+          <div className="grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            {grid.map((article) => (
+              <ArticleCard key={article.id} article={article} />
+            ))}
+          </div>
+        </section>
+      )}
 
-      <div className="border-rule bg-surface mt-10 rounded-lg border p-5">
-        <h2 className="font-display text-sm font-semibold tracking-wide uppercase">
-          Đồng hồ xuất bản
-        </h2>
-        <dl className="mt-3 space-y-1.5 text-sm">
-          <div className="flex justify-between gap-4">
-            <dt className="text-ink-3">Múi giờ</dt>
-            <dd className="font-mono">Asia/Ho_Chi_Minh</dd>
-          </div>
-          <div className="flex justify-between gap-4">
-            <dt className="text-ink-3">Ngày theo lịch Hà Nội</dt>
-            <dd className="font-mono">{today}</dd>
-          </div>
-          <div className="flex justify-between gap-4">
-            <dt className="text-ink-3">Giờ địa phương</dt>
-            <dd className="font-mono">{String(hour).padStart(2, '0')}:00</dd>
-          </div>
-          <div className="flex justify-between gap-4">
-            <dt className="text-ink-3">Khung giờ đăng bài</dt>
-            <dd className="font-mono">11:00 – 22:00</dd>
-          </div>
-        </dl>
-        <p className="text-ink-3 mt-3 text-xs">
-          Mọi quyết định xuất bản đều dựa trên ngày theo lịch Hà Nội, không dựa trên ngày UTC.
-        </p>
+      <div className="grid gap-10 lg:grid-cols-[2fr_1fr] lg:gap-12">
+        {latest.length > 0 && (
+          <section aria-labelledby="latest">
+            <SectionHeading title="Tin mới nhất" href={routes.latest()} />
+            <ul className="space-y-6">
+              {latest.map((article) => (
+                <li key={article.id}>
+                  <ArticleCard article={article} size="compact" />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <aside aria-labelledby="research-rail">
+          <SectionHeading title="Nghiên cứu" href={routes.research()} accent="research" />
+          {research.length === 0 ? (
+            <p className="text-ink-3 text-sm leading-relaxed">
+              Mục Nghiên cứu tổng hợp các bài báo khoa học mới được công bố. Chưa có bài nào được
+              đăng.
+            </p>
+          ) : (
+            <ul className="space-y-5">
+              {research.map((article) => (
+                <li key={article.id}>
+                  <ArticleCard article={article} size="compact" />
+                </li>
+              ))}
+            </ul>
+          )}
+        </aside>
       </div>
 
-      <h2 className="font-display mt-12 text-sm font-semibold tracking-wide uppercase">
-        Tiến độ triển khai
-      </h2>
-      <ol className="border-rule mt-4 divide-y border-t border-b">
-        {PHASES.map((phase) => (
-          <li key={phase.n} className="flex items-center gap-3 py-2.5 text-sm">
-            <span
-              aria-hidden="true"
-              className={
-                phase.done
-                  ? 'bg-accent size-2 shrink-0 rounded-full'
-                  : 'border-rule size-2 shrink-0 rounded-full border'
-              }
-            />
-            <span className="text-ink-3 w-16 shrink-0 font-mono text-xs">GĐ {phase.n}</span>
-            <span className={phase.done ? 'text-ink' : 'text-ink-3'}>{phase.name}</span>
-            <span className="sr-only">{phase.done ? '— đã xong' : '— chưa làm'}</span>
-          </li>
-        ))}
-      </ol>
-
-      <footer className="border-rule text-ink-3 mt-12 border-t pt-6 text-xs">
-        <p>
-          <strong className="text-ink-2">Trang tin độc lập.</strong> Không thuộc, không liên kết và
-          không được bảo trợ bởi Bác sĩ Trần Văn Phúc hoặc kênh YouTube của ông. Nội dung mang tính
-          thông tin, giáo dục, không thay thế tư vấn y tế cá nhân.
-        </p>
-      </footer>
+      <div className="mt-12">
+        <NewsletterInline variant="section" />
+      </div>
     </main>
   );
 }
