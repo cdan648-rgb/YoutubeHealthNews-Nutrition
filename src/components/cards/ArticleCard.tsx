@@ -128,13 +128,13 @@ export function SectionHeading({
   readonly title: string;
   readonly href?: string;
   readonly linkLabel?: string;
-  readonly accent?: 'research';
+  readonly accent?: 'research' | 'fact';
 }) {
   return (
     <div className="border-ink mb-6 flex items-baseline justify-between gap-4 border-b pb-2">
       <h2
         className={`font-display text-sm font-bold tracking-wider uppercase ${
-          accent === 'research' ? 'text-research' : ''
+          accent === 'research' ? 'text-research' : accent === 'fact' ? 'text-fact' : ''
         }`}
       >
         {title}

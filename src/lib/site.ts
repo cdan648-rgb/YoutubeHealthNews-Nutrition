@@ -19,6 +19,12 @@ export const SITE = {
   locale: 'vi-VN',
   /** Single source for canonical URLs. Overridden per environment. */
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/+$/, ''),
+  /**
+   * The contact address, from a public env var so it is not hard-coded. Left as a
+   * placeholder until a real inbox exists — the contact page states that rather than
+   * inventing an address that bounces.
+   */
+  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? '',
 } as const;
 
 /** The source channel. Referenced, credited, never impersonated. */
@@ -108,6 +114,12 @@ export function articlePath(article: {
  * are added here in the same change, so the footer never advertises a 404.
  */
 export const FOOTER_LINKS = [
+  { href: routes.about(), label: 'Về chúng tôi' },
+  { href: routes.methodology(), label: 'Nguồn và phương pháp' },
+  { href: routes.factChecks(), label: 'Kiểm chứng' },
   { href: routes.newsletter(), label: 'Bản tin' },
+  { href: routes.disclaimer(), label: 'Miễn trừ trách nhiệm' },
+  { href: routes.privacy(), label: 'Chính sách bảo mật' },
+  { href: routes.contact(), label: 'Liên hệ' },
   { href: routes.rss(), label: 'RSS' },
 ] as const;

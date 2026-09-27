@@ -107,6 +107,34 @@ export function MobileNav({
                 Nghiên cứu
               </Link>
             </li>
+            <li>
+              <Link
+                href={routes.factChecks()}
+                onClick={() => setOpen(false)}
+                className="text-fact hover:bg-accent-wash flex min-h-11 items-center rounded px-3 text-[15px] font-semibold"
+              >
+                Kiểm chứng
+              </Link>
+            </li>
+            {/* The trust pages, now that they exist — the drawer never links a 404. */}
+            <li className="mt-1 border-t pt-1">
+              <Link
+                href={routes.about()}
+                onClick={() => setOpen(false)}
+                className="text-ink-2 hover:bg-accent-wash flex min-h-11 items-center rounded px-3 text-[15px]"
+              >
+                Về chúng tôi
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={routes.methodology()}
+                onClick={() => setOpen(false)}
+                className="text-ink-2 hover:bg-accent-wash flex min-h-11 items-center rounded px-3 text-[15px]"
+              >
+                Nguồn và phương pháp
+              </Link>
+            </li>
           </ul>
         </nav>
       </dialog>

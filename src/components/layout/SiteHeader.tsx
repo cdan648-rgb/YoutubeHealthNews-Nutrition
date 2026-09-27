@@ -51,6 +51,12 @@ export async function SiteHeader() {
           >
             Nghiên cứu
           </Link>
+          <Link
+            href={routes.factChecks()}
+            className="text-fact hover:bg-accent-wash rounded px-2.5 py-1.5 text-sm font-semibold transition-colors"
+          >
+            Kiểm chứng
+          </Link>
         </nav>
 
         <div className="ml-auto lg:ml-0">

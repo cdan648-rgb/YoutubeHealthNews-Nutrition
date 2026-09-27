@@ -26,6 +26,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     { url: absoluteUrl(routes.latest()), changeFrequency: 'daily', priority: 0.9 },
     { url: absoluteUrl(routes.research()), changeFrequency: 'weekly', priority: 0.7 },
+    { url: absoluteUrl(routes.factChecks()), changeFrequency: 'weekly', priority: 0.7 },
+    { url: absoluteUrl(routes.newsletter()), changeFrequency: 'monthly', priority: 0.5 },
     { url: absoluteUrl(routes.about()), changeFrequency: 'yearly', priority: 0.4 },
     { url: absoluteUrl(routes.methodology()), changeFrequency: 'yearly', priority: 0.5 },
     { url: absoluteUrl(routes.disclaimer()), changeFrequency: 'yearly', priority: 0.3 },
