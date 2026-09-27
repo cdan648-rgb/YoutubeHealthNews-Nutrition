@@ -358,6 +358,14 @@ export type InternalDatabase = {
         Args: { fresh_window_days?: number };
         Returns: { id: string; youtube_video_id: string; title: string }[];
       };
+      /**
+       * Consecutive prior Hanoi dates that finished as no_source. Derived on every call;
+       * a missing day stops the count rather than bridging it.
+       */
+      no_source_streak: {
+        Args: { decision_day: string; max_lookback?: number };
+        Returns: number;
+      };
     };
     Enums: {
       video_status: VideoStatusEnum;
