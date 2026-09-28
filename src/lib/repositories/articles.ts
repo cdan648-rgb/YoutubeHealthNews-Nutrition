@@ -19,7 +19,7 @@ import {
   type ArticleRowWithCategory,
   type ArticleSummary,
 } from '@/lib/domain/types';
-import { publicClient } from '@/lib/supabase/server';
+import { isPublicSupabaseConfigured, publicClient } from '@/lib/supabase/server';
 import { z } from 'zod';
 
 /** Columns needed for a card. Kept narrow so list pages never ship bodies. */
@@ -57,6 +57,7 @@ export type ArticleListOptions = {
 /** Published articles, newest first. The backbone of the homepage and Latest News. */
 export async function listArticles(options: ArticleListOptions = {}): Promise<ArticleSummary[]> {
   const { limit = 12, offset = 0, excludeResearch = false, categorySlug, excludeSlug } = options;
+  if (!isPublicSupabaseConfigured()) return [];
 
   let query = publicClient()
     .from('articles')
@@ -79,6 +80,7 @@ export async function listArticles(options: ArticleListOptions = {}): Promise<Ar
 export async function countArticles(
   options: Pick<ArticleListOptions, 'excludeResearch' | 'categorySlug'> = {},
 ): Promise<number> {
+  if (!isPublicSupabaseConfigured()) return 0;
   let query = publicClient()
     .from('articles')
     .select('id, categories!inner(slug)', { count: 'exact', head: true })
@@ -95,6 +97,7 @@ export async function countArticles(
 
 /** Research articles only. Separate section, separate URL space, separate framing. */
 export async function listResearchArticles(limit = 12, offset = 0): Promise<ArticleSummary[]> {
+  if (!isPublicSupabaseConfigured()) return [];
   const { data, error } = await publicClient()
     .from('articles')
     .select(SUMMARY_COLUMNS)
@@ -110,6 +113,7 @@ export async function listResearchArticles(limit = 12, offset = 0): Promise<Arti
 
 /** Articles flagged as fact-checks. A format flag, not an eighth category. */
 export async function listFactChecks(limit = 12): Promise<ArticleSummary[]> {
+  if (!isPublicSupabaseConfigured()) return [];
   const { data, error } = await publicClient()
     .from('articles')
     .select(SUMMARY_COLUMNS)
@@ -133,6 +137,7 @@ export async function listFactChecks(limit = 12): Promise<ArticleSummary[]> {
 export async function getArticleBySlug(
   slug: string,
 ): Promise<{ article: Article; invalidBody: boolean } | null> {
+  if (!isPublicSupabaseConfigured()) return null;
   const { data, error } = await publicClient()
     .from('articles')
     .select(DETAIL_COLUMNS)
@@ -222,6 +227,7 @@ export async function listRelatedArticles(
 export async function listPublishedSlugs(): Promise<
   { slug: string; articleType: string; updatedAt: string; publishedAt: string }[]
 > {
+  if (!isPublicSupabaseConfigured()) return [];
   const { data, error } = await publicClient()
     .from('articles')
     .select('slug, article_type, updated_at, published_at')

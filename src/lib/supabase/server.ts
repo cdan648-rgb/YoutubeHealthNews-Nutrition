@@ -17,6 +17,24 @@ export type PublicClient = SupabaseClient<Database, 'public'>;
 
 let cached: PublicClient | null = null;
 
+/**
+ * Whether the public Supabase env is present.
+ *
+ * The URL and anon key are public values (they ship to every browser and RLS protects the
+ * data), so this is not a secret check — it is a build-environment signal. When they are
+ * entirely absent, the read repositories return empty results instead of throwing, which
+ * lets `next build` prerender the DB-backed pages as empty shells that ISR fills on first
+ * request. That path only ever runs where the env is unset — CI and a bare local checkout —
+ * never on Vercel, where the env is always configured, so production can never silently
+ * serve an empty page: there the client is built and a real outage still surfaces as an error.
+ */
+export function isPublicSupabaseConfigured(): boolean {
+  return (
+    (process.env.NEXT_PUBLIC_SUPABASE_URL ?? '') !== '' &&
+    (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '') !== ''
+  );
+}
+
 function requireEnv(name: 'NEXT_PUBLIC_SUPABASE_URL' | 'NEXT_PUBLIC_SUPABASE_ANON_KEY'): string {
   const value = process.env[name];
   if (value === undefined || value === '') {

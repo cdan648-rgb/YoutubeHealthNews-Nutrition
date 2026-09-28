@@ -8,13 +8,14 @@
  */
 import { cache } from 'react';
 import { toCategory, type Category } from '@/lib/domain/types';
-import { publicClient } from '@/lib/supabase/server';
+import { isPublicSupabaseConfigured, publicClient } from '@/lib/supabase/server';
 
 const COLUMNS =
   'id, slug, name, description, icon_key, color_token, sort_order, is_active, seo_title, seo_description, keywords, created_at, updated_at';
 
 /** Active categories in display order. RLS already hides inactive ones. */
 export const listCategories = cache(async (): Promise<Category[]> => {
+  if (!isPublicSupabaseConfigured()) return [];
   const { data, error } = await publicClient()
     .from('categories')
     .select(COLUMNS)
@@ -26,6 +27,7 @@ export const listCategories = cache(async (): Promise<Category[]> => {
 
 /** One category by slug, or null. Null means 404, not an error. */
 export const getCategoryBySlug = cache(async (slug: string): Promise<Category | null> => {
+  if (!isPublicSupabaseConfigured()) return null;
   const { data, error } = await publicClient()
     .from('categories')
     .select(COLUMNS)
@@ -38,6 +40,7 @@ export const getCategoryBySlug = cache(async (slug: string): Promise<Category | 
 
 /** Published-article counts per category slug, for the navigation and index pages. */
 export async function countArticlesPerCategory(): Promise<ReadonlyMap<string, number>> {
+  if (!isPublicSupabaseConfigured()) return new Map();
   const { data, error } = await publicClient()
     .from('articles')
     .select('categories!inner(slug)')

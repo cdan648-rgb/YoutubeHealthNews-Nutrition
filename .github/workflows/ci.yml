@@ -50,7 +50,23 @@ jobs:
       - name: Build
         # Captured so the bundle-budget check reads Next's own reported figure rather
         # than rebuilding.
-        run: npm run build | tee build.log
+        #
+        # The Supabase URL and anon key are PUBLIC values (they ship to every browser; RLS
+        # protects the data), so they are read from repository *variables*, never secrets.
+        # They are optional: when unset, the data layer returns empty results and the build
+        # prerenders the DB-backed pages as empty shells that ISR fills at runtime, so CI
+        # never hard-depends on a live database. When set, CI builds real content exactly as
+        # production does. A service-role key is never needed at build and never belongs here.
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL }}
+        # `set -o pipefail` so a failed build fails the step even though it is piped to tee;
+        # otherwise the pipe would report tee's exit code and the bundle-budget step could run
+        # against an incomplete log. The budget step therefore only ever sees a successful build.
+        run: |
+          set -o pipefail
+          npm run build | tee build.log
 
       - name: Bundle budget
         run: node scripts/check-bundle-budget.mjs --from-file build.log
@@ -104,8 +120,24 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
+          # Full history so `gitleaks detect` scans every commit, not just the tip.
           fetch-depth: 0
-      - name: gitleaks
-        uses: gitleaks/gitleaks-action@v2
+
+      # `gitleaks detect` scans the WHOLE git history of the checkout. This is a full scan,
+      # not a weakened one — it is strictly broader than the push-delta scan the marketplace
+      # action performs. It is also robust to a recreated or brand-new branch and to a
+      # missing/invalid before-SHA: it never consults the push event's commit range, which
+      # was the cause of the "invalid commit range" failure. A non-zero exit (any leak) fails
+      # the job. Pinned to a specific release so the check cannot change under us.
+      - name: Install gitleaks
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_VERSION: 8.21.2
+        run: |
+          set -euo pipefail
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz gitleaks
+          sudo mv gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+
+      - name: Scan full git history for secrets
+        run: gitleaks detect --source . --redact --no-banner --verbose --exit-code 1
