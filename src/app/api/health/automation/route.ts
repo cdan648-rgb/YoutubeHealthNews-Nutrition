@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { internalClient } from '@/lib/supabase/service';
+import { liveOperationsGateway } from '@/lib/automation/internal-gateway';
 import { PUBLISHING_TIMEZONE, addHanoiDays, hanoiDate } from '@/lib/time';
 
 /**
@@ -21,21 +21,15 @@ const WINDOW_DAYS = 7;
 
 export async function GET(): Promise<NextResponse> {
   try {
-    const client = internalClient();
+    const gateway = liveOperationsGateway();
     const today = hanoiDate();
     const from = addHanoiDays(today, -WINDOW_DAYS);
 
-    const { data, error } = await client
-      .from('automation_runs')
-      .select('hanoi_date, result, stage, article_id, started_at, completed_at, error_stage')
-      .gte('hanoi_date', from)
-      .order('hanoi_date', { ascending: false });
+    // Public RPC — SECURITY DEFINER reader for the same rows the previous direct-table read
+    // used, since `internal` is not exposed to PostgREST.
+    const runs = await gateway.runsSince(from);
 
-    if (error !== null) {
-      return NextResponse.json({ status: 'error', message: error.message }, { status: 503 });
-    }
-
-    const byDate = new Map((data ?? []).map((row) => [row.hanoi_date, row]));
+    const byDate = new Map(runs.map((row) => [row.hanoiDate, row]));
 
     // Expected days: yesterday back through the window. Today is deliberately excluded.
     const missing: string[] = [];
@@ -61,11 +55,11 @@ export async function GET(): Promise<NextResponse> {
         windowDays: WINDOW_DAYS,
         missingDays: missing,
         stuckDays: stuck,
-        recent: (data ?? []).slice(0, WINDOW_DAYS + 1).map((row) => ({
-          hanoiDate: row.hanoi_date,
+        recent: runs.slice(0, WINDOW_DAYS + 1).map((row) => ({
+          hanoiDate: row.hanoiDate,
           result: row.result,
           stage: row.stage,
-          published: row.article_id !== null,
+          published: row.articleId !== null,
         })),
       },
       {

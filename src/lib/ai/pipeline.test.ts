@@ -370,7 +370,7 @@ describe('token budgets', () => {
           'Nội dung được trình bày để giữ bài viết dài như một bài phân tích chuyên sâu thực tế.',
       });
     }
-    draft.body = [...(originalBody as unknown[]), ...bulk];
+    draft.body = [...originalBody, ...bulk];
 
     const mock = mockOpenRouter(long);
     const outcome = await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
@@ -392,7 +392,7 @@ describe('token budgets', () => {
     // and there must be at most two calls per stage, so a broken model cannot loop forever.
     let calls = 0;
     const budgetsPerCall: number[] = [];
-    const fetchImpl = ((_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    const fetchImpl = (_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
       calls += 1;
       const raw = typeof init?.body === 'string' ? init.body : '';
       const parsed = JSON.parse(raw) as { max_tokens?: number };
@@ -407,7 +407,7 @@ describe('token budgets', () => {
           { status: 200, headers: { 'content-type': 'application/json' } },
         ),
       );
-    }) as unknown as typeof fetch;
+    };
 
     const outcome = await generateArticle(SOURCE, deps({ fetchImpl }));
     if (outcome.decision !== 'failed') throw new Error('expected failure');
@@ -513,6 +513,16 @@ describe('model and transport failures', () => {
     const mock = mockOpenRouter({}, { failAt: 1, httpStatus: 500 });
     const outcome = await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
     expect(outcome.decision).toBe('failed');
+    if (outcome.decision !== 'failed') throw new Error('expected failure');
+    expect(outcome.code).toBe('openrouter_failed');
+    expect(outcome.retryable).toBe(true);
+  });
+
+  it('reports a 429 as a retryable openrouter failure so the run comes back next tick', async () => {
+    // A transient rate limit must not spend the run's attempt budget as a permanent
+    // failure — the scheduler's retry loop is what recovers from it.
+    const mock = mockOpenRouter({}, { failAt: 1, httpStatus: 429 });
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
     if (outcome.decision !== 'failed') throw new Error('expected failure');
     expect(outcome.code).toBe('openrouter_failed');
     expect(outcome.retryable).toBe(true);
@@ -745,9 +755,12 @@ describe('body block minimum', () => {
     let draftCalls = 0;
     const merged = defaults();
     const goodDraft = merged.draft;
-    const shortDraft = { ...(goodDraft as Record<string, unknown>), body: eightBlockBody().slice(0, 5) };
+    const shortDraft = {
+      ...(goodDraft as Record<string, unknown>),
+      body: eightBlockBody().slice(0, 5),
+    };
 
-    const fetchImpl = ((_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    const fetchImpl = (_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
       const raw = typeof init?.body === 'string' ? init.body : '';
       const parsed = JSON.parse(raw) as {
         response_format?: { json_schema?: { name?: string } };
@@ -774,7 +787,7 @@ describe('body block minimum', () => {
           { status: 200, headers: { 'content-type': 'application/json' } },
         ),
       );
-    }) as unknown as typeof fetch;
+    };
 
     const outcome = await generateArticle(SOURCE, deps({ fetchImpl }));
     if (outcome.decision === 'failed') {
@@ -794,7 +807,7 @@ describe('body block minimum', () => {
       body: eightBlockBody().slice(0, 5),
     };
 
-    const fetchImpl = ((_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    const fetchImpl = (_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
       const raw = typeof init?.body === 'string' ? init.body : '';
       const parsed = JSON.parse(raw) as {
         response_format?: { json_schema?: { name?: string } };
@@ -821,7 +834,7 @@ describe('body block minimum', () => {
           { status: 200, headers: { 'content-type': 'application/json' } },
         ),
       );
-    }) as unknown as typeof fetch;
+    };
 
     const outcome = await generateArticle(SOURCE, deps({ fetchImpl }));
     if (outcome.decision !== 'failed') throw new Error('expected failure');
@@ -845,7 +858,7 @@ describe('body block minimum', () => {
 
     let draftCalls = 0;
     const bodies: string[] = [];
-    const fetchImpl = ((_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    const fetchImpl = (_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
       const raw = typeof init?.body === 'string' ? init.body : '';
       const parsed = JSON.parse(raw) as {
         response_format?: { json_schema?: { name?: string } };
@@ -873,7 +886,7 @@ describe('body block minimum', () => {
           { status: 200, headers: { 'content-type': 'application/json' } },
         ),
       );
-    }) as unknown as typeof fetch;
+    };
 
     await generateArticle(SOURCE, deps({ fetchImpl }));
     expect(draftCalls).toBe(2);

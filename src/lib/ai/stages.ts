@@ -32,7 +32,7 @@ NGUYÊN TẮC BẮT BUỘC:
 1. KHÔNG bao giờ bịa ra con số, tỷ lệ phần trăm, liều lượng, tên nghiên cứu hay lời dẫn.
 2. Mọi con số trong bài PHẢI xuất hiện trong tư liệu nguồn được cung cấp. Nếu không có, hãy bỏ con số đó.
 3. KHÔNG trích dẫn nguyên văn lời người nói trong video. Chúng tôi KHÔNG có bản ghi lời nói, nên mọi trích dẫn nguyên văn đều là bịa đặt. Chỉ được diễn giải lại.
-4. KHÔNG đưa ra liều lượng (mg, mcg, IU...), KHÔNG khuyên người đọc uống hay dùng bất cứ thứ gì, KHÔNG nói điều gì "chữa khỏi" bệnh.
+4. KHÔNG đưa ra liều lượng có đơn vị (mg, mcg, µg, g, kg, ml, IU, "đơn vị"). KHÔNG viết các cụm dạng: "bạn nên uống/dùng/bổ sung/tiêm", "hãy uống/dùng/bổ sung/tiêm", "liều dùng khuyến cáo", "mỗi ngày uống/dùng", "chữa khỏi", "điều trị khỏi", "thay thế thuốc", "không cần đi khám", "tự chẩn đoán", "tự điều trị". Đây là bài giải thích, KHÔNG phải toa thuốc.
 5. Phân biệt rõ: điều video NÓI (attribution "speaker") với điều đã được y học xác lập (attribution "established", phải kèm ref tới nguồn).
 6. Diễn giải bằng lời của mình. KHÔNG sao chép quá 10 từ liên tiếp từ tư liệu nguồn.
 7. Nếu không đủ căn cứ cho một ý, hãy bỏ ý đó thay vì viết mơ hồ.
@@ -155,14 +155,14 @@ ${categoryList}
 
 YÊU CẦU:
 1. Xác định chủ đề và chuyên mục phù hợp.
-2. Liệt kê các luận điểm. Với mỗi luận điểm, phân loại:
+2. Liệt kê 3–24 luận điểm (BẮT BUỘC ít nhất 3, nhiều nhất 24; một tư liệu nghèo ý vẫn phải có 3 luận điểm — nếu bí, hãy tách một luận điểm dài thành hai). Với mỗi luận điểm, phân loại:
    - "speaker_claim": điều video nói, chưa rõ đã được y học xác lập hay chưa.
    - "general_knowledge": kiến thức y khoa cơ bản, có thể dẫn nguồn uy tín.
    - "uncertain": nghe có vẻ mạnh nhưng không kiểm chứng được — ví dụ các con số cụ thể không rõ xuất xứ.
 3. Với mỗi luận điểm, liệt kê MỌI con số xuất hiện trong đó, copy đúng như trong tư liệu.
 4. "restrictedTopics": nếu tư liệu liên quan tới liều dùng, dùng thuốc cho trẻ em, thai kỳ, lựa chọn phác đồ điều trị ung thư, tương tác thuốc, tranh cãi về an toàn vắc xin, tuyên bố chữa khỏi, hoặc tự chẩn đoán — hãy liệt kê. Nếu không, trả về danh sách rỗng.
 5. "isFactCheck": true nếu tư liệu chủ yếu phản biện một quan niệm sai hoặc một sản phẩm được quảng cáo quá mức.
-6. Đề xuất 4–8 mục (outline) cho bài viết.
+6. Đề xuất 4–8 mục (outline) cho bài viết; mỗi mục có "heading" và "intent".
 
 CHỈ trả về JSON đúng schema.`;
 }
@@ -226,6 +226,8 @@ QUY TẮC QUYẾT ĐỊNH:
 - "cite": chỉ khi đây là kiến thức y khoa đã được xác lập VÀ bạn biết một trang cụ thể trên tên miền được phép nói về nó. Cung cấp suggestedUrl đầy đủ (https://...), suggestedPublisher và suggestedTitle.
 - "attribute_to_speaker": điều video nói nhưng bạn không chắc đã được xác lập. Bài viết sẽ ghi rõ "theo video".
 - "drop": luận điểm không kiểm chứng được và cũng không đáng nêu, HOẶC chứa con số cụ thể không rõ xuất xứ.
+
+MỌI phần tử verifiedClaims BẮT BUỘC có "reason" — một câu ngắn 3–400 ký tự giải thích quyết định (kể cả với "drop" và "attribute_to_speaker", không chỉ "cite").
 
 CỰC KỲ QUAN TRỌNG: KHÔNG bịa URL. Nếu không chắc một trang cụ thể tồn tại, hãy chọn "attribute_to_speaker" hoặc "drop" thay vì đoán một đường dẫn. Một nguồn bịa còn tệ hơn không có nguồn.
 
@@ -372,9 +374,18 @@ Các block bắt buộc trong mảng body:
 
 ĐỘ DÀI: ${input.wordCountMin}–${input.wordCountMax} từ (đếm theo âm tiết tiếng Việt).
 
-references: CHỈ đưa vào các nguồn đã được cung cấp ở trên. KHÔNG thêm nguồn nào khác. Nếu không có nguồn nào, để mảng rỗng.
+RÀNG BUỘC ĐỘ DÀI TỪNG TRƯỜNG (nếu vi phạm, JSON sẽ bị từ chối):
+- title: 10–160 ký tự.
+- dek: 80–320 ký tự (một câu tóm tắt, không phải tiêu đề thứ hai).
+- Mỗi block {"t":"p"}: text 20–1600 ký tự.
+- Mỗi block {"t":"h2"} hoặc {"t":"h3"}: text 3–160 ký tự.
+- key_facts: title 3–120 ký tự; mỗi item 5–320 ký tự; 2–8 items.
+- pull_quote: text 20–400 ký tự.
+- callout: title 3–120, text 20–900.
 
-slug: chữ thường không dấu, các từ nối bằng dấu gạch ngang, chỉ a-z 0-9 và dấu -.
+references: TỐI ĐA 8 nguồn, CHỈ đưa vào các nguồn đã được cung cấp ở trên. KHÔNG thêm nguồn nào khác. Mỗi phần tử BẮT BUỘC có bốn trường {"label", "title", "publisher", "url"} — copy chính xác title/publisher/url từ danh sách đã cung cấp; label là số thứ tự dạng chuỗi ("1", "2", ...). Nếu không có nguồn nào, để mảng rỗng.
+
+slug: chữ thường không dấu, các từ nối bằng dấu gạch ngang, chỉ a-z 0-9 và dấu - (10–90 ký tự).
 
 CHỈ trả về JSON đúng schema.`;
 }
@@ -411,9 +422,9 @@ TIÊU ĐỀ: ${input.title}
 TÓM TẮT: ${input.dek}
 CHỦ ĐỀ: ${input.topic}
 
-- metaTitle: tối đa 70 ký tự, mô tả đúng nội dung, không giật gân.
+- metaTitle: 10–70 ký tự, mô tả đúng nội dung, không giật gân.
 - metaDescription: 80–180 ký tự, nêu bài viết trả lời câu hỏi gì và dẫn nguồn từ đâu.
-- keywords: tối đa 12 từ khoá tiếng Việt người đọc thực sự tìm kiếm.
+- keywords: 0–12 từ khoá tiếng Việt người đọc thực sự tìm kiếm; mỗi từ khoá 2–60 ký tự.
 
 KHÔNG hứa hẹn kết quả sức khoẻ. KHÔNG dùng từ như "thần dược", "chữa khỏi", "bí mật".
 
@@ -474,7 +485,7 @@ ${categoryList}
 
 YÊU CẦU:
 1. Xác định chủ đề và chuyên mục phù hợp.
-2. Liệt kê các luận điểm. Với bài nghiên cứu, hãy phân loại:
+2. Liệt kê 3–24 luận điểm (BẮT BUỘC ít nhất 3, nhiều nhất 24). Với bài nghiên cứu, hãy phân loại:
    - "speaker_claim": điều CHÍNH công trình này báo cáo (kết quả của riêng nó, chưa được xác lập rộng rãi).
    - "general_knowledge": kiến thức y khoa nền đã được xác lập, có thể dẫn nguồn uy tín.
    - "uncertain": suy luận vượt quá dữ liệu trong abstract.
@@ -545,11 +556,19 @@ Các block bắt buộc trong mảng body:
 - TUYỆT ĐỐI KHÔNG có block {"t":"video_embed"} — không có video nào
 - TUYỆT ĐỐI KHÔNG có đoạn nào "attribution":"speaker" — không có người nói
 
-references: phần tử ĐẦU TIÊN (chỉ số 0) PHẢI là chính công trình gốc, với url đúng bằng ${input.paperUrl}. Sau đó chỉ thêm các nguồn đã được cung cấp ở trên. KHÔNG thêm nguồn nào khác.
+references: TỐI ĐA 8 phần tử. Phần tử ĐẦU TIÊN (chỉ số 0) PHẢI là chính công trình gốc, với url đúng bằng ${input.paperUrl}. Sau đó chỉ thêm các nguồn đã được cung cấp ở trên. KHÔNG thêm nguồn nào khác. Mỗi phần tử BẮT BUỘC có bốn trường {"label", "title", "publisher", "url"}; label là số thứ tự dạng chuỗi ("1", "2", ...).
 
 ĐỘ DÀI: ${input.wordCountMin}–${input.wordCountMax} từ (đếm theo âm tiết tiếng Việt).
 
-slug: chữ thường không dấu, các từ nối bằng dấu gạch ngang, chỉ a-z 0-9 và dấu -.
+RÀNG BUỘC ĐỘ DÀI TỪNG TRƯỜNG (nếu vi phạm, JSON sẽ bị từ chối):
+- title: 10–160 ký tự.
+- dek: 80–320 ký tự.
+- Mỗi block {"t":"p"}: text 20–1600 ký tự.
+- Mỗi block {"t":"h2"} hoặc {"t":"h3"}: text 3–160 ký tự.
+- key_facts: title 3–120; mỗi item 5–320; 2–8 items.
+- callout: title 3–120, text 20–900.
+
+slug: chữ thường không dấu, các từ nối bằng dấu gạch ngang, chỉ a-z 0-9 và dấu - (10–90 ký tự).
 
 CHỈ trả về JSON đúng schema.`;
 }

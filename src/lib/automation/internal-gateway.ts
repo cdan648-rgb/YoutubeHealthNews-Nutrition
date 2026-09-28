@@ -507,6 +507,30 @@ export type SubscriberForUnsub = {
   readonly unsubscribeTokenHash: string;
 };
 
+export type CampaignHandle = {
+  readonly id: string;
+  /** True when this call created the row; false when it already existed. */
+  readonly created: boolean;
+};
+
+export type QueuedSendRow = {
+  readonly id: string;
+  readonly subscriberId: string;
+};
+
+export type SubscriberSendTarget = {
+  readonly email: string;
+  readonly unsubscribeTokenHash: string;
+};
+
+export type CampaignArticleRow = {
+  readonly title: string;
+  readonly dek: string;
+  readonly slug: string;
+  readonly isFactCheck: boolean;
+  readonly articleType: 'youtube' | 'research';
+};
+
 /** The whole shape of the private-schema surface the newsletter code needs. */
 export type NewsletterGateway = {
   countRecentAttempts: (ipHmac: string, since: string) => Promise<number>;
@@ -520,6 +544,35 @@ export type NewsletterGateway = {
   activate: (id: string, nowIso: string) => Promise<boolean>;
   getSubscriberForUnsub: (id: string) => Promise<SubscriberForUnsub | null>;
   markUnsubscribed: (id: string, nowIso: string) => Promise<boolean>;
+
+  // Send state machine — same pattern, one method per SQL operation.
+  campaignGetOrCreate: (articleId: string) => Promise<CampaignHandle>;
+  activeSubscriberIds: () => Promise<string[]>;
+  fanoutSends: (campaignId: string, subscriberIds: readonly string[]) => Promise<number>;
+  campaignSetStarted: (campaignId: string, totalQueued: number) => Promise<void>;
+  reclaimStale: (campaignId: string, cutoffIso: string) => Promise<number>;
+  dailySendCap: () => Promise<number | null>;
+  sentTodayCount: (sinceIso: string) => Promise<number>;
+  queuedBatch: (campaignId: string, limit: number) => Promise<QueuedSendRow[]>;
+  claimSend: (sendId: string, nowIso: string) => Promise<boolean>;
+  subscriberForSend: (subscriberId: string) => Promise<SubscriberSendTarget | null>;
+  markSendSent: (sendId: string, providerMessageId: string, nowIso: string) => Promise<void>;
+  markSendFailed: (sendId: string, reason: string) => Promise<void>;
+  log: (
+    level: 'info' | 'warn' | 'error',
+    code: string,
+    stage: string,
+    message: string,
+    context?: Record<string, unknown>,
+  ) => Promise<void>;
+  loadArticleForCampaign: (campaignId: string) => Promise<CampaignArticleRow | null>;
+  updateCampaignTotals: (campaignId: string) => Promise<void>;
+
+  // Resend delivery webhook: mark a subscriber bounced or complained.
+  markSubscriberDeliveryStatus: (
+    emailNormalized: string,
+    status: 'bounced' | 'complained',
+  ) => Promise<number>;
 };
 
 type SubscriberRpcRow = { id: string; status: SubStatusValue };
@@ -605,6 +658,266 @@ export function liveNewsletterGateway(): NewsletterGateway {
     markUnsubscribed: async (id, nowIso) => {
       const ok = await one<boolean>('newsletter_mark_unsubscribed', { p_id: id, p_now: nowIso });
       return ok === true;
+    },
+
+    /* ---------------------------- send state machine ---------------------------- */
+
+    campaignGetOrCreate: async (articleId) => {
+      const list = await rows<{ id: string; created: boolean }>(
+        'newsletter_campaign_get_or_create',
+        {
+          p_article_id: articleId,
+        },
+      );
+      const row = list[0];
+      if (row === undefined) throw new Error('newsletter_campaign_get_or_create returned no row');
+      return { id: row.id, created: row.created };
+    },
+
+    activeSubscriberIds: async () => {
+      const list = await rows<{ id: string }>('newsletter_active_subscriber_ids');
+      return list.map((row) => row.id);
+    },
+
+    fanoutSends: async (campaignId, subscriberIds) => {
+      if (subscriberIds.length === 0) return 0;
+      const n = await one<number>('newsletter_fanout', {
+        p_campaign_id: campaignId,
+        p_subscriber_ids: [...subscriberIds],
+      });
+      return typeof n === 'number' ? n : 0;
+    },
+
+    campaignSetStarted: async (campaignId, totalQueued) => {
+      await one<null>('newsletter_campaign_set_started', {
+        p_campaign_id: campaignId,
+        p_total_queued: totalQueued,
+      });
+    },
+
+    reclaimStale: async (campaignId, cutoffIso) => {
+      const n = await one<number>('newsletter_reclaim_stale', {
+        p_campaign_id: campaignId,
+        p_cutoff: cutoffIso,
+      });
+      return typeof n === 'number' ? n : 0;
+    },
+
+    dailySendCap: async () => {
+      const n = await one<number>('newsletter_daily_send_cap');
+      return typeof n === 'number' ? n : null;
+    },
+
+    sentTodayCount: async (sinceIso) => {
+      const n = await one<number>('newsletter_sent_today_count', { p_since: sinceIso });
+      return typeof n === 'number' ? n : 0;
+    },
+
+    queuedBatch: async (campaignId, limit) => {
+      const list = await rows<{ id: string; subscriber_id: string }>('newsletter_queued_batch', {
+        p_campaign_id: campaignId,
+        p_limit: limit,
+      });
+      return list.map((row) => ({ id: row.id, subscriberId: row.subscriber_id }));
+    },
+
+    claimSend: async (sendId, nowIso) => {
+      const ok = await one<boolean>('newsletter_claim_send', {
+        p_send_id: sendId,
+        p_now: nowIso,
+      });
+      return ok === true;
+    },
+
+    subscriberForSend: async (subscriberId) => {
+      const list = await rows<{ email: string; unsubscribe_token_hash: string }>(
+        'newsletter_subscriber_for_send',
+        { p_subscriber_id: subscriberId },
+      );
+      const row = list[0];
+      return row === undefined
+        ? null
+        : { email: row.email, unsubscribeTokenHash: row.unsubscribe_token_hash };
+    },
+
+    markSendSent: async (sendId, providerMessageId, nowIso) => {
+      await one<null>('newsletter_mark_send_sent', {
+        p_send_id: sendId,
+        p_provider_message_id: providerMessageId,
+        p_now: nowIso,
+      });
+    },
+
+    markSendFailed: async (sendId, reason) => {
+      await one<null>('newsletter_mark_send_failed', {
+        p_send_id: sendId,
+        p_reason: reason,
+      });
+    },
+
+    log: async (level, code, stage, message, context) => {
+      // Losing observability must never fail the work being observed.
+      try {
+        const { error } = await callRpc()<null>('newsletter_log', {
+          p_level: level,
+          p_code: code,
+          p_stage: stage,
+          p_message: message,
+          p_context: context ?? {},
+        });
+        if (error !== null) console.error(`newsletter_log(${code}) failed: ${error.message}`);
+      } catch (cause) {
+        console.error(`newsletter_log(${code}) threw`, cause);
+      }
+    },
+
+    loadArticleForCampaign: async (campaignId) => {
+      const list = await rows<{
+        title: string;
+        dek: string;
+        slug: string;
+        is_fact_check: boolean;
+        article_type: 'youtube' | 'research';
+      }>('newsletter_load_article_for_campaign', { p_campaign_id: campaignId });
+      const row = list[0];
+      return row === undefined
+        ? null
+        : {
+            title: row.title,
+            dek: row.dek,
+            slug: row.slug,
+            isFactCheck: row.is_fact_check,
+            articleType: row.article_type,
+          };
+    },
+
+    updateCampaignTotals: async (campaignId) => {
+      await one<null>('newsletter_update_campaign_totals', { p_campaign_id: campaignId });
+    },
+
+    markSubscriberDeliveryStatus: async (emailNormalized, status) => {
+      const n = await one<number>('newsletter_mark_subscriber_delivery_status', {
+        p_email_normalized: emailNormalized,
+        p_status: status,
+      });
+      return typeof n === 'number' ? n : 0;
+    },
+  };
+}
+
+/* ============================================================================
+ *   Operations gateway (admin dashboard + health endpoint)
+ * ============================================================================
+ *
+ * Read-only, service-role-only entrypoints for the operator surfaces. Kept
+ * separate from the automation and newsletter gateways because the callers are
+ * different (pages/routes rather than the tick pipeline), and the read shapes
+ * are stable enough that a small dedicated interface reads better than a fat
+ * union.
+ */
+
+export type OperationsRecentRun = {
+  readonly hanoiDate: HanoiDate;
+  readonly result: RunResultValue;
+  readonly stage: string;
+  readonly sourceKind: SourceKindValue | null;
+  readonly attemptCount: number;
+  readonly streakAtDecision: number | null;
+  readonly startedAt: string | null;
+  readonly completedAt: string | null;
+  readonly errorStage: string | null;
+  readonly articleId: string | null;
+};
+
+export type OperationsHealthRun = {
+  readonly hanoiDate: HanoiDate;
+  readonly result: RunResultValue;
+  readonly stage: string;
+  readonly articleId: string | null;
+  readonly startedAt: string | null;
+  readonly completedAt: string | null;
+  readonly errorStage: string | null;
+};
+
+export type OperationsFailureLog = {
+  readonly ts: string;
+  readonly level: string;
+  readonly stage: string | null;
+  readonly code: string;
+  readonly message: string | null;
+};
+
+export type OperationsGateway = {
+  recentRuns: (limit: number) => Promise<OperationsRecentRun[]>;
+  runsSince: (sinceDay: HanoiDate) => Promise<OperationsHealthRun[]>;
+  recentFailures: (limit: number) => Promise<OperationsFailureLog[]>;
+};
+
+export function liveOperationsGateway(): OperationsGateway {
+  return {
+    recentRuns: async (limit) => {
+      const list = await rows<{
+        hanoi_date: string;
+        result: RunResultValue;
+        stage: string;
+        source_kind: SourceKindValue | null;
+        attempt_count: number;
+        streak_at_decision: number | null;
+        started_at: string | null;
+        completed_at: string | null;
+        error_stage: string | null;
+        article_id: string | null;
+      }>('automation_recent_runs', { p_limit: limit });
+      return list.map((row) => ({
+        hanoiDate: row.hanoi_date as HanoiDate,
+        result: row.result,
+        stage: row.stage,
+        sourceKind: row.source_kind,
+        attemptCount: row.attempt_count,
+        streakAtDecision: row.streak_at_decision,
+        startedAt: row.started_at,
+        completedAt: row.completed_at,
+        errorStage: row.error_stage,
+        articleId: row.article_id,
+      }));
+    },
+
+    runsSince: async (sinceDay) => {
+      const list = await rows<{
+        hanoi_date: string;
+        result: RunResultValue;
+        stage: string;
+        article_id: string | null;
+        started_at: string | null;
+        completed_at: string | null;
+        error_stage: string | null;
+      }>('automation_runs_since', { p_since: sinceDay });
+      return list.map((row) => ({
+        hanoiDate: row.hanoi_date as HanoiDate,
+        result: row.result,
+        stage: row.stage,
+        articleId: row.article_id,
+        startedAt: row.started_at,
+        completedAt: row.completed_at,
+        errorStage: row.error_stage,
+      }));
+    },
+
+    recentFailures: async (limit) => {
+      const list = await rows<{
+        ts: string;
+        level: string;
+        stage: string | null;
+        code: string;
+        message: string | null;
+      }>('automation_recent_failures', { p_limit: limit });
+      return list.map((row) => ({
+        ts: row.ts,
+        level: row.level,
+        stage: row.stage,
+        code: row.code,
+        message: row.message,
+      }));
     },
   };
 }

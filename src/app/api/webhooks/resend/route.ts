@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { NextResponse } from 'next/server';
-import { internalClient } from '@/lib/supabase/service';
+import { liveNewsletterGateway } from '@/lib/automation/internal-gateway';
 import { normalizeEmailAddress } from '@/lib/newsletter/normalize';
 
 /**
@@ -82,21 +82,19 @@ export async function POST(request: Request): Promise<NextResponse> {
   const email = recipientEmail(event.data);
   if (email === null) return NextResponse.json({ ok: true, note: 'no recipient' }, { status: 200 });
 
-  const client = internalClient();
+  const gateway = liveNewsletterGateway();
   const normalized = normalizeEmailAddress(email);
-  await client
-    .from('subscribers')
-    .update({ status })
-    .eq('email_normalized', normalized)
-    // Do not resurrect an unsubscribed row into a bounced one; only touch mailable states.
-    .in('status', ['active', 'pending']);
+  // The RPC restricts the transition to mailable states (active/pending), so an already
+  // unsubscribed row is left alone. `internal` stays private; nothing here reaches it
+  // through PostgREST directly.
+  await gateway.markSubscriberDeliveryStatus(normalized, status);
 
-  await client.from('job_logs').insert({
-    level: 'warn',
-    code: status === 'bounced' ? 'email_bounced' : 'email_complained',
-    stage: 'webhook',
-    message: `subscriber marked ${status}`,
-  });
+  await gateway.log(
+    'warn',
+    status === 'bounced' ? 'email_bounced' : 'email_complained',
+    'webhook',
+    `subscriber marked ${status}`,
+  );
 
   return NextResponse.json({ ok: true }, { status: 200 });
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { internalClient } from '@/lib/supabase/service';
+import { liveOperationsGateway } from '@/lib/automation/internal-gateway';
 import { timingSafeEqualString } from '@/lib/security/compare';
 
 /**
@@ -46,32 +46,15 @@ export default async function AdminRunsPage({ searchParams }: Search) {
   const { token } = await searchParams;
   if (!gate(token)) notFound();
 
-  const client = internalClient();
-  const runs = await client
-    .from('automation_runs')
-    .select(
-      'hanoi_date, result, stage, source_kind, attempt_count, streak_at_decision, started_at, completed_at, error_stage',
-    )
-    .order('hanoi_date', { ascending: false })
-    .limit(30);
-
-  const logs = await client
-    .from('job_logs')
-    .select('ts, level, stage, code, message')
-    .in('level', ['warn', 'error'])
-    .order('ts', { ascending: false })
-    .limit(40);
-
-  const rows = runs.data ?? [];
-  const failures = logs.data ?? [];
+  const gateway = liveOperationsGateway();
+  // Two service-role RPC reads, each behind a SECURITY DEFINER wrapper — the private
+  // `internal` schema is never reached through PostgREST directly.
+  const [rows, failures] = await Promise.all([gateway.recentRuns(30), gateway.recentFailures(40)]);
 
   return (
     <main id="main" className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <h1 className="font-display text-2xl font-bold tracking-tight">Automation runs</h1>
-      <p className="text-ink-3 mt-1 text-sm">
-        Chỉ đọc · 30 lần chạy gần nhất theo ngày Hà Nội.{' '}
-        {runs.error !== null && '(lỗi đọc dữ liệu)'}
-      </p>
+      <p className="text-ink-3 mt-1 text-sm">Chỉ đọc · 30 lần chạy gần nhất theo ngày Hà Nội.</p>
 
       <div className="border-rule mt-6 overflow-x-auto rounded-lg border">
         <table className="w-full text-left text-sm">
@@ -88,19 +71,19 @@ export default async function AdminRunsPage({ searchParams }: Search) {
           </thead>
           <tbody>
             {rows.map((run) => (
-              <tr key={run.hanoi_date} className="border-rule border-t">
-                <td className="px-3 py-2 font-mono text-xs">{run.hanoi_date}</td>
+              <tr key={run.hanoiDate} className="border-rule border-t">
+                <td className="px-3 py-2 font-mono text-xs">{run.hanoiDate}</td>
                 <td className={`px-3 py-2 font-semibold ${RESULT_STYLE[run.result] ?? ''}`}>
                   {run.result}
                 </td>
                 <td className="px-3 py-2">{run.stage}</td>
-                <td className="px-3 py-2">{run.source_kind}</td>
-                <td className="px-3 py-2">{run.attempt_count}</td>
-                <td className="px-3 py-2">{run.streak_at_decision ?? '—'}</td>
+                <td className="px-3 py-2">{run.sourceKind ?? '—'}</td>
+                <td className="px-3 py-2">{run.attemptCount}</td>
+                <td className="px-3 py-2">{run.streakAtDecision ?? '—'}</td>
                 <td className="text-ink-3 px-3 py-2 text-xs">
-                  {run.completed_at === null
-                    ? (run.error_stage ?? '—')
-                    : run.completed_at.slice(0, 16).replace('T', ' ')}
+                  {run.completedAt === null
+                    ? (run.errorStage ?? '—')
+                    : run.completedAt.slice(0, 16).replace('T', ' ')}
                 </td>
               </tr>
             ))}
@@ -127,8 +110,12 @@ export default async function AdminRunsPage({ searchParams }: Search) {
             <span className={`font-semibold ${log.level === 'error' ? 'text-fact' : 'text-ink-2'}`}>
               {log.code}
             </span>
-            {log.stage !== null && <span className="text-ink-3 text-xs">[{log.stage}]</span>}
-            {log.message !== null && <span className="text-ink-2">{log.message}</span>}
+            {log.stage !== null && log.stage !== '' && (
+              <span className="text-ink-3 text-xs">[{log.stage}]</span>
+            )}
+            {log.message !== null && log.message !== '' && (
+              <span className="text-ink-2">{log.message}</span>
+            )}
           </li>
         ))}
         {failures.length === 0 && <li className="text-ink-3">Không có cảnh báo nào gần đây.</li>}

@@ -10,11 +10,15 @@
  * to test the orchestration around them.
  */
 import type {
+  CampaignArticleRow,
+  CampaignHandle,
   NewsletterGateway,
   PendingConfirmationRow,
+  QueuedSendRow,
   SubStatusValue,
   SubscriberForUnsub,
   SubscriberSummary,
+  SubscriberSendTarget,
 } from '@/lib/automation/internal-gateway';
 
 export type SubscriberSeed = {
@@ -43,6 +47,36 @@ type SubscriberRow = {
 type AttemptRow = { ipHmac: string; ts: string; outcome: string };
 type SendFailureRow = { level: 'warn' | 'error'; message: string; stage: string };
 
+type CampaignRow = {
+  id: string;
+  articleId: string;
+  totalQueued: number;
+  totalSent: number;
+  startedAt: string | null;
+  completedAt: string | null;
+};
+
+type SendRow = {
+  id: string;
+  campaignId: string;
+  subscriberId: string;
+  status: 'queued' | 'sending' | 'sent' | 'unknown' | 'failed';
+  attemptedAt: string | null;
+  sentAt: string | null;
+  providerMessageId: string | null;
+  attemptCount: number;
+  error: Record<string, unknown> | null;
+};
+
+type LogRow = {
+  ts: string;
+  level: 'info' | 'warn' | 'error';
+  code: string;
+  stage: string;
+  message: string;
+  context: Record<string, unknown>;
+};
+
 let idCounter = 0;
 function uuid(): string {
   idCounter += 1;
@@ -69,6 +103,13 @@ export type FakeNewsletterGateway = NewsletterGateway & {
   readonly subscribers: SubscriberRow[];
   readonly attempts: AttemptRow[];
   readonly sendFailures: SendFailureRow[];
+  readonly campaigns: CampaignRow[];
+  readonly sends: SendRow[];
+  readonly logs: LogRow[];
+  /** Test-only: set the article payload the fake returns for a campaign id. */
+  setArticleForCampaign(campaignId: string, article: CampaignArticleRow | null): void;
+  /** Test-only: set the daily send cap. `null` means unlimited (the settings singleton default is 90). */
+  setDailySendCap(cap: number | null): void;
   seed(row: SubscriberSeed): void;
 };
 
@@ -78,6 +119,11 @@ export function fakeNewsletterGateway(
   const subscribers: SubscriberRow[] = [];
   const attempts: AttemptRow[] = [];
   const sendFailures: SendFailureRow[] = [];
+  const campaigns: CampaignRow[] = [];
+  const sends: SendRow[] = [];
+  const logs: LogRow[] = [];
+  const articlesByCampaign = new Map<string, CampaignArticleRow | null>();
+  let cap: number | null = 90;
 
   function insert(row: SubscriberSeed): SubscriberRow {
     const full: SubscriberRow = {
@@ -102,6 +148,15 @@ export function fakeNewsletterGateway(
     subscribers,
     attempts,
     sendFailures,
+    campaigns,
+    sends,
+    logs,
+    setArticleForCampaign: (campaignId, article) => {
+      articlesByCampaign.set(campaignId, article);
+    },
+    setDailySendCap: (value) => {
+      cap = value;
+    },
     seed: (row) => {
       insert(row);
     },
@@ -197,6 +252,178 @@ export function fakeNewsletterGateway(
       row.status = 'unsubscribed';
       row.unsubscribedAt = nowIso;
       return Promise.resolve(true);
+    },
+
+    /* -------------------------- send state machine --------------------------- */
+
+    campaignGetOrCreate: (articleId) => {
+      const existing = campaigns.find((c) => c.articleId === articleId);
+      if (existing !== undefined) {
+        const handle: CampaignHandle = { id: existing.id, created: false };
+        return Promise.resolve(handle);
+      }
+      const row: CampaignRow = {
+        id: uuid(),
+        articleId,
+        totalQueued: 0,
+        totalSent: 0,
+        startedAt: null,
+        completedAt: null,
+      };
+      campaigns.push(row);
+      const handle: CampaignHandle = { id: row.id, created: true };
+      return Promise.resolve(handle);
+    },
+
+    activeSubscriberIds: () =>
+      Promise.resolve(subscribers.filter((s) => s.status === 'active').map((s) => s.id)),
+
+    fanoutSends: (campaignId, subscriberIds) => {
+      let inserted = 0;
+      for (const subscriberId of subscriberIds) {
+        if (sends.some((s) => s.campaignId === campaignId && s.subscriberId === subscriberId)) {
+          continue;
+        }
+        sends.push({
+          id: uuid(),
+          campaignId,
+          subscriberId,
+          status: 'queued',
+          attemptedAt: null,
+          sentAt: null,
+          providerMessageId: null,
+          attemptCount: 0,
+          error: null,
+        });
+        inserted += 1;
+      }
+      return Promise.resolve(inserted);
+    },
+
+    campaignSetStarted: (campaignId, totalQueued) => {
+      const camp = campaigns.find((c) => c.id === campaignId);
+      if (camp !== undefined) {
+        camp.totalQueued = totalQueued;
+        camp.startedAt = camp.startedAt ?? new Date().toISOString();
+      }
+      return Promise.resolve();
+    },
+
+    reclaimStale: (campaignId, cutoffIso) => {
+      let n = 0;
+      for (const send of sends) {
+        if (
+          send.campaignId === campaignId &&
+          send.status === 'sending' &&
+          send.attemptedAt !== null &&
+          send.attemptedAt < cutoffIso
+        ) {
+          send.status = 'unknown';
+          send.error = { reason: 'sending_timed_out' };
+          n += 1;
+        }
+      }
+      return Promise.resolve(n);
+    },
+
+    dailySendCap: () => Promise.resolve(cap),
+
+    sentTodayCount: (sinceIso) =>
+      Promise.resolve(
+        sends.filter(
+          (s) =>
+            s.attemptedAt !== null &&
+            s.attemptedAt >= sinceIso &&
+            (s.status === 'sent' || s.status === 'sending' || s.status === 'unknown'),
+        ).length,
+      ),
+
+    queuedBatch: (campaignId, limit) => {
+      const list: QueuedSendRow[] = sends
+        .filter((s) => s.campaignId === campaignId && s.status === 'queued')
+        .slice(0, Math.max(1, limit))
+        .map((s) => ({ id: s.id, subscriberId: s.subscriberId }));
+      return Promise.resolve(list);
+    },
+
+    claimSend: (sendId, nowIso) => {
+      const send = sends.find((s) => s.id === sendId);
+      if (send === undefined || send.status !== 'queued') return Promise.resolve(false);
+      send.status = 'sending';
+      send.attemptedAt = nowIso;
+      return Promise.resolve(true);
+    },
+
+    subscriberForSend: (subscriberId) => {
+      const row = subscribers.find((s) => s.id === subscriberId);
+      const result: SubscriberSendTarget | null =
+        row === undefined
+          ? null
+          : { email: row.email, unsubscribeTokenHash: row.unsubscribeTokenHash };
+      return Promise.resolve(result);
+    },
+
+    markSendSent: (sendId, providerMessageId, nowIso) => {
+      const send = sends.find((s) => s.id === sendId);
+      if (send !== undefined) {
+        send.status = 'sent';
+        send.sentAt = nowIso;
+        send.providerMessageId = providerMessageId;
+        send.attemptCount = 1;
+      }
+      return Promise.resolve();
+    },
+
+    markSendFailed: (sendId, reason) => {
+      const send = sends.find((s) => s.id === sendId);
+      if (send !== undefined) {
+        send.status = 'failed';
+        send.attemptCount = 1;
+        send.error = { reason };
+      }
+      return Promise.resolve();
+    },
+
+    log: (level, code, stage, message, context) => {
+      logs.push({
+        ts: new Date().toISOString(),
+        level,
+        code,
+        stage,
+        message,
+        context: context ?? {},
+      });
+      return Promise.resolve();
+    },
+
+    loadArticleForCampaign: (campaignId) =>
+      Promise.resolve(articlesByCampaign.get(campaignId) ?? null),
+
+    updateCampaignTotals: (campaignId) => {
+      const camp = campaigns.find((c) => c.id === campaignId);
+      if (camp === undefined) return Promise.resolve();
+      camp.totalSent = sends.filter(
+        (s) => s.campaignId === campaignId && s.status === 'sent',
+      ).length;
+      const open = sends.filter(
+        (s) => s.campaignId === campaignId && (s.status === 'queued' || s.status === 'sending'),
+      ).length;
+      if (open === 0) camp.completedAt = camp.completedAt ?? new Date().toISOString();
+      return Promise.resolve();
+    },
+
+    markSubscriberDeliveryStatus: (emailNormalized, status) => {
+      let n = 0;
+      for (const row of subscribers) {
+        if (
+          row.emailNormalized === emailNormalized &&
+          (row.status === 'active' || row.status === 'pending')
+        ) {
+          row.status = status;
+          n += 1;
+        }
+      }
+      return Promise.resolve(n);
     },
   };
 

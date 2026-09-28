@@ -20,11 +20,16 @@
  * The daily cap is a hard stop, not a throttle: when the day's send count reaches
  * `daily_send_cap`, the drain logs `email_quota_reached` and leaves the rest queued for the
  * next run rather than flooding a rate-limited provider with failures.
+ *
+ * Every database call goes through `NewsletterGateway` (public.newsletter_* RPCs), NOT the
+ * private `internal` schema directly, because that schema is intentionally not exposed to
+ * the Data API — a direct `internalClient()` .from() call would 500 with "Invalid schema:
+ * internal" the moment the notify stage runs in production.
  */
 import 'server-only';
 
-import type { InternalClient } from '@/lib/supabase/service';
-import { internalClient, serviceClient } from '@/lib/supabase/service';
+import type { NewsletterGateway } from '@/lib/automation/internal-gateway';
+import { liveNewsletterGateway } from '@/lib/automation/internal-gateway';
 import { startOfHanoiDay } from '@/lib/time';
 import { absoluteUrl, articlePath } from '@/lib/site';
 import type { EmailProvider } from './provider';
@@ -52,11 +57,11 @@ export type SendDeps = {
   readonly now?: () => Date;
   /**
    * How to load the article for a campaign. Injected so the send path is testable without a
-   * `public`-schema client; production uses the service-role reader below.
+   * gateway that knows about the articles table. Production uses the gateway's join RPC.
    */
   readonly loadArticle?: (
     campaignId: string,
-    client: InternalClient,
+    gateway: NewsletterGateway,
   ) => Promise<CampaignArticle | null>;
 };
 
@@ -68,81 +73,27 @@ export type SendDeps = {
  */
 export async function queueCampaign(
   articleId: string,
-  client: InternalClient = internalClient(),
+  gateway: NewsletterGateway = liveNewsletterGateway(),
   deps: SendDeps = {},
 ): Promise<void> {
-  // One campaign per article. A returned row means we created it; null means it already
-  // existed, in which case fan-out has already happened and we go straight to draining.
-  const created = await client
-    .from('newsletter_campaigns')
-    .insert({ article_id: articleId })
-    .select('id')
-    .maybeSingle();
-
-  let campaignId: string;
-  if (created.error !== null) {
-    if (created.error.code !== '23505') {
-      throw new Error(`campaign insert failed: ${created.error.message}`);
-    }
-    const existing = await client
-      .from('newsletter_campaigns')
-      .select('id')
-      .eq('article_id', articleId)
-      .maybeSingle();
-    if (existing.data === null) throw new Error('campaign vanished after conflict');
-    campaignId = existing.data.id;
-  } else {
-    if (created.data === null) throw new Error('campaign insert returned no row');
-    campaignId = created.data.id;
-    await fanOut(campaignId, client);
+  // One campaign per article. `created` distinguishes the fresh row from a returned existing
+  // one; on `false` fan-out already happened and we skip straight to draining.
+  const handle = await gateway.campaignGetOrCreate(articleId);
+  if (handle.created) {
+    await fanOut(handle.id, gateway);
   }
-
-  await drainCampaign(campaignId, client, deps);
+  await drainCampaign(handle.id, gateway, deps);
 }
 
 /** Insert a queued send for every active subscriber that does not already have one. */
-async function fanOut(campaignId: string, client: InternalClient): Promise<void> {
-  const subscribers = await client.from('subscribers').select('id').eq('status', 'active');
-  if (subscribers.error !== null)
-    throw new Error(`fanOut read failed: ${subscribers.error.message}`);
-
-  const rows = (subscribers.data ?? []).map((subscriber) => ({
-    campaign_id: campaignId,
-    subscriber_id: subscriber.id,
-  }));
-  if (rows.length === 0) return;
-
-  // ON CONFLICT is implicit via the unique (campaign_id, subscriber_id); ignore duplicates so
-  // a re-run adds only subscribers who joined since.
-  const inserted = await client
-    .from('newsletter_sends')
-    .upsert(rows, { onConflict: 'campaign_id,subscriber_id', ignoreDuplicates: true });
-  if (inserted.error !== null) throw new Error(`fanOut insert failed: ${inserted.error.message}`);
-
-  const total = await client
-    .from('newsletter_sends')
-    .select('id', { count: 'exact', head: true })
-    .eq('campaign_id', campaignId);
-  await client
-    .from('newsletter_campaigns')
-    .update({ total_queued: total.count ?? rows.length, started_at: new Date().toISOString() })
-    .eq('id', campaignId);
-}
-
-/**
- * How many emails have been sent (or attempted and now in-flight/unknown) today.
- *
- * Counts everything that consumed provider quota this Hanoi day, so the cap protects a
- * rate-limited free tier rather than only counting confirmed successes.
- */
-async function sentToday(client: InternalClient, now: Date): Promise<number> {
-  const since = startOfHanoiDay(now).toISOString();
-  const { count } = await client
-    .from('newsletter_sends')
-    .select('id', { count: 'exact', head: true })
-    .gte('attempted_at', since)
-    .in('status', ['sent', 'sending', 'unknown']);
-  return count ?? 0;
+async function fanOut(campaignId: string, gateway: NewsletterGateway): Promise<void> {
+  const subscriberIds = await gateway.activeSubscriberIds();
+  if (subscriberIds.length === 0) {
+    await gateway.campaignSetStarted(campaignId, 0);
+    return;
+  }
+  await gateway.fanoutSends(campaignId, subscriberIds);
+  await gateway.campaignSetStarted(campaignId, subscriberIds.length);
 }
 
 /**
@@ -153,71 +104,54 @@ async function sentToday(client: InternalClient, now: Date): Promise<number> {
  */
 export async function drainCampaign(
   campaignId: string,
-  client: InternalClient = internalClient(),
+  gateway: NewsletterGateway = liveNewsletterGateway(),
   deps: SendDeps = {},
 ): Promise<{ sent: number; failed: number; quotaReached: boolean }> {
   const now = deps.now ?? (() => new Date());
   const provider = deps.provider ?? createEmailProvider(deps.fetchImpl);
 
-  await reclaimStale(campaignId, client, now());
+  const cutoff = new Date(now().getTime() - SENDING_TIMEOUT_MINUTES * 60 * 1000).toISOString();
+  await gateway.reclaimStale(campaignId, cutoff);
 
-  const cap = await dailySendCap(client);
+  const cap = await gateway.dailySendCap();
+  const since = startOfHanoiDay(now()).toISOString();
   let remaining =
-    cap === null ? Number.POSITIVE_INFINITY : Math.max(0, cap - (await sentToday(client, now())));
+    cap === null
+      ? Number.POSITIVE_INFINITY
+      : Math.max(0, cap - (await gateway.sentTodayCount(since)));
 
   let sent = 0;
   let failed = 0;
   let quotaReached = false;
 
-  const queued = await client
-    .from('newsletter_sends')
-    .select('id, subscriber_id')
-    .eq('campaign_id', campaignId)
-    .eq('status', 'queued')
-    .limit(DRAIN_BATCH);
-  if (queued.error !== null) throw new Error(`drain read failed: ${queued.error.message}`);
+  const queued = await gateway.queuedBatch(campaignId, DRAIN_BATCH);
 
-  const article = await (deps.loadArticle ?? loadArticleFromDb)(campaignId, client);
+  const article = await (deps.loadArticle ?? loadArticleViaGateway)(campaignId, gateway);
 
-  for (const row of queued.data ?? []) {
+  for (const row of queued) {
     if (remaining <= 0) {
       quotaReached = true;
       break;
     }
 
-    // Win the row: only one caller can move it out of 'queued'. A lost race (0 rows) means
-    // another drain already took it, so skip.
-    const claim = await client
-      .from('newsletter_sends')
-      .update({ status: 'sending', attempted_at: now().toISOString() })
-      .eq('id', row.id)
-      .eq('status', 'queued')
-      .select('id')
-      .maybeSingle();
-    if (claim.error !== null) throw new Error(`send claim failed: ${claim.error.message}`);
-    if (claim.data === null) continue;
+    // Win the row: only one caller can move it out of 'queued'. A lost race means another
+    // drain already took it, so skip.
+    const claimed = await gateway.claimSend(row.id, now().toISOString());
+    if (!claimed) continue;
 
     remaining -= 1;
 
-    const subscriber = await client
-      .from('subscribers')
-      .select('email, unsubscribe_token_hash')
-      .eq('id', row.subscriber_id)
-      .maybeSingle();
-
-    if (subscriber.data === null || article === null) {
-      await client
-        .from('newsletter_sends')
-        .update({ status: 'failed', error: { reason: 'missing_subscriber_or_article' } })
-        .eq('id', row.id);
+    const subscriber = await gateway.subscriberForSend(row.subscriberId);
+    if (subscriber === null || article === null) {
+      await gateway.markSendFailed(row.id, 'missing_subscriber_or_article');
       failed += 1;
       continue;
     }
 
     // Signed, per-subscriber unsubscribe links. The token is a deterministic HMAC of the id,
     // so it is reproducible here without storing anything in the clear.
-    const token = signSubscriberToken(row.subscriber_id);
-    const query = `u=${row.subscriber_id}&t=${encodeURIComponent(token)}`;
+    const token = signSubscriberToken(row.subscriberId);
+    const query = `u=${row.subscriberId}&t=${encodeURIComponent(token)}`;
 
     const message = campaignEmail({
       title: article.title,
@@ -230,7 +164,7 @@ export async function drainCampaign(
     });
 
     const result = await provider.send({
-      to: subscriber.data.email,
+      to: subscriber.email,
       subject: message.subject,
       html: message.html,
       text: message.text,
@@ -241,112 +175,49 @@ export async function drainCampaign(
     });
 
     if (result.outcome === 'sent') {
-      await client
-        .from('newsletter_sends')
-        .update({
-          status: 'sent',
-          sent_at: now().toISOString(),
-          provider_message_id: result.providerMessageId,
-          attempt_count: 1,
-        })
-        .eq('id', row.id);
+      // Provider may not return an id (e.g. in dev); pass empty rather than null so the RPC's
+      // stored column is a plain string. The observable behaviour of a delivered send is
+      // unchanged: id is a receipt, not a correctness signal.
+      await gateway.markSendSent(row.id, result.providerMessageId ?? '', now().toISOString());
       sent += 1;
     } else {
       // A provider that is not configured, or a hard failure: record it and stop consuming
       // quota — every subsequent send would fail identically.
-      await client
-        .from('newsletter_sends')
-        .update({ status: 'failed', attempt_count: 1, error: { reason: result.error } })
-        .eq('id', row.id);
+      await gateway.markSendFailed(row.id, result.error);
       failed += 1;
-      await client.from('job_logs').insert({
-        level: 'error',
-        code: 'email_send_failed',
-        stage: 'campaign',
-        message: result.error,
-        context: { campaignId, sendId: row.id },
+      await gateway.log('error', 'email_send_failed', 'campaign', result.error, {
+        campaignId,
+        sendId: row.id,
       });
       if (result.outcome === 'not_configured') break;
     }
   }
 
   if (quotaReached) {
-    await client.from('job_logs').insert({
-      level: 'warn',
-      code: 'email_quota_reached',
-      stage: 'campaign',
-      message: `daily send cap reached; ${(queued.data ?? []).length - sent - failed} left queued`,
-      context: { campaignId },
-    });
+    await gateway.log(
+      'warn',
+      'email_quota_reached',
+      'campaign',
+      `daily send cap reached; ${queued.length - sent - failed} left queued`,
+      { campaignId },
+    );
   }
 
-  await updateCampaignTotals(campaignId, client);
+  await gateway.updateCampaignTotals(campaignId);
   return { sent, failed, quotaReached };
 }
 
-/** Mark in-flight rows that outlived the timeout as `unknown` — never retried. */
-async function reclaimStale(campaignId: string, client: InternalClient, now: Date): Promise<void> {
-  const cutoff = new Date(now.getTime() - SENDING_TIMEOUT_MINUTES * 60 * 1000).toISOString();
-  const stale = await client
-    .from('newsletter_sends')
-    .update({ status: 'unknown', error: { reason: 'sending_timed_out' } })
-    .eq('campaign_id', campaignId)
-    .eq('status', 'sending')
-    .lt('attempted_at', cutoff)
-    .select('id');
-  if (stale.error !== null) throw new Error(`reclaimStale failed: ${stale.error.message}`);
-}
-
-async function dailySendCap(client: InternalClient): Promise<number | null> {
-  const { data } = await client.from('automation_settings').select('daily_send_cap').maybeSingle();
-  return data?.daily_send_cap ?? null;
-}
-
-async function loadArticleFromDb(
+async function loadArticleViaGateway(
   campaignId: string,
-  client: InternalClient,
+  gateway: NewsletterGateway,
 ): Promise<CampaignArticle | null> {
-  const campaign = await client
-    .from('newsletter_campaigns')
-    .select('article_id')
-    .eq('id', campaignId)
-    .maybeSingle();
-  if (campaign.data === null) return null;
-
-  const { data } = await serviceClient()
-    .from('articles')
-    .select('title, dek, slug, is_fact_check, article_type')
-    .eq('id', campaign.data.article_id)
-    .maybeSingle();
-  if (data === null || data === undefined) return null;
-
+  const row = await gateway.loadArticleForCampaign(campaignId);
+  if (row === null) return null;
   return {
-    title: data.title,
-    dek: data.dek,
-    slug: data.slug,
-    isFactCheck: data.is_fact_check,
-    articleType: data.article_type,
+    title: row.title,
+    dek: row.dek,
+    slug: row.slug,
+    isFactCheck: row.isFactCheck,
+    articleType: row.articleType,
   };
-}
-
-async function updateCampaignTotals(campaignId: string, client: InternalClient): Promise<void> {
-  const sentCount = await client
-    .from('newsletter_sends')
-    .select('id', { count: 'exact', head: true })
-    .eq('campaign_id', campaignId)
-    .eq('status', 'sent');
-  const openCount = await client
-    .from('newsletter_sends')
-    .select('id', { count: 'exact', head: true })
-    .eq('campaign_id', campaignId)
-    .in('status', ['queued', 'sending']);
-
-  await client
-    .from('newsletter_campaigns')
-    .update({
-      total_sent: sentCount.count ?? 0,
-      // A campaign is complete once nothing is left queued or in-flight.
-      ...(openCount.count === 0 ? { completed_at: new Date().toISOString() } : {}),
-    })
-    .eq('id', campaignId);
 }
