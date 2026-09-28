@@ -472,3 +472,139 @@ export function liveGateway(): AutomationGateway {
     },
   };
 }
+
+/* ============================================================================
+ *   Newsletter gateway
+ * ============================================================================
+ *
+ * The newsletter signup, confirm and unsubscribe paths share the same private-
+ * schema problem: they cannot reach `internal.subscribers` etc. through
+ * PostgREST directly, because that schema is intentionally not exposed. Every
+ * operation is behind a `public.newsletter_*` SECURITY DEFINER function
+ * callable only by `service_role` (see the paired migration).
+ *
+ * Kept separate from `AutomationGateway` because the newsletter has its own
+ * consumers (`subscribe`, `lifecycle`) that never touch the automation
+ * surface — one narrow shape each is easier to reason about than one large
+ * union.
+ */
+
+export type SubStatusValue = 'pending' | 'active' | 'unsubscribed' | 'bounced' | 'complained';
+
+export type SubscriberSummary = {
+  readonly id: string;
+  readonly status: SubStatusValue;
+};
+
+export type PendingConfirmationRow = {
+  readonly id: string;
+  readonly confirmTokenHash: string | null;
+  readonly confirmExpiresAt: string | null;
+};
+
+export type SubscriberForUnsub = {
+  readonly status: SubStatusValue;
+  readonly unsubscribeTokenHash: string;
+};
+
+/** The whole shape of the private-schema surface the newsletter code needs. */
+export type NewsletterGateway = {
+  countRecentAttempts: (ipHmac: string, since: string) => Promise<number>;
+  recordAttempt: (ipHmac: string, outcome: string) => Promise<void>;
+  findSubscriber: (emailNormalized: string) => Promise<SubscriberSummary | null>;
+  insertPending: (payload: Record<string, unknown>) => Promise<string | null>;
+  setUnsubscribeHash: (id: string, hash: string) => Promise<void>;
+  rearmPending: (id: string, consent: Record<string, unknown>) => Promise<void>;
+  logSendFailure: (level: 'warn' | 'error', message: string, stage?: string) => Promise<void>;
+  pendingWithConfirmTokens: () => Promise<PendingConfirmationRow[]>;
+  activate: (id: string, nowIso: string) => Promise<boolean>;
+  getSubscriberForUnsub: (id: string) => Promise<SubscriberForUnsub | null>;
+  markUnsubscribed: (id: string, nowIso: string) => Promise<boolean>;
+};
+
+type SubscriberRpcRow = { id: string; status: SubStatusValue };
+type PendingConfirmRpcRow = {
+  id: string;
+  confirm_token_hash: string | null;
+  confirm_expires_at: string | null;
+};
+type UnsubRpcRow = { status: SubStatusValue; unsubscribe_token_hash: string };
+
+/** The live newsletter gateway, backed by the service-role client. */
+export function liveNewsletterGateway(): NewsletterGateway {
+  return {
+    countRecentAttempts: async (ipHmac, since) => {
+      const n = await one<number>('newsletter_count_recent_attempts', {
+        p_ip_hmac: ipHmac,
+        p_since: since,
+      });
+      return typeof n === 'number' ? n : 0;
+    },
+
+    recordAttempt: async (ipHmac, outcome) => {
+      await one<null>('newsletter_record_attempt', {
+        p_ip_hmac: ipHmac,
+        p_outcome: outcome,
+      });
+    },
+
+    findSubscriber: async (emailNormalized) => {
+      const list = await rows<SubscriberRpcRow>('newsletter_find_subscriber', {
+        p_email_normalized: emailNormalized,
+      });
+      const row = list[0];
+      return row === undefined ? null : { id: row.id, status: row.status };
+    },
+
+    insertPending: (payload) => one<string>('newsletter_insert_pending', { p: payload }),
+
+    setUnsubscribeHash: async (id, hash) => {
+      await one<null>('newsletter_set_unsubscribe_hash', { p_id: id, p_hash: hash });
+    },
+
+    rearmPending: async (id, consent) => {
+      await one<null>('newsletter_rearm_pending', { p_id: id, p_consent: consent });
+    },
+
+    logSendFailure: async (level, message, stage = 'confirm') => {
+      // Logging must never fail the caller.
+      try {
+        const { error } = await callRpc()<null>('newsletter_log_send_failure', {
+          p_level: level,
+          p_message: message,
+          p_stage: stage,
+        });
+        if (error !== null) console.error(`newsletter_log_send_failure failed: ${error.message}`);
+      } catch (cause) {
+        console.error('newsletter_log_send_failure threw', cause);
+      }
+    },
+
+    pendingWithConfirmTokens: async () => {
+      const list = await rows<PendingConfirmRpcRow>('newsletter_pending_with_confirm_tokens');
+      return list.map((row) => ({
+        id: row.id,
+        confirmTokenHash: row.confirm_token_hash,
+        confirmExpiresAt: row.confirm_expires_at,
+      }));
+    },
+
+    activate: async (id, nowIso) => {
+      const ok = await one<boolean>('newsletter_activate', { p_id: id, p_now: nowIso });
+      return ok === true;
+    },
+
+    getSubscriberForUnsub: async (id) => {
+      const list = await rows<UnsubRpcRow>('newsletter_get_subscriber_for_unsub', { p_id: id });
+      const row = list[0];
+      return row === undefined
+        ? null
+        : { status: row.status, unsubscribeTokenHash: row.unsubscribe_token_hash };
+    },
+
+    markUnsubscribed: async (id, nowIso) => {
+      const ok = await one<boolean>('newsletter_mark_unsubscribed', { p_id: id, p_now: nowIso });
+      return ok === true;
+    },
+  };
+}

@@ -85,6 +85,16 @@ export function SubscribeForm({ source, onDone }: { source: string; onDone?: () 
         });
         return;
       }
+      if (response.status >= 500) {
+        // A server-side failure — not the person's email. The route returns 503 with a
+        // controlled body when this happens (see the subscribe route), so we distinguish
+        // it from "your address is malformed" and invite a retry rather than a re-check.
+        setState({
+          kind: 'error',
+          message: 'Máy chủ tạm thời bận. Vui lòng thử lại sau ít phút.',
+        });
+        return;
+      }
       if (!response.ok) {
         setState({
           kind: 'error',

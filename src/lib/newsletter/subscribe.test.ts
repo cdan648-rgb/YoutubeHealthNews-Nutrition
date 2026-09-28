@@ -1,16 +1,16 @@
 /**
- * The signup use case, against the in-memory fake client.
+ * The signup use case, against the in-memory newsletter gateway.
  *
  * The properties under test are the ones a client-side insert could never guarantee: the
  * honeypot drops bots silently, the response is identical for known and unknown addresses
- * (no enumeration), an active address is never re-mailed, and the rate limit trips after the
- * configured burst.
+ * (no enumeration), an active address is never re-mailed, the rate limit trips after the
+ * configured burst, and — the reason for the recent production bug — a Gmail address is
+ * accepted through the gateway without ever touching the private `internal` schema.
  */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { subscribe } from './subscribe';
 import type { EmailProvider } from './provider';
-import { FakeInternalClient } from '../../../tests/helpers/fake-newsletter-client';
-import type { InternalClient } from '@/lib/supabase/service';
+import { fakeNewsletterGateway } from '../../../tests/helpers/fake-newsletter-gateway';
 
 function sentProvider(): EmailProvider & { sends: string[] } {
   const sends: string[] = [];
@@ -25,6 +25,17 @@ function sentProvider(): EmailProvider & { sends: string[] } {
   };
 }
 
+/** A provider that pretends Resend is not configured — the production default before setup. */
+function notConfiguredProvider(): EmailProvider & { sends: string[] } {
+  const sends: string[] = [];
+  return {
+    name: 'disabled',
+    configured: false,
+    sends,
+    send: () => Promise.resolve({ outcome: 'not_configured', error: 'RESEND_API_KEY is not set' }),
+  };
+}
+
 const BASE = {
   honeypot: null,
   turnstileToken: 'tok',
@@ -33,9 +44,9 @@ const BASE = {
   source: 'test',
 } as const;
 
-function deps(client: FakeInternalClient, provider: EmailProvider) {
+function deps(gateway: ReturnType<typeof fakeNewsletterGateway>, provider: EmailProvider) {
   return {
-    client: client as unknown as InternalClient,
+    gateway,
     provider,
     verify: () => Promise.resolve({ ok: true as const, skipped: false }),
   };
@@ -51,115 +62,90 @@ afterEach(() => {
 });
 
 describe('subscribe', () => {
-  it('creates a pending subscriber and sends one confirmation for a new address', async () => {
-    const client = new FakeInternalClient({ subscribers: [] });
+  it('creates a pending subscriber and sends one confirmation for a new Gmail address', async () => {
+    const gateway = fakeNewsletterGateway();
     const provider = sentProvider();
     const outcome = await subscribe(
-      { ...BASE, email: 'New.Person@example.com' },
-      deps(client, provider),
+      { ...BASE, email: 'New.Person@gmail.com' },
+      deps(gateway, provider),
     );
 
+    // The exact failure the production bug produced was a "server error" masquerading as
+    // "invalid email" on the mobile modal. This case exists to make sure a legitimate
+    // Gmail address is never rejected by the signup path itself.
     expect(outcome).toEqual({ status: 'ok' });
-    const rows = client.rowsOf('subscribers');
-    expect(rows).toHaveLength(1);
-    expect(rows[0]?.status).toBe('pending');
-    expect(rows[0]?.confirm_token_hash).toMatch(/^[0-9a-f]{64}$/);
+    expect(gateway.subscribers).toHaveLength(1);
+    expect(gateway.subscribers[0]?.status).toBe('pending');
+    expect(gateway.subscribers[0]?.confirmTokenHash).toMatch(/^[0-9a-f]{64}$/);
     // The unsubscribe hash is set deterministically from the row id after insert.
-    expect(rows[0]?.unsubscribe_token_hash).toMatch(/^[0-9a-f]{64}$/);
-    expect(provider.sends).toEqual(['new.person@example.com']);
+    expect(gateway.subscribers[0]?.unsubscribeTokenHash).toMatch(/^[0-9a-f]{64}$/);
+    expect(provider.sends).toEqual(['new.person@gmail.com']);
   });
 
   it('drops a honeypot submission silently with a success-shaped answer', async () => {
-    const client = new FakeInternalClient({ subscribers: [] });
+    const gateway = fakeNewsletterGateway();
     const provider = sentProvider();
     const outcome = await subscribe(
       { ...BASE, email: 'bot@example.com', honeypot: 'ACME Inc' },
-      deps(client, provider),
+      deps(gateway, provider),
     );
     expect(outcome).toEqual({ status: 'ok' });
-    expect(client.rowsOf('subscribers')).toHaveLength(0);
+    expect(gateway.subscribers).toHaveLength(0);
     expect(provider.sends).toHaveLength(0);
   });
 
   it('rejects a malformed address', async () => {
-    const client = new FakeInternalClient();
+    const gateway = fakeNewsletterGateway();
     const outcome = await subscribe(
       { ...BASE, email: 'not-an-email' },
-      deps(client, sentProvider()),
+      deps(gateway, sentProvider()),
     );
     expect(outcome.status).toBe('invalid');
   });
 
   it('gives the SAME neutral answer for an already-active address, and does not re-mail', async () => {
-    const client = new FakeInternalClient({
-      subscribers: [
-        {
-          id: 'existing',
-          email: 'a@example.com',
-          email_normalized: 'a@example.com',
-          status: 'active',
-          unsubscribe_token_hash: 'x',
-          consent_text_version: 'v',
-        },
-      ],
-    });
+    const gateway = fakeNewsletterGateway([
+      { id: 'existing', email: 'a@example.com', status: 'active' },
+    ]);
     const provider = sentProvider();
-    const outcome = await subscribe({ ...BASE, email: 'a@example.com' }, deps(client, provider));
+    const outcome = await subscribe({ ...BASE, email: 'a@example.com' }, deps(gateway, provider));
 
     expect(outcome).toEqual({ status: 'ok' });
     expect(provider.sends).toHaveLength(0); // no email to an already-confirmed address
   });
 
   it('re-arms confirmation for a pending address without creating a duplicate row', async () => {
-    const client = new FakeInternalClient({
-      subscribers: [
-        {
-          id: 'pending-1',
-          email: 'p@example.com',
-          email_normalized: 'p@example.com',
-          status: 'pending',
-          unsubscribe_token_hash: 'x',
-          consent_text_version: 'v',
-        },
-      ],
-    });
+    const gateway = fakeNewsletterGateway([
+      { id: 'pending-1', email: 'p@example.com', status: 'pending' },
+    ]);
     const provider = sentProvider();
-    await subscribe({ ...BASE, email: 'p@example.com' }, deps(client, provider));
+    await subscribe({ ...BASE, email: 'p@example.com' }, deps(gateway, provider));
 
-    expect(client.rowsOf('subscribers')).toHaveLength(1);
+    expect(gateway.subscribers).toHaveLength(1);
     expect(provider.sends).toEqual(['p@example.com']);
   });
 
   it('treats a Gmail alias as the same person (no duplicate)', async () => {
-    const client = new FakeInternalClient({
-      subscribers: [
-        {
-          id: 'g',
-          email: 'person@gmail.com',
-          email_normalized: 'person@gmail.com',
-          status: 'active',
-          unsubscribe_token_hash: 'x',
-          consent_text_version: 'v',
-        },
-      ],
-    });
+    const gateway = fakeNewsletterGateway([
+      { id: 'g', email: 'person@gmail.com', status: 'active' },
+    ]);
     const outcome = await subscribe(
       { ...BASE, email: 'p.e.r.s.o.n+news@gmail.com' },
-      deps(client, sentProvider()),
+      deps(gateway, sentProvider()),
     );
     expect(outcome).toEqual({ status: 'ok' });
-    expect(client.rowsOf('subscribers')).toHaveLength(1);
+    expect(gateway.subscribers).toHaveLength(1);
   });
 
   it('rate-limits after the configured burst from one IP', async () => {
-    const client = new FakeInternalClient({ subscribers: [] });
+    const gateway = fakeNewsletterGateway();
     const provider = sentProvider();
     const results = [];
     for (let i = 0; i < 7; i += 1) {
       results.push(
         await subscribe(
           { ...BASE, email: `u${i}@example.com`, ip: '198.51.100.1' },
-          deps(client, provider),
+          deps(gateway, provider),
         ),
       );
     }
@@ -168,16 +154,31 @@ describe('subscribe', () => {
   });
 
   it('blocks when Turnstile is configured and fails', async () => {
-    const client = new FakeInternalClient({ subscribers: [] });
+    const gateway = fakeNewsletterGateway();
     const outcome = await subscribe(
       { ...BASE, email: 'x@example.com' },
       {
-        client: client as unknown as InternalClient,
+        gateway,
         provider: sentProvider(),
         verify: () => Promise.resolve({ ok: false as const, reason: 'bad' }),
       },
     );
     expect(outcome).toEqual({ status: 'blocked', reason: 'bad' });
-    expect(client.rowsOf('subscribers')).toHaveLength(0);
+    expect(gateway.subscribers).toHaveLength(0);
+  });
+
+  it('still returns ok when Resend is not configured, and logs the send failure', async () => {
+    // This is the "optional provider absent" degradation path: signup is captured, the
+    // confirmation email is a clean not_configured, and the person is never told the
+    // account is broken. Nothing about the list is lost until Resend is set up.
+    const gateway = fakeNewsletterGateway();
+    const provider = notConfiguredProvider();
+    const outcome = await subscribe(
+      { ...BASE, email: 'later@example.com' },
+      deps(gateway, provider),
+    );
+    expect(outcome).toEqual({ status: 'ok' });
+    expect(gateway.subscribers).toHaveLength(1);
+    expect(gateway.sendFailures.some((row) => row.level === 'warn')).toBe(true);
   });
 });

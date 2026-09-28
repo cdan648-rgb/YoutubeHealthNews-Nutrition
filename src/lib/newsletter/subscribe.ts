@@ -10,11 +10,14 @@
  * endpoint into an email-enumeration oracle, so "we sent a confirmation" is always the reply,
  * and only a genuinely new or unconfirmed address actually gets an email. This also makes
  * the endpoint safe to expose without leaking who is on the list.
+ *
+ * Every database call goes through `NewsletterGateway` (public.newsletter_* RPCs), not the
+ * private `internal` schema directly, because that schema is not exposed to the Data API.
  */
 import 'server-only';
 
-import type { InternalClient } from '@/lib/supabase/service';
-import { internalClient } from '@/lib/supabase/service';
+import type { NewsletterGateway } from '@/lib/automation/internal-gateway';
+import { liveNewsletterGateway } from '@/lib/automation/internal-gateway';
 import type { EmailProvider } from './provider';
 import { createEmailProvider } from './provider';
 import { confirmEmail } from './templates';
@@ -51,7 +54,7 @@ export type SubscribeOutcome =
   | { readonly status: 'blocked'; readonly reason: string };
 
 export type SubscribeDeps = {
-  readonly client?: InternalClient;
+  readonly gateway?: NewsletterGateway;
   readonly provider?: EmailProvider;
   readonly fetchImpl?: typeof fetch;
   /** Injected in tests so no verification-service call is made. */
@@ -63,7 +66,7 @@ export async function subscribe(
   input: SubscribeInput,
   deps: SubscribeDeps = {},
 ): Promise<SubscribeOutcome> {
-  const client = deps.client ?? internalClient();
+  const gateway = deps.gateway ?? liveNewsletterGateway();
   const now = deps.now ?? (() => new Date());
 
   // 1. Honeypot. A filled hidden field is a bot; drop it silently with a success-shaped
@@ -84,16 +87,12 @@ export async function subscribe(
   const ipHmac = hashIp(input.ip);
   if (ipHmac !== null) {
     const since = new Date(now().getTime() - RATE_LIMIT.windowSeconds * 1000).toISOString();
-    const { count } = await client
-      .from('signup_attempts')
-      .select('id', { count: 'exact', head: true })
-      .eq('ip_hmac', ipHmac)
-      .gte('ts', since);
-    if ((count ?? 0) >= RATE_LIMIT.max) {
-      await client.from('signup_attempts').insert({ ip_hmac: ipHmac, outcome: 'rate_limited' });
+    const attempts = await gateway.countRecentAttempts(ipHmac, since);
+    if (attempts >= RATE_LIMIT.max) {
+      await gateway.recordAttempt(ipHmac, 'rate_limited');
       return { status: 'rate_limited' };
     }
-    await client.from('signup_attempts').insert({ ip_hmac: ipHmac, outcome: 'attempt' });
+    await gateway.recordAttempt(ipHmac, 'attempt');
   }
 
   // 4. Turnstile. Skipped cleanly when unconfigured (see turnstile.ts); a hard fail when it
@@ -105,17 +104,11 @@ export async function subscribe(
   }
 
   // 5. Look up by the normalised address, so "a@gmail.com" and "a+x@gmail.com" are one person.
-  const existing = await client
-    .from('subscribers')
-    .select('id, status')
-    .eq('email_normalized', normalized)
-    .maybeSingle();
-  if (existing.error !== null)
-    throw new Error(`subscriber lookup failed: ${existing.error.message}`);
+  const existing = await gateway.findSubscriber(normalized);
 
   // An already-active subscriber gets the neutral answer and NO email — re-confirming an
   // active address would be an unrequested message.
-  if (existing.data?.status === 'active') {
+  if (existing?.status === 'active') {
     return { status: 'ok' };
   }
 
@@ -133,43 +126,29 @@ export async function subscribe(
     signup_source: input.source,
   };
 
-  if (existing.data === null) {
+  if (existing === null) {
     // New address. The unsubscribe token is a deterministic HMAC of the row id, so it needs
     // the id first: insert with a placeholder hash, then set the real one. A temporary
     // random placeholder means the NOT NULL column is never briefly wrong in a usable way.
-    const insert = await client
-      .from('subscribers')
-      .insert({
-        email,
-        status: 'pending',
-        unsubscribe_token_hash: hashToken(generateToken()),
-        ...consent,
-      })
-      .select('id')
-      .maybeSingle();
-    if (insert.error !== null) {
-      // A unique-violation here means a concurrent request created the row; treat as success.
-      if (insert.error.code === '23505') return { status: 'ok' };
-      throw new Error(`subscriber insert failed: ${insert.error.message}`);
+    const insertedId = await gateway.insertPending({
+      email,
+      unsubscribe_token_hash: hashToken(generateToken()),
+      ...consent,
+    });
+    if (insertedId === null) {
+      // A unique conflict means a concurrent request created the row; treat as success.
+      return { status: 'ok' };
     }
-    if (insert.data !== null) {
-      await client
-        .from('subscribers')
-        .update({ unsubscribe_token_hash: unsubscribeTokenHash(insert.data.id) })
-        .eq('id', insert.data.id);
-    }
+    await gateway.setUnsubscribeHash(insertedId, unsubscribeTokenHash(insertedId));
   } else {
     // A pending, unsubscribed or bounced row: re-arm the confirmation and re-send. A fresh
     // token invalidates any older link.
-    const update = await client
-      .from('subscribers')
-      .update({ status: 'pending', ...consent })
-      .eq('id', existing.data.id);
-    if (update.error !== null) throw new Error(`subscriber update failed: ${update.error.message}`);
+    await gateway.rearmPending(existing.id, consent);
   }
 
-  // Send the confirmation. A delivery failure is logged by the caller but does not change
-  // the neutral response — the row is captured and the person can retry.
+  // Send the confirmation. A delivery failure is logged but does not change the neutral
+  // response — the row is captured and the person can retry, and a missing provider is a
+  // clean `not_configured` rather than a throw (see provider.ts).
   const provider = deps.provider ?? createEmailProvider(deps.fetchImpl);
   const message = confirmEmail({ confirmUrl });
   const result = await provider.send({
@@ -180,12 +159,10 @@ export async function subscribe(
   });
 
   if (result.outcome !== 'sent') {
-    await client.from('job_logs').insert({
-      level: result.outcome === 'not_configured' ? 'warn' : 'error',
-      code: 'email_send_failed',
-      stage: 'confirm',
-      message: result.error,
-    });
+    await gateway.logSendFailure(
+      result.outcome === 'not_configured' ? 'warn' : 'error',
+      result.error,
+    );
   }
 
   return { status: 'ok' };
