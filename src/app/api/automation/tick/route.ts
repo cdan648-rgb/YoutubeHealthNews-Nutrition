@@ -12,11 +12,14 @@ import { timingSafeEqualString } from '@/lib/security/compare';
  * at most one automatic article per Hanoi calendar day.
  *
  * Runs on the Node runtime rather than Edge because the pipeline needs npm dependencies.
- * `maxDuration` is 60s, and the stage loop hands back at 50s, so a long generation spans
- * several ticks rather than risking a mid-stage kill.
+ * `maxDuration` is 300s — Vercel Hobby's Fluid Compute ceiling — because a single generate
+ * stage (validation gate + OpenRouter completion + reference checks) can single-handedly
+ * exceed the 60s platform default and be killed mid-stage. The stage loop still hands back
+ * at 50s between stages, so a long generation resumes at persist on the next tick rather
+ * than trying to squeeze everything into one invocation.
  */
 export const runtime = 'nodejs';
-export const maxDuration = 60;
+export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: Request): Promise<NextResponse> {
