@@ -126,6 +126,11 @@ export async function complete<T>(request: CompletionRequest<T>): Promise<Comple
   ];
 
   let lastErrors = '';
+  // The model's own previous JSON, replayed as an assistant message on the repair pass so it
+  // can revise what it wrote rather than starting from scratch. Passing the error text here
+  // (as an earlier version did) confuses the model about what it said last, and the "add
+  // the missing blocks" hint lands worse when the prior output is not in view.
+  let lastContent = '';
 
   for (const attempt of [0, 1] as const) {
     const attemptMessages =
@@ -133,13 +138,13 @@ export async function complete<T>(request: CompletionRequest<T>): Promise<Comple
         ? messages
         : [
             ...messages,
-            { role: 'assistant', content: lastErrors.slice(0, 2000) },
+            { role: 'assistant', content: lastContent.slice(0, 6000) },
             {
               role: 'user',
               content:
-                'Kết quả trước đó không đúng schema. Lỗi cụ thể:\n' +
+                'JSON trước đó không hợp lệ. Danh sách lỗi cụ thể (do bộ kiểm schema báo về):\n' +
                 lastErrors +
-                '\nHãy trả lại JSON đúng schema. Không thêm lời giải thích.',
+                '\n\nHãy trả lại JSON HOÀN CHỈNH sau khi sửa. GIỮ NGUYÊN mọi trường và mọi phần tử đã hợp lệ (không có tên trong danh sách lỗi trên). Chỉ bổ sung phần thiếu và chỉnh phần sai đúng theo lỗi được nêu. Nếu lỗi báo "Too small ... expected array to have >=N items", hãy BỔ SUNG các phần tử còn thiếu vào cuối mảng để đạt tối thiểu N, chứ KHÔNG viết lại phần đã hợp lệ. Không thêm lời giải thích, chỉ trả về JSON.',
             },
           ];
 
@@ -224,6 +229,7 @@ export async function complete<T>(request: CompletionRequest<T>): Promise<Comple
     try {
       parsedJson = JSON.parse(content);
     } catch {
+      lastContent = content;
       lastErrors = `Không phải JSON hợp lệ: ${content.slice(0, 400)}`;
       if (attempt === 1) {
         throw new OpenRouterError(
@@ -240,6 +246,7 @@ export async function complete<T>(request: CompletionRequest<T>): Promise<Comple
       return { data: validated.data, usage, repaired: attempt === 1 };
     }
 
+    lastContent = content;
     lastErrors = validated.error.issues
       .slice(0, 12)
       .map((issue) => `${issue.path.join('.') || '(root)'}: ${issue.message}`)

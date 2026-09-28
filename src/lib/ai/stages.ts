@@ -359,6 +359,9 @@ ${speakerOnly.length === 0 ? '(không có)' : speakerOnly.map((claim) => `- ${cl
 ${dropped.length === 0 ? '(không có)' : dropped.map((claim) => `- ${claim.claimText} (lý do: ${claim.reason})`).join('\n')}
 
 CẤU TRÚC BẮT BUỘC của mảng body:
+Mảng body PHẢI có ÍT NHẤT 8 phần tử. Một bài viết đầy đủ ${input.wordCountMin}–${input.wordCountMax} từ thường cần 12–20 block. GIỮA hai block {"t":"h2"} liền nhau PHẢI có ít nhất một block {"t":"p"} — nếu chỉ có tiêu đề mà không có đoạn văn nào thì bài viết trống rỗng và sẽ bị từ chối.
+
+Các block bắt buộc trong mảng body:
 - ĐÚNG MỘT block {"t":"source_note"} (đặt gần đầu bài)
 - ÍT NHẤT 4 block {"t":"h2"}
 - ÍT NHẤT MỘT block {"t":"key_facts"} với 2–8 items
@@ -531,6 +534,9 @@ ${paperOwn.length === 0 ? '(không có)' : paperOwn.map((claim) => `- ${claim.cl
 ${dropped.length === 0 ? '(không có)' : dropped.map((claim) => `- ${claim.claimText} (lý do: ${claim.reason})`).join('\n')}
 
 CẤU TRÚC BẮT BUỘC của mảng body:
+Mảng body PHẢI có ÍT NHẤT 8 phần tử. Một bài viết đầy đủ ${input.wordCountMin}–${input.wordCountMax} từ thường cần 12–18 block. GIỮA hai block {"t":"h2"} liền nhau PHẢI có ít nhất một block {"t":"p"} — nếu chỉ có tiêu đề mà không có đoạn văn nào thì bài viết trống rỗng và sẽ bị từ chối.
+
+Các block bắt buộc trong mảng body:
 - ĐÚNG MỘT block {"t":"source_note"} (đặt gần đầu bài)
 - ÍT NHẤT 4 block {"t":"h2"}, trong đó một mục nói về giới hạn của nghiên cứu
 - ÍT NHẤT MỘT block {"t":"key_facts"} với 2–8 items

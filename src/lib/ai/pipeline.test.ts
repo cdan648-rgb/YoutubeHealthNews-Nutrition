@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import type { Block } from '@/lib/domain/blocks';
 import { SEED_ARTICLES } from '@/content/seeds';
 import { generateArticle, totalCost, type PipelineDeps, type PipelineSource } from './pipeline';
+import { draftPrompt, draftSchema, researchDraftPrompt } from './stages';
 import { hardFailureCodes, validateArticle } from '@/lib/validate/gate';
 
 const CATEGORIES = [
@@ -599,6 +600,303 @@ describe('resumability', () => {
     expect(outcome.artifacts.extraction).toBeDefined();
     expect(outcome.artifacts.verification).toBeDefined();
     expect(outcome.artifacts.draft).toBeUndefined();
+  });
+});
+
+describe('body block minimum', () => {
+  /**
+   * Regression pack for the 2026-09-28 blocker: the draft stage was returning fewer than
+   * eight body blocks and taking the run to attempts=5 with `body: Too small`.
+   *
+   * The 8-block floor is real — for a YouTube article the structural gate needs a source
+   * note, at least four h2 sections, a key-facts panel, a video embed, a disclaimer and at
+   * least one speaker-attributed paragraph, which is already nine blocks — so this pack
+   * proves the schema catches too-short bodies, that the repair pass can recover a
+   * short-body attempt without a third try, and that the prompts now name the total.
+   */
+
+  /** A body of exactly eight blocks — the Zod floor. Passes the schema even though a
+   * YouTube gate check would additionally require the speaker paragraph. */
+  function eightBlockBody(): Block[] {
+    return [
+      { t: 'source_note' },
+      {
+        t: 'p',
+        text: 'Đoạn mở bài trình bày ngắn gọn chủ đề của bài viết và lý do vì sao nó đáng được quan tâm.',
+        attribution: 'general',
+      },
+      { t: 'h2', text: 'Vai trò cơ bản' },
+      { t: 'h2', text: 'Vì sao khó phát hiện' },
+      { t: 'h2', text: 'Nguồn trong bữa ăn' },
+      { t: 'h2', text: 'Khi nào cần gặp bác sĩ' },
+      { t: 'key_facts', title: 'Ghi nhớ', items: ['Điểm một cần lưu ý', 'Điểm hai cần lưu ý'] },
+      { t: 'disclaimer' },
+    ];
+  }
+
+  it('accepts a body with exactly the minimum block count at the Zod schema boundary', () => {
+    // Direct schema check: 8 blocks is the floor and must pass, since a shorter body
+    // is what took today's run to attempt 5.
+    const draft = {
+      title: 'Thiếu magie ảnh hưởng đến cơ thể như thế nào',
+      dek: 'Magie tham gia rất nhiều phản ứng enzyme, nhưng phần lớn lượng magie lại không nằm trong máu, khiến xét nghiệm máu không phản ánh đầy đủ tình trạng dự trữ của cơ thể.',
+      slug: 'thieu-magie-anh-huong-den-co-the',
+      categorySlug: 'vi-chat-vitamin',
+      isFactCheck: false,
+      body: eightBlockBody(),
+      references: [],
+    };
+    const parsed = draftSchema.safeParse(draft);
+    expect(parsed.success).toBe(true);
+  });
+
+  it('rejects a body of seven blocks with an array-too-small error', () => {
+    // The exact failure production hit: body length below the schema floor. This is the
+    // check that must NOT be relaxed; the fix is prompt-side.
+    const shortBody = eightBlockBody().slice(0, 7);
+    const parsed = draftSchema.safeParse({
+      title: 'Thiếu magie ảnh hưởng đến cơ thể như thế nào',
+      dek: 'Magie tham gia rất nhiều phản ứng enzyme, nhưng phần lớn lượng magie lại không nằm trong máu, khiến xét nghiệm máu không phản ánh đầy đủ tình trạng dự trữ của cơ thể.',
+      slug: 'thieu-magie-anh-huong-den-co-the',
+      categorySlug: 'vi-chat-vitamin',
+      isFactCheck: false,
+      body: shortBody,
+      references: [],
+    });
+    expect(parsed.success).toBe(false);
+    if (parsed.success) throw new Error('expected schema rejection');
+    const bodyIssue = parsed.error.issues.find((issue) => issue.path[0] === 'body');
+    expect(bodyIssue).toBeDefined();
+    expect(bodyIssue?.message).toMatch(/at least|>=|too_small|Too small/i);
+  });
+
+  it('names the total-block minimum explicitly in both draft prompts', () => {
+    // The prompt is the primary fix. If a future rewrite drops the "at least 8" wording
+    // the model can hit every named block and still ship a 5-block body, which is what
+    // took today's run to attempt 5.
+    const youtube = draftPrompt({
+      extraction: {
+        topic: 't',
+        plainLanguageTopic: 't',
+        proposedCategorySlug: 'vi-chat-vitamin',
+        isFactCheck: false,
+        restrictedTopics: [],
+        outline: [
+          { heading: 'a', intent: 'x' },
+          { heading: 'b', intent: 'x' },
+          { heading: 'c', intent: 'x' },
+          { heading: 'd', intent: 'x' },
+        ],
+        claims: [
+          { text: 'a claim', kind: 'speaker_claim', needsCitation: false, numbers: [] },
+          { text: 'another claim', kind: 'speaker_claim', needsCitation: false, numbers: [] },
+          { text: 'third claim', kind: 'general_knowledge', needsCitation: false, numbers: [] },
+        ],
+      },
+      verification: { verifiedClaims: [] },
+      sourceTitle: 't',
+      descriptionClean: 'd',
+      channelTitle: 'c',
+      wordCountMin: 700,
+      wordCountMax: 1400,
+      allowedCategorySlugs: ['vi-chat-vitamin'],
+    });
+    // The prompt must state the total-array minimum, not only per-type minimums.
+    expect(youtube).toMatch(/ÍT NHẤT 8 phần tử/);
+    // …and it must tell the model to put paragraphs between headings.
+    expect(youtube).toMatch(/GIỮA hai block .*"h2".*block .*"p"/);
+
+    const research = researchDraftPrompt({
+      extraction: {
+        topic: 't',
+        plainLanguageTopic: 't',
+        proposedCategorySlug: 'vi-chat-vitamin',
+        isFactCheck: false,
+        restrictedTopics: [],
+        outline: [
+          { heading: 'a', intent: 'x' },
+          { heading: 'b', intent: 'x' },
+          { heading: 'c', intent: 'x' },
+          { heading: 'd', intent: 'x' },
+        ],
+        claims: [
+          { text: 'a claim', kind: 'speaker_claim', needsCitation: false, numbers: [] },
+          { text: 'another claim', kind: 'general_knowledge', needsCitation: false, numbers: [] },
+          { text: 'third claim', kind: 'general_knowledge', needsCitation: false, numbers: [] },
+        ],
+      },
+      verification: { verifiedClaims: [] },
+      paperTitle: 't',
+      paperUrl: 'https://europepmc.org/x',
+      journal: null,
+      publicationDate: null,
+      authors: [],
+      abstract: 'a',
+      wordCountMin: 700,
+      wordCountMax: 1400,
+    });
+    expect(research).toMatch(/ÍT NHẤT 8 phần tử/);
+  });
+
+  it("recovers when the draft's first attempt returns a too-short body, on the repair pass", async () => {
+    // Attempt 0 for the draft stage returns a 5-block body — under the 8-block floor.
+    // Attempt 1 (repair) returns the full-length body. The pipeline must succeed with
+    // exactly one repair on the draft stage, and the whole pipeline in exactly five calls.
+    let draftCalls = 0;
+    const merged = defaults();
+    const goodDraft = merged.draft;
+    const shortDraft = { ...(goodDraft as Record<string, unknown>), body: eightBlockBody().slice(0, 5) };
+
+    const fetchImpl = ((_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      const raw = typeof init?.body === 'string' ? init.body : '';
+      const parsed = JSON.parse(raw) as {
+        response_format?: { json_schema?: { name?: string } };
+      };
+      const stage = parsed.response_format?.json_schema?.name;
+      let payload: unknown;
+      if (stage === 'draft') {
+        draftCalls += 1;
+        payload = draftCalls === 1 ? shortDraft : goodDraft;
+      } else if (stage === 'extraction') {
+        payload = merged.extraction;
+      } else if (stage === 'verification') {
+        payload = merged.verification;
+      } else {
+        payload = merged.seo;
+      }
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            model: 'inclusionai/ling-3.0-flash-vl',
+            usage: { prompt_tokens: 1200, completion_tokens: 900 },
+            choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(payload) } }],
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        ),
+      );
+    }) as unknown as typeof fetch;
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl }));
+    if (outcome.decision === 'failed') {
+      throw new Error(`unexpected failure: ${outcome.code} ${outcome.message}`);
+    }
+    // Draft was retried exactly once; there is no third attempt.
+    expect(draftCalls).toBe(2);
+  });
+
+  it('does not attempt a third try when the draft stays too short', async () => {
+    // Both draft attempts return a 5-block body. The pipeline must fail cleanly with
+    // ai_malformed_output — never a third call, never a loop.
+    let draftCalls = 0;
+    const merged = defaults();
+    const shortDraft = {
+      ...(merged.draft as Record<string, unknown>),
+      body: eightBlockBody().slice(0, 5),
+    };
+
+    const fetchImpl = ((_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      const raw = typeof init?.body === 'string' ? init.body : '';
+      const parsed = JSON.parse(raw) as {
+        response_format?: { json_schema?: { name?: string } };
+      };
+      const stage = parsed.response_format?.json_schema?.name;
+      let payload: unknown;
+      if (stage === 'draft') {
+        draftCalls += 1;
+        payload = shortDraft;
+      } else if (stage === 'extraction') {
+        payload = merged.extraction;
+      } else if (stage === 'verification') {
+        payload = merged.verification;
+      } else {
+        payload = merged.seo;
+      }
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            model: 'inclusionai/ling-3.0-flash-vl',
+            usage: { prompt_tokens: 1200, completion_tokens: 900 },
+            choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(payload) } }],
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        ),
+      );
+    }) as unknown as typeof fetch;
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl }));
+    if (outcome.decision !== 'failed') throw new Error('expected failure');
+    expect(outcome.code).toBe('ai_malformed_output');
+    expect(outcome.message).toMatch(/body/);
+    // Exactly two draft calls — no infinite retry loop.
+    expect(draftCalls).toBe(2);
+  });
+
+  it('replays the model’s own previous JSON on the repair pass, with a preserve-and-fix instruction', async () => {
+    // The old repair code sent the Zod error text as the "assistant" message, which meant
+    // the model had no view of what it had actually produced and could not revise it —
+    // it started over each time. The fix must (a) put the model's previous JSON in the
+    // assistant slot and (b) instruct it to preserve valid content, not rewrite everything.
+    const merged = defaults();
+    const shortDraft = {
+      ...(merged.draft as Record<string, unknown>),
+      body: eightBlockBody().slice(0, 5),
+    };
+    const shortDraftJson = JSON.stringify(shortDraft);
+
+    let draftCalls = 0;
+    const bodies: string[] = [];
+    const fetchImpl = ((_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      const raw = typeof init?.body === 'string' ? init.body : '';
+      const parsed = JSON.parse(raw) as {
+        response_format?: { json_schema?: { name?: string } };
+      };
+      const stage = parsed.response_format?.json_schema?.name;
+      let payload: unknown;
+      if (stage === 'draft') {
+        draftCalls += 1;
+        bodies.push(raw);
+        payload = draftCalls === 1 ? shortDraft : merged.draft;
+      } else if (stage === 'extraction') {
+        payload = merged.extraction;
+      } else if (stage === 'verification') {
+        payload = merged.verification;
+      } else {
+        payload = merged.seo;
+      }
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            model: 'inclusionai/ling-3.0-flash-vl',
+            usage: { prompt_tokens: 1200, completion_tokens: 900 },
+            choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(payload) } }],
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        ),
+      );
+    }) as unknown as typeof fetch;
+
+    await generateArticle(SOURCE, deps({ fetchImpl }));
+    expect(draftCalls).toBe(2);
+
+    // The second draft request is the repair. Inspect its message array.
+    const repairBody = bodies[1] ?? '';
+    const parsedRepair = JSON.parse(repairBody) as {
+      messages?: { role: string; content: string }[];
+    };
+    const messages = parsedRepair.messages ?? [];
+    // The last assistant message must be the model's own previous JSON (possibly truncated
+    // to the 6000-char cap in openrouter.ts), NOT the Zod error text.
+    const assistantMessages = messages.filter((m) => m.role === 'assistant');
+    expect(assistantMessages.length).toBeGreaterThan(0);
+    const lastAssistant = assistantMessages[assistantMessages.length - 1]?.content ?? '';
+    expect(lastAssistant.startsWith(shortDraftJson.slice(0, 200))).toBe(true);
+
+    // The final user message must give the model an actionable, preserve-and-fix directive
+    // rather than a bare "your JSON was wrong, try again".
+    const userMessages = messages.filter((m) => m.role === 'user');
+    const lastUser = userMessages[userMessages.length - 1]?.content ?? '';
+    expect(lastUser).toMatch(/GIỮ NGUYÊN/);
+    expect(lastUser).toMatch(/Too small|>=|BỔ SUNG/);
   });
 });
 
