@@ -305,6 +305,119 @@ describe('the happy path', () => {
   });
 });
 
+describe('token budgets', () => {
+  /**
+   * Each stage's `max_tokens` is asserted per stage rather than in aggregate. A change that
+   * lowers the draft budget below what a full Vietnamese article needs would put us back
+   * where we were on 2026-09-28: repeated `finish_reason=length` failures on attempt 5.
+   * A change that lowers extraction or verification below the current headroom would
+   * truncate on dense sources; a change that raises seo without reason invites cost creep.
+   */
+  function requestedBudgets(bodies: readonly string[]): Record<string, number> {
+    const budgets: Record<string, number> = {};
+    for (const raw of bodies) {
+      const parsed = JSON.parse(raw) as {
+        max_tokens?: number;
+        response_format?: { json_schema?: { name?: string } };
+      };
+      const stage = parsed.response_format?.json_schema?.name;
+      if (typeof stage === 'string' && typeof parsed.max_tokens === 'number') {
+        // First occurrence wins; a repair attempt uses the same budget, so this is the intent.
+        budgets[stage] = budgets[stage] ?? parsed.max_tokens;
+      }
+    }
+    return budgets;
+  }
+
+  it('sends the expected max_tokens per stage, sized for a full structured article', async () => {
+    const mock = mockOpenRouter();
+    await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
+
+    const budgets = requestedBudgets(mock.bodies);
+    expect(budgets.extraction).toBe(6000);
+    expect(budgets.verification).toBe(6000);
+    // The draft has to fit 700–1,400 words of Vietnamese prose plus body_blocks JSON and
+    // the references array. Anything under 12,000 has been observed to truncate.
+    expect(budgets.draft).toBe(16000);
+    // Kept intentionally small: this stage produces metaTitle + metaDescription + keywords.
+    expect(budgets.seo).toBe(1500);
+    // The stage relationship matters: seo is the smallest, draft is by far the largest.
+    const seo = budgets.seo ?? Number.POSITIVE_INFINITY;
+    const extraction = budgets.extraction ?? 0;
+    const draft = budgets.draft ?? 0;
+    expect(seo).toBeLessThan(extraction);
+    expect(seo).toBeLessThan(draft);
+  });
+
+  it('lets the draft stage return a payload larger than the old 12k ceiling', async () => {
+    // A regression guard for the truncation blocker: the mock returns a genuinely long draft
+    // JSON (many filler paragraphs), which under the old budget would have been prone to
+    // finish_reason=length. Here the pipeline must accept it and publish.
+    const long = defaults();
+    const draft = long.draft as { body: unknown[] };
+    const originalBody = draft.body;
+    const bulk: unknown[] = [];
+    // 200 filler paragraphs of substantive Vietnamese text — a realistic worst-case draft.
+    for (let index = 0; index < 200; index += 1) {
+      bulk.push({
+        t: 'p',
+        attribution: 'general',
+        text:
+          `Doạn ${index} giải thích chi tiết vai trò của khoáng chất và các cơ chế sinh học liên quan. `.repeat(
+            4,
+          ) +
+          'Nội dung được trình bày để giữ bài viết dài như một bài phân tích chuyên sâu thực tế.',
+      });
+    }
+    draft.body = [...(originalBody as unknown[]), ...bulk];
+
+    const mock = mockOpenRouter(long);
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
+
+    // The pipeline completed cleanly. Under the old 12k ceiling the model would have hit
+    // finish_reason=length on this payload; the assertion here is that we do NOT see the
+    // 'ai_malformed_output' failure path.
+    if (outcome.decision === 'failed') {
+      throw new Error(`unexpected failure: ${outcome.code} ${outcome.message}`);
+    }
+    // The draft stage still requested at least 16k tokens for this payload.
+    const budgets = requestedBudgets(mock.bodies);
+    expect(budgets.draft).toBeGreaterThanOrEqual(16000);
+  });
+
+  it('reuses the same per-stage budget on the repair pass, and does not attempt a third call', async () => {
+    // The repair is the second (and last) call on the SAME stage. It must carry the same
+    // budget as attempt 0 — a smaller ceiling on the repair would defeat the whole point —
+    // and there must be at most two calls per stage, so a broken model cannot loop forever.
+    let calls = 0;
+    const budgetsPerCall: number[] = [];
+    const fetchImpl = ((_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      calls += 1;
+      const raw = typeof init?.body === 'string' ? init.body : '';
+      const parsed = JSON.parse(raw) as { max_tokens?: number };
+      if (typeof parsed.max_tokens === 'number') budgetsPerCall.push(parsed.max_tokens);
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            model: 'inclusionai/ling-3.0-flash-vl',
+            usage: { prompt_tokens: 10, completion_tokens: 10 },
+            choices: [{ finish_reason: 'stop', message: { content: 'still not json' } }],
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        ),
+      );
+    }) as unknown as typeof fetch;
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl }));
+    if (outcome.decision !== 'failed') throw new Error('expected failure');
+    expect(outcome.code).toBe('ai_malformed_output');
+    // Two attempts on the first stage (extraction), never a third — the retry cap holds.
+    expect(calls).toBe(2);
+    // Both attempts carried the same stage budget.
+    expect(budgetsPerCall).toStrictEqual([6000, 6000]);
+  });
+});
+
 describe('approval mode', () => {
   it('routes a passing article to review without calling it a failure', async () => {
     const mock = mockOpenRouter();

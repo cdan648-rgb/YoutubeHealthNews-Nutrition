@@ -147,7 +147,9 @@ export async function complete<T>(request: CompletionRequest<T>): Promise<Comple
       model: attempt === 1 && fallbackModel !== null ? fallbackModel : model,
       messages: attemptMessages,
       temperature: request.temperature ?? 0.2,
-      max_tokens: request.maxTokens ?? 8000,
+      // Default budget for a caller that did not specify one. Pipeline stages pass their
+      // own stage-appropriate limits; this only applies to ad-hoc callers.
+      max_tokens: request.maxTokens ?? 8192,
       response_format: {
         type: 'json_schema',
         json_schema: { name: request.schemaName, strict: true, schema: request.jsonSchema },

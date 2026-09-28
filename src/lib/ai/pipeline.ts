@@ -156,7 +156,10 @@ ${RESEARCH_RULES}`
         jsonSchema: extractionJsonSchema,
         schemaName: 'extraction',
         validator: extractionSchema,
-        maxTokens: 4000,
+        // Extraction returns a bounded JSON: topic, category, outline and a claims list. The
+        // claims list is the variable dimension — a dense video can produce a dozen — so the
+        // budget is loose enough to survive the top of that distribution without truncating.
+        maxTokens: 6000,
         ...(deps.fetchImpl !== undefined ? { fetchImpl: deps.fetchImpl } : {}),
       });
       working.extraction = result.data;
@@ -175,7 +178,9 @@ ${RESEARCH_RULES}`
         jsonSchema: verificationJsonSchema,
         schemaName: 'verification',
         validator: verificationSchema,
-        maxTokens: 3000,
+        // One verifiedClaim per extracted claim, with resolution and (for `cite`) a URL,
+        // publisher, title and short reason. Budget scales with the extraction's claim count.
+        maxTokens: 6000,
         ...(deps.fetchImpl !== undefined ? { fetchImpl: deps.fetchImpl } : {}),
       });
       working.verification = result.data;
@@ -251,7 +256,12 @@ ${RESEARCH_RULES}`
         jsonSchema: draftJsonSchema,
         schemaName: 'draft',
         validator: draftSchema,
-        maxTokens: 12000,
+        // The draft carries the full body_blocks JSON — 700–1,400 words of Vietnamese prose,
+        // headings, callouts and quotes — plus title, dek, category, and the references array.
+        // Vietnamese tokenises heavier than English and the block wrappers add structural
+        // overhead, so the ceiling has to sit well above the raw word count in tokens.
+        // Truncation here (finish_reason=length) is what took the run to attempts=5.
+        maxTokens: 16000,
         ...(deps.fetchImpl !== undefined ? { fetchImpl: deps.fetchImpl } : {}),
       });
       working.draft = result.data;
@@ -267,7 +277,9 @@ ${RESEARCH_RULES}`
         jsonSchema: seoJsonSchema,
         schemaName: 'seo',
         validator: seoSchema,
-        maxTokens: 1000,
+        // metaTitle, metaDescription and a short keywords array. Stays intentionally small —
+        // this stage should never plausibly need more, and a smaller ceiling caps runaway cost.
+        maxTokens: 1500,
         ...(deps.fetchImpl !== undefined ? { fetchImpl: deps.fetchImpl } : {}),
       });
       working.seo = result.data;
