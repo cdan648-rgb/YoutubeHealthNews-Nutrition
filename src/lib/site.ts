@@ -10,6 +10,21 @@
  * `author` for structured data is always the publication, never the doctor.
  */
 
+/**
+ * A public env var, treating an empty string as absent.
+ *
+ * This distinction is load-bearing in CI: GitHub Actions injects an unset repository
+ * variable as an EMPTY STRING, not as undefined, so `process.env.X ?? fallback` keeps the
+ * empty string (nullish coalescing only catches null/undefined) and a downstream
+ * `new URL('')` throws `Invalid URL`. Coalescing on "" as well is how `server.ts`,
+ * `service.ts` and `isPublicSupabaseConfigured()` already treat their env; this brings
+ * `SITE.url` into line so the site URL is never the empty string.
+ */
+export function publicEnv(name: string, fallback: string): string {
+  const value = process.env[name];
+  return value === undefined || value === '' ? fallback : value;
+}
+
 export const SITE = {
   name: 'Sức Khoẻ Giải Mã',
   shortName: 'SKGM',
@@ -18,7 +33,7 @@ export const SITE = {
     'Bản tin độc lập tổng hợp và diễn giải nội dung công khai từ kênh YouTube Bác sĩ Trần Văn Phúc Official, kèm nguồn tham khảo từ các tổ chức y tế uy tín.',
   locale: 'vi-VN',
   /** Single source for canonical URLs. Overridden per environment. */
-  url: (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/+$/, ''),
+  url: publicEnv('NEXT_PUBLIC_SITE_URL', 'http://localhost:3000').replace(/\/+$/, ''),
   /**
    * The contact address, from a public env var so it is not hard-coded. Left as a
    * placeholder until a real inbox exists — the contact page states that rather than
