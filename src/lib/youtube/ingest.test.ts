@@ -12,7 +12,7 @@ import { ingestChannel } from './ingest';
 import type { DiscoveredVideo, FetchedVideo, VideoSource } from './types';
 import {
   emptyDb,
-  fakeInternalClient,
+  fakeIngestGateway,
   seedVideo,
   type FakeDb,
 } from '../../../tests/helpers/fake-internal-client';
@@ -65,7 +65,7 @@ function fixtureSource(
 }
 
 async function ingest(db: FakeDb, source: VideoSource) {
-  return ingestChannel({ source, client: fakeInternalClient(db), limit: 50 });
+  return ingestChannel({ source, gateway: fakeIngestGateway(db), limit: 50 });
 }
 
 describe('ingesting the channel for the first time', () => {
@@ -136,7 +136,7 @@ describe('running ingestion twice', () => {
     await ingest(db, fixtureSource(VIDEO_FIXTURE_IDS, {}));
     await ingestChannel({
       source: fixtureSource(VIDEO_FIXTURE_IDS),
-      client: fakeInternalClient(db),
+      gateway: fakeIngestGateway(db),
       refreshExisting: true,
     });
 
@@ -164,7 +164,7 @@ describe('running ingestion twice', () => {
 
     const outcome = await ingestChannel({
       source,
-      client: fakeInternalClient(db),
+      gateway: fakeIngestGateway(db),
       refreshExisting: true,
     });
 
@@ -199,7 +199,7 @@ describe('an old archive import', () => {
       return details.map((video) => ({ ...video, publishedAt: '2019-03-01T00:00:00Z' }));
     };
 
-    await ingestChannel({ source, client: fakeInternalClient(db) });
+    await ingestChannel({ source, gateway: fakeIngestGateway(db) });
 
     const row = db.youtube_videos[0];
     expect(row?.published_at).toBe('2019-03-01T00:00:00Z');
@@ -294,7 +294,7 @@ describe('a video that has been deleted or made private', () => {
 
     await ingestChannel({
       source: fixtureSource(['lBKtncuS0yY'], { omit: ['lBKtncuS0yY'] }),
-      client: fakeInternalClient(db),
+      gateway: fakeIngestGateway(db),
       refreshExisting: true,
     });
 

@@ -18,9 +18,11 @@
 import 'server-only';
 
 import { toJsonObject } from '@/lib/json';
-import type { InternalClient } from '@/lib/supabase/service';
-import { internalClient } from '@/lib/supabase/service';
+import { liveGateway, type AutomationGateway } from '@/lib/automation/internal-gateway';
 import { publicClient } from '@/lib/supabase/server';
+
+/** The slice of the automation gateway research selection needs. */
+export type ResearchGateway = Pick<AutomationGateway, 'getSettings' | 'claimResearchSource'>;
 import { addHanoiDays, hanoiDate, type HanoiDate } from '@/lib/time';
 import { createEuropePmcProvider } from './europepmc';
 import { createCrossrefProvider } from './crossref';
@@ -68,6 +70,8 @@ export type SelectDeps = {
   readonly log?: SelectionLog;
   /** Injected so the whole path is testable without a database. */
   readonly loadTopics?: () => Promise<TopicConfig>;
+  /** The gateway to the private schema. Injected in tests; defaults to the live one. */
+  readonly gateway?: ResearchGateway;
 };
 
 export type TopicConfig = {
@@ -152,7 +156,7 @@ export const CATEGORY_SEARCH_TERMS: Readonly<Record<string, readonly string[]>> 
   ],
 };
 
-async function loadTopicsFromDatabase(client: InternalClient): Promise<TopicConfig> {
+async function loadTopicsFromDatabase(gateway: ResearchGateway): Promise<TopicConfig> {
   const categories = await publicClient()
     .from('categories')
     .select('slug, keywords')
@@ -162,8 +166,8 @@ async function loadTopicsFromDatabase(client: InternalClient): Promise<TopicConf
   const slugs = (categories.data ?? []).map((row) => row.slug);
   const keywords = (categories.data ?? []).flatMap((row) => row.keywords ?? []);
 
-  const settings = await client.from('automation_settings').select('journal_tiers').maybeSingle();
-  const tiers = settings.data?.journal_tiers;
+  const settings = await gateway.getSettings();
+  const tiers = settings.journalTiers;
 
   // Interleave one term per category rather than taking the first category's whole list, so
   // a single dry day cannot search only for vitamins.
@@ -263,16 +267,14 @@ export async function claimBestAvailable(
  * Returns the claimed paper, or null when nothing eligible could be claimed — which the
  * caller records as `no_source`, leaving the streak to keep climbing.
  */
-export async function claimResearchSource(
-  client: InternalClient = internalClient(),
-  deps: SelectDeps = {},
-): Promise<ClaimedPaper | null> {
+export async function claimResearchSource(deps: SelectDeps = {}): Promise<ClaimedPaper | null> {
+  const gateway = deps.gateway ?? liveGateway();
   const log: SelectionLog = deps.log ?? (() => undefined);
   const today = deps.today ?? hanoiDate(new Date());
   const lookback = deps.lookbackDays ?? DEFAULT_LOOKBACK_DAYS;
   const fromDate = addHanoiDays(today, -lookback);
 
-  const topics = await (deps.loadTopics ?? (() => loadTopicsFromDatabase(client)))();
+  const topics = await (deps.loadTopics ?? (() => loadTopicsFromDatabase(gateway)))();
   if (topics.terms.length === 0) {
     await log({
       code: 'research_none_found',
@@ -328,14 +330,7 @@ export async function claimResearchSource(
 
   const claimed = await claimBestAvailable(
     ranked,
-    async (scored) => {
-      const { data, error } = await client.rpc('claim_research_source', {
-        p: toJsonObject(toClaimPayload(scored)),
-      });
-      if (error !== null) throw new Error(`claim_research_source failed: ${error.message}`);
-      const row = Array.isArray(data) ? data[0] : null;
-      return { id: row?.id ?? null, outcome: row?.outcome ?? 'duplicate' };
-    },
+    (scored) => gateway.claimResearchSource(toJsonObject(toClaimPayload(scored))),
     { maxAttempts: deps.maxClaimAttempts ?? MAX_CLAIM_ATTEMPTS, log },
   );
 

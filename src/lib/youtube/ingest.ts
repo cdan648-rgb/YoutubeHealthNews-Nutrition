@@ -16,16 +16,29 @@
  */
 import 'server-only';
 
-import { logJob } from '@/lib/repositories/automation';
-import { internalClient, type InternalClient } from '@/lib/supabase/service';
+import { liveGateway, type AutomationGateway } from '@/lib/automation/internal-gateway';
 import { toJsonObject } from '@/lib/json';
 import { titleFingerprint } from '@/lib/slug';
 import { findProbableDuplicate, normaliseVideo, type DuplicateCandidate } from './eligibility';
 import type { IngestOutcome, VideoSource } from './types';
 
+/**
+ * The slice of the automation gateway ingestion needs. Narrowed so a test can supply an
+ * in-memory double without implementing the whole tick surface.
+ */
+export type IngestGateway = Pick<
+  AutomationGateway,
+  | 'youtubeExisting'
+  | 'youtubeCandidates'
+  | 'youtubeInsert'
+  | 'youtubeUpdateMetadata'
+  | 'youtubeMarkUnavailable'
+  | 'log'
+>;
+
 export type IngestOptions = {
   readonly source: VideoSource;
-  readonly client?: InternalClient;
+  readonly gateway?: IngestGateway;
   /** How many of the newest uploads to consider. */
   readonly limit?: number;
   /** Fetch details even for videos already stored. Used by a metadata refresh. */
@@ -42,38 +55,28 @@ export type IngestOptions = {
  * whether that is good enough.
  */
 export async function ingestChannel(options: IngestOptions): Promise<IngestOutcome> {
-  const client = options.client ?? internalClient();
+  const gateway = options.gateway ?? liveGateway();
   const limit = options.limit ?? 50;
   const errors: string[] = [];
 
   const discovered = await options.source.listUploads(limit);
 
   if (options.source.kind === 'html-fallback') {
-    await logJob(
-      {
-        runId: options.runId ?? null,
-        level: 'warn',
-        stage: 'ingest',
-        code: 'ingest_degraded',
-        message: 'ingestion used the HTML fallback rather than the Data API',
-        context: { discovered: discovered.length },
-      },
-      client,
-    );
+    await gateway.log({
+      runId: options.runId ?? null,
+      level: 'warn',
+      stage: 'ingest',
+      code: 'ingest_degraded',
+      message: 'ingestion used the HTML fallback rather than the Data API',
+      context: { discovered: discovered.length },
+    });
   }
 
   // Which of these do we already have? Determines what needs a details fetch.
   const ids = discovered.map((video) => video.youtubeVideoId);
-  const { data: existingRows, error: existingError } = await client
-    .from('youtube_videos')
-    .select('id, youtube_video_id, title_fingerprint, episode_number, status')
-    .in('youtube_video_id', ids);
+  const existingRows = await gateway.youtubeExisting(ids);
 
-  if (existingError !== null) {
-    throw new Error(`ingest could not read existing videos: ${existingError.message}`);
-  }
-
-  const existingById = new Map((existingRows ?? []).map((row) => [row.youtube_video_id, row]));
+  const existingById = new Map(existingRows.map((row) => [row.youtubeVideoId, row]));
 
   const toFetch =
     options.refreshExisting === true ? ids : ids.filter((id) => !existingById.has(id));
@@ -86,11 +89,14 @@ export async function ingestChannel(options: IngestOptions): Promise<IngestOutco
   for (const id of toFetch) {
     if (fetchedIds.has(id)) continue;
     errors.push(`no details returned for ${id} (deleted, private or unavailable)`);
-    await markUnavailable(client, id, discovered.find((v) => v.youtubeVideoId === id)?.title ?? id);
+    await gateway.youtubeMarkUnavailable(
+      id,
+      discovered.find((v) => v.youtubeVideoId === id)?.title ?? id,
+    );
   }
 
   // Every candidate a re-upload could collide with — not just the current batch.
-  const duplicateCandidates = await loadDuplicateCandidates(client);
+  const duplicateCandidates = await loadDuplicateCandidates(gateway);
 
   let inserted = 0;
   let updated = 0;
@@ -106,9 +112,9 @@ export async function ingestChannel(options: IngestOptions): Promise<IngestOutco
     if (existing !== undefined) {
       // Refresh only what legitimately changes. Notably NOT status: an existing row's
       // lifecycle is owned by the automation, not by ingestion.
-      const { error } = await client
-        .from('youtube_videos')
-        .update({
+      try {
+        await gateway.youtubeUpdateMetadata({
+          youtube_video_id: normalised.youtubeVideoId,
           title: normalised.title,
           description_raw: normalised.descriptionRaw,
           description_clean: normalised.descriptionClean,
@@ -119,11 +125,11 @@ export async function ingestChannel(options: IngestOptions): Promise<IngestOutco
           view_count: normalised.viewCount,
           thumbnails: toJsonObject(normalised.thumbnails),
           episode_number: normalised.episodeNumber,
-        })
-        .eq('youtube_video_id', normalised.youtubeVideoId);
-
-      if (error !== null) {
-        errors.push(`update ${normalised.youtubeVideoId}: ${error.message}`);
+        });
+      } catch (cause) {
+        errors.push(
+          `update ${normalised.youtubeVideoId}: ${cause instanceof Error ? cause.message : String(cause)}`,
+        );
         continue;
       }
       updated += 1;
@@ -135,32 +141,35 @@ export async function ingestChannel(options: IngestOptions): Promise<IngestOutco
       duplicateCandidates,
     );
 
-    const { error } = await client.from('youtube_videos').insert({
-      youtube_video_id: normalised.youtubeVideoId,
-      title: normalised.title,
-      episode_number: normalised.episodeNumber,
-      description_raw: normalised.descriptionRaw,
-      description_clean: normalised.descriptionClean,
-      low_signal: normalised.lowSignal,
-      keywords: [...normalised.keywords],
-      chapters: toJsonObject({ items: normalised.chapters }).items ?? [],
-      duration_seconds: normalised.durationSeconds,
-      view_count: normalised.viewCount,
-      thumbnails: toJsonObject(normalised.thumbnails),
-      published_at: normalised.publishedAt,
-      status: normalised.eligible ? 'available' : 'ineligible',
-      ineligible_reason: normalised.ineligibleReason,
-      ...(duplicate !== null ? { possible_duplicate_of: duplicate.id } : {}),
-    });
-
-    if (error !== null) {
-      // A unique violation means a concurrent run got there first. That is the
-      // constraint doing its job, not a failure worth reporting.
-      if (error.code !== '23505') {
-        errors.push(`insert ${normalised.youtubeVideoId}: ${error.message}`);
-      }
+    let insertedId: string | null;
+    try {
+      insertedId = await gateway.youtubeInsert({
+        youtube_video_id: normalised.youtubeVideoId,
+        title: normalised.title,
+        episode_number: normalised.episodeNumber,
+        description_raw: normalised.descriptionRaw,
+        description_clean: normalised.descriptionClean,
+        low_signal: normalised.lowSignal,
+        keywords: [...normalised.keywords],
+        chapters: toJsonObject({ items: normalised.chapters }).items ?? [],
+        duration_seconds: normalised.durationSeconds,
+        view_count: normalised.viewCount,
+        thumbnails: toJsonObject(normalised.thumbnails),
+        published_at: normalised.publishedAt,
+        status: normalised.eligible ? 'available' : 'ineligible',
+        ineligible_reason: normalised.ineligibleReason,
+        ...(duplicate !== null ? { possible_duplicate_of: duplicate.id } : {}),
+      });
+    } catch (cause) {
+      errors.push(
+        `insert ${normalised.youtubeVideoId}: ${cause instanceof Error ? cause.message : String(cause)}`,
+      );
       continue;
     }
+
+    // A null id means a unique violation: a concurrent run got there first. That is the
+    // constraint doing its job, not a failure worth reporting.
+    if (insertedId === null) continue;
 
     inserted += 1;
 
@@ -175,21 +184,18 @@ export async function ingestChannel(options: IngestOptions): Promise<IngestOutco
         episodeNumber: normalised.episodeNumber,
         status: 'available',
       });
-      await logJob(
-        {
-          runId: options.runId ?? null,
-          level: 'warn',
-          stage: 'ingest',
-          code: 'possible_duplicate_video',
-          message: `${normalised.youtubeVideoId} looks like a re-upload of ${duplicate.youtubeVideoId}`,
-          context: {
-            candidate: normalised.youtubeVideoId,
-            existing: duplicate.youtubeVideoId,
-            episodeNumber: normalised.episodeNumber,
-          },
+      await gateway.log({
+        runId: options.runId ?? null,
+        level: 'warn',
+        stage: 'ingest',
+        code: 'possible_duplicate_video',
+        message: `${normalised.youtubeVideoId} looks like a re-upload of ${duplicate.youtubeVideoId}`,
+        context: {
+          candidate: normalised.youtubeVideoId,
+          existing: duplicate.youtubeVideoId,
+          episodeNumber: normalised.episodeNumber,
         },
-        client,
-      );
+      });
     }
   }
 
@@ -203,17 +209,14 @@ export async function ingestChannel(options: IngestOptions): Promise<IngestOutco
     errors,
   };
 
-  await logJob(
-    {
-      runId: options.runId ?? null,
-      level: errors.length > 0 ? 'warn' : 'info',
-      stage: 'ingest',
-      code: 'ingest_completed',
-      message: `ingested ${inserted} new, refreshed ${updated}`,
-      context: { ...outcome, errors: errors.slice(0, 10) },
-    },
-    client,
-  );
+  await gateway.log({
+    runId: options.runId ?? null,
+    level: errors.length > 0 ? 'warn' : 'info',
+    stage: 'ingest',
+    code: 'ingest_completed',
+    message: `ingested ${inserted} new, refreshed ${updated}`,
+    context: { ...outcome, errors: errors.slice(0, 10) },
+  });
 
   return outcome;
 }
@@ -224,58 +227,15 @@ export async function ingestChannel(options: IngestOptions): Promise<IngestOutco
  * Fingerprints are generated columns, so they are read rather than recomputed and cannot
  * disagree with the stored titles.
  */
-async function loadDuplicateCandidates(client: InternalClient): Promise<DuplicateCandidate[]> {
-  const { data, error } = await client
-    .from('youtube_videos')
-    .select('id, youtube_video_id, title_fingerprint, episode_number, status');
-
-  if (error !== null) throw new Error(`could not load duplicate candidates: ${error.message}`);
-
-  return (data ?? []).map((row) => ({
+async function loadDuplicateCandidates(gateway: IngestGateway): Promise<DuplicateCandidate[]> {
+  const rows = await gateway.youtubeCandidates();
+  return rows.map((row) => ({
     id: row.id,
-    youtubeVideoId: row.youtube_video_id,
-    titleFingerprint: row.title_fingerprint,
-    episodeNumber: row.episode_number,
+    youtubeVideoId: row.youtubeVideoId,
+    titleFingerprint: row.titleFingerprint,
+    episodeNumber: row.episodeNumber,
     status: row.status,
   }));
-}
-
-/**
- * Record a video that has disappeared.
- *
- * Only ever creates a row or marks an untouched one ineligible. A video already `used`
- * keeps its status: the article derived from it still exists and still credits it, so
- * rewriting history because the source was taken down would be wrong.
- */
-async function markUnavailable(
-  client: InternalClient,
-  youtubeVideoId: string,
-  title: string,
-): Promise<void> {
-  const { data: existing } = await client
-    .from('youtube_videos')
-    .select('status')
-    .eq('youtube_video_id', youtubeVideoId)
-    .maybeSingle();
-
-  if (existing === null || existing === undefined) {
-    await client.from('youtube_videos').insert({
-      youtube_video_id: youtubeVideoId,
-      title,
-      published_at: new Date().toISOString(),
-      status: 'ineligible',
-      ineligible_reason: 'unavailable',
-    });
-    return;
-  }
-
-  if (existing.status === 'available') {
-    await client
-      .from('youtube_videos')
-      .update({ status: 'ineligible', ineligible_reason: 'unavailable' })
-      .eq('youtube_video_id', youtubeVideoId)
-      .eq('status', 'available');
-  }
 }
 
 /**
@@ -287,23 +247,12 @@ async function markUnavailable(
  *      while still outranking the archive;
  *   2. then the rest of the backlog by view count, best content first.
  *
- * `select_next_video` is a SQL function using FOR UPDATE SKIP LOCKED so two concurrent
- * runs cannot claim the same video. Without that, both would read the same row before
- * either wrote.
+ * The underlying SQL function uses FOR UPDATE SKIP LOCKED so two concurrent runs cannot
+ * claim the same video.
  */
 export async function claimNextVideo(
   freshWindowDays: number,
-  client: InternalClient = internalClient(),
+  gateway: Pick<AutomationGateway, 'claimNextVideo'> = liveGateway(),
 ): Promise<{ id: string; youtubeVideoId: string; title: string } | null> {
-  const { data, error } = await client.rpc('claim_next_video', {
-    fresh_window_days: freshWindowDays,
-  });
-
-  if (error !== null) throw new Error(`claimNextVideo failed: ${error.message}`);
-
-  const row = Array.isArray(data) ? data[0] : data;
-  if (row === null || row === undefined) return null;
-
-  const claimed = row;
-  return { id: claimed.id, youtubeVideoId: claimed.youtube_video_id, title: claimed.title };
+  return gateway.claimNextVideo(freshWindowDays);
 }

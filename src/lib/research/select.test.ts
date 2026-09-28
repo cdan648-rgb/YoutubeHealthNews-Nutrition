@@ -154,14 +154,16 @@ describe('claimResearchSource (assembly)', () => {
     });
 
     const claims: unknown[] = [];
-    const client = {
-      rpc: vi.fn((_name: string, args: { p: unknown }) => {
-        claims.push(args.p);
-        return Promise.resolve({ data: [{ id: 'claimed-row', outcome: 'claimed' }], error: null });
+    const gateway = {
+      getSettings: vi.fn(),
+      claimResearchSource: vi.fn((p: Record<string, unknown>) => {
+        claims.push(p);
+        return Promise.resolve({ id: 'claimed-row', outcome: 'claimed' });
       }),
     } as never;
 
-    const result = await claimResearchSource(client, {
+    const result = await claimResearchSource({
+      gateway,
       today: TODAY,
       providers: [
         stubProvider('europepmc', [shared, preprint]),
@@ -176,10 +178,11 @@ describe('claimResearchSource (assembly)', () => {
   });
 
   it('returns null when the pool has nothing eligible', async () => {
-    const client = { rpc: vi.fn() } as never;
+    const gateway = { getSettings: vi.fn(), claimResearchSource: vi.fn() } as never;
     const preprintOnly = candidate({ journal: 'medRxiv' });
 
-    const result = await claimResearchSource(client, {
+    const result = await claimResearchSource({
+      gateway,
       today: TODAY,
       providers: [stubProvider('europepmc', [preprintOnly])],
       loadTopics: () => Promise.resolve(topics),
@@ -194,11 +197,13 @@ describe('claimResearchSource (assembly)', () => {
       search: () => Promise.reject(new Error('provider down')),
     };
     const logged: string[] = [];
-    const client = {
-      rpc: vi.fn(() => Promise.resolve({ data: [{ id: 'row', outcome: 'claimed' }], error: null })),
+    const gateway = {
+      getSettings: vi.fn(),
+      claimResearchSource: vi.fn(() => Promise.resolve({ id: 'row', outcome: 'claimed' })),
     } as never;
 
-    const result = await claimResearchSource(client, {
+    const result = await claimResearchSource({
+      gateway,
       today: TODAY,
       providers: [stubProvider('europepmc', [good]), bad],
       loadTopics: () => Promise.resolve(topics),
@@ -212,13 +217,13 @@ describe('claimResearchSource (assembly)', () => {
   });
 
   it('returns null (records no_source) when every candidate is already taken', async () => {
-    const client = {
-      rpc: vi.fn(() =>
-        Promise.resolve({ data: [{ id: null, outcome: 'duplicate' }], error: null }),
-      ),
+    const gateway = {
+      getSettings: vi.fn(),
+      claimResearchSource: vi.fn(() => Promise.resolve({ id: null, outcome: 'duplicate' })),
     } as never;
 
-    const result = await claimResearchSource(client, {
+    const result = await claimResearchSource({
+      gateway,
       today: TODAY,
       providers: [stubProvider('europepmc', [candidate()])],
       loadTopics: () => Promise.resolve(topics),

@@ -21,7 +21,10 @@
  */
 import 'server-only';
 
-import { internalClient, type InternalClient } from '@/lib/supabase/service';
+import { liveGateway, type AutomationGateway } from '@/lib/automation/internal-gateway';
+
+/** The slice of the automation gateway reference verification needs. */
+export type ReferenceGateway = Pick<AutomationGateway, 'referenceCacheGet' | 'referenceCachePut'>;
 
 export type ReferenceStatus = 'reachable' | 'blocked' | 'missing' | 'error';
 
@@ -54,7 +57,7 @@ function classify(httpStatus: number): ReferenceStatus {
 }
 
 export type VerifyOptions = {
-  readonly client?: InternalClient;
+  readonly gateway?: ReferenceGateway;
   readonly fetchImpl?: typeof fetch;
   /** Skips the cache. Used by the manual integration script. */
   readonly force?: boolean;
@@ -71,7 +74,7 @@ export async function verifyReference(
   url: string,
   options: VerifyOptions = {},
 ): Promise<ReferenceCheck> {
-  const client = options.client ?? internalClient();
+  const gateway = options.gateway ?? liveGateway();
   const fetchImpl = options.fetchImpl ?? fetch;
 
   let host: string;
@@ -84,20 +87,16 @@ export async function verifyReference(
   const key = await sha256Hex(url);
 
   if (options.force !== true) {
-    const { data } = await client
-      .from('reference_cache')
-      .select('url, final_url, http_status, host, checked_at')
-      .eq('url_sha256', key)
-      .maybeSingle();
+    const data = await gateway.referenceCacheGet(key);
 
-    if (data !== null && data !== undefined) {
-      const ageDays = (Date.now() - new Date(data.checked_at).getTime()) / 86_400_000;
+    if (data !== null) {
+      const ageDays = (Date.now() - new Date(data.checkedAt).getTime()) / 86_400_000;
       if (ageDays < CACHE_TTL_DAYS) {
         return {
           url,
-          status: data.http_status === null ? 'error' : classify(data.http_status),
-          httpStatus: data.http_status,
-          finalUrl: data.final_url,
+          status: data.httpStatus === null ? 'error' : classify(data.httpStatus),
+          httpStatus: data.httpStatus,
+          finalUrl: data.finalUrl,
           host: data.host ?? host,
           fromCache: true,
         };
@@ -136,18 +135,15 @@ export async function verifyReference(
 
   // Cache errors too: a host that is down stays down for a while, and retrying it on every
   // article would slow every run.
-  await client.from('reference_cache').upsert(
-    {
-      url_sha256: key,
-      url,
-      final_url: finalUrl,
-      http_status: httpStatus,
-      host,
-      checked_at: new Date().toISOString(),
-      error: errorMessage,
-    },
-    { onConflict: 'url_sha256' },
-  );
+  await gateway.referenceCachePut({
+    url_sha256: key,
+    url,
+    final_url: finalUrl,
+    http_status: httpStatus,
+    host,
+    checked_at: new Date().toISOString(),
+    error: errorMessage,
+  });
 
   return { url, status, httpStatus, finalUrl, host, fromCache: false };
 }
