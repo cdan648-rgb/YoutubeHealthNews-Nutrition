@@ -249,47 +249,138 @@ export const draftSchema = z.object({
 export type Draft = z.infer<typeof draftSchema>;
 
 /**
- * JSON Schema for the body blocks.
+ * The exact JSON shape of every supported body block, as a prompt fragment.
  *
- * Kept as a permissive object with an enum-constrained `t` rather than a discriminated
- * union: `oneOf` with discriminators is one of the least consistently supported parts of
- * JSON Schema across providers, and Zod re-checks the discriminated union properly
- * afterwards anyway.
+ * This is the single contract the model is given for block structure. It is deliberately
+ * exhaustive: every block type, every required field, every field name spelled exactly as
+ * the Zod schema expects (`t`, `text`, `title`, `items`, ...). It exists because the model
+ * cannot infer, from "include a source note", that a paragraph's text field is literally
+ * `text` and is mandatory — and a missing required string (`body.N.text: expected string,
+ * received undefined`) is exactly the failure that recurred in production.
+ *
+ * Kept in one place and reused by both draft prompts AND the repair pass, so generation and
+ * repair are held to the identical contract.
+ */
+export const BLOCK_SHAPES = `HÌNH DẠNG CHÍNH XÁC CỦA TỪNG LOẠI BLOCK (dùng đúng tên trường và đúng kiểu; TUYỆT ĐỐI KHÔNG bỏ trường bắt buộc, KHÔNG dùng chuỗi rỗng cho một trường bắt buộc, KHÔNG đổi tên trường — ví dụ phải là "text", không phải "content"/"value"/"body"):
+- Tiêu đề mục:        {"t":"h2","text":"<3–160 ký tự>"}
+- Tiêu đề phụ:        {"t":"h3","text":"<3–160 ký tự>"}
+- Đoạn văn:           {"t":"p","text":"<20–1600 ký tự>","attribution":"general"}
+      · "text" là BẮT BUỘC. "attribution" là một trong "general" | "speaker" | "established" (mặc định "general").
+      · CHỈ khi attribution="established" mới thêm "ref": <số nguyên = chỉ số trong mảng references>.
+- Hộp điểm chính:     {"t":"key_facts","title":"<3–120 ký tự>","items":["<5–320 ký tự>", "<...>"]}  (2–8 phần tử; "title" và "items" đều BẮT BUỘC)
+- Trích dẫn nổi bật:  {"t":"pull_quote","text":"<20–400 ký tự>","kind":"paraphrase"}  ("text" và "kind" BẮT BUỘC; bài từ video luôn dùng "paraphrase")
+- Hộp chú ý:          {"t":"callout","tone":"caution","title":"<3–120 ký tự>","text":"<20–900 ký tự>"}  ("tone" ∈ info|caution|myth; cả "tone","title","text" BẮT BUỘC)
+- Hình minh hoạ:      {"t":"figure_svg","motif":"molecule","caption":"<5–300 ký tự>","alt":"<5–300 ký tự>"}  ("motif" ∈ molecule|flame|wave|shield|organ|joint|breath|lattice; cả ba BẮT BUỘC)
+- Chèn video:         {"t":"video_embed"}   (KHÔNG có trường nào khác)
+- Thẻ nguồn:          {"t":"source_note"}   (KHÔNG có trường nào khác)
+- Miễn trừ trách nhiệm: {"t":"disclaimer"}  (KHÔNG có trường nào khác)
+
+TÓM TẮT TRƯỜNG BẮT BUỘC: h2/h3/p/pull_quote/callout PHẢI có "text" (chuỗi không rỗng); key_facts PHẢI có "title" và "items"; figure_svg PHẢI có "motif","caption","alt"; video_embed/source_note/disclaimer CHỈ có "t".`;
+
+/**
+ * JSON Schema for one body block.
+ *
+ * A discriminated `anyOf` — one branch per block type, each listing exactly the fields Zod
+ * requires for that type — so the structured-output layer enforces the SAME contract as the
+ * Zod discriminated union. The earlier version was a single permissive object with only `t`
+ * required and every other field optional; that let the model return an h2/p/callout with
+ * no `text`, which the JSON Schema accepted and Zod then rejected (`body.N.text: expected
+ * string, received undefined`). Aligning the two removes that mismatch at the source.
+ *
+ * Optional fields (`p.attribution`, `p.ref`, `pull_quote.ref`) are present in `properties`
+ * but omitted from `required`, matching Zod (attribution has a default; ref is optional).
+ * `additionalProperties: false` per branch mirrors the union's per-type shape.
  */
 const blockJsonSchema: Record<string, unknown> = {
-  type: 'object',
-  additionalProperties: false,
-  required: ['t'],
-  properties: {
-    t: {
-      type: 'string',
-      enum: [
-        'h2',
-        'h3',
-        'p',
-        'key_facts',
-        'pull_quote',
-        'callout',
-        'figure_svg',
-        'video_embed',
-        'source_note',
-        'disclaimer',
-      ],
+  anyOf: [
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['t', 'text'],
+      properties: { t: { type: 'string', enum: ['h2'] }, text: { type: 'string' } },
     },
-    text: { type: 'string' },
-    title: { type: 'string' },
-    items: { type: 'array', items: { type: 'string' } },
-    attribution: { type: 'string', enum: ['speaker', 'established', 'general'] },
-    ref: { type: 'integer' },
-    kind: { type: 'string', enum: ['paraphrase', 'cited'] },
-    tone: { type: 'string', enum: ['info', 'caution', 'myth'] },
-    motif: {
-      type: 'string',
-      enum: ['molecule', 'flame', 'wave', 'shield', 'organ', 'joint', 'breath', 'lattice'],
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['t', 'text'],
+      properties: { t: { type: 'string', enum: ['h3'] }, text: { type: 'string' } },
     },
-    caption: { type: 'string' },
-    alt: { type: 'string' },
-  },
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['t', 'text'],
+      properties: {
+        t: { type: 'string', enum: ['p'] },
+        text: { type: 'string' },
+        attribution: { type: 'string', enum: ['speaker', 'established', 'general'] },
+        ref: { type: 'integer' },
+      },
+    },
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['t', 'title', 'items'],
+      properties: {
+        t: { type: 'string', enum: ['key_facts'] },
+        title: { type: 'string' },
+        items: { type: 'array', items: { type: 'string' } },
+      },
+    },
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['t', 'text', 'kind'],
+      properties: {
+        t: { type: 'string', enum: ['pull_quote'] },
+        text: { type: 'string' },
+        kind: { type: 'string', enum: ['paraphrase', 'cited'] },
+        ref: { type: 'integer' },
+      },
+    },
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['t', 'tone', 'title', 'text'],
+      properties: {
+        t: { type: 'string', enum: ['callout'] },
+        tone: { type: 'string', enum: ['info', 'caution', 'myth'] },
+        title: { type: 'string' },
+        text: { type: 'string' },
+      },
+    },
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['t', 'motif', 'caption', 'alt'],
+      properties: {
+        t: { type: 'string', enum: ['figure_svg'] },
+        motif: {
+          type: 'string',
+          enum: ['molecule', 'flame', 'wave', 'shield', 'organ', 'joint', 'breath', 'lattice'],
+        },
+        caption: { type: 'string' },
+        alt: { type: 'string' },
+      },
+    },
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['t'],
+      properties: { t: { type: 'string', enum: ['video_embed'] } },
+    },
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['t'],
+      properties: { t: { type: 'string', enum: ['source_note'] } },
+    },
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['t'],
+      properties: { t: { type: 'string', enum: ['disclaimer'] } },
+    },
+  ],
 };
 
 export const draftJsonSchema: Record<string, unknown> = {
@@ -371,6 +462,8 @@ Các block bắt buộc trong mảng body:
 - ĐÚNG MỘT block {"t":"video_embed"}
 - ĐÚNG MỘT block {"t":"disclaimer"} (đặt cuối)
 - Tuỳ chọn: pull_quote (kind PHẢI là "paraphrase"), callout, figure_svg
+
+${BLOCK_SHAPES}
 
 ĐỘ DÀI: ${input.wordCountMin}–${input.wordCountMax} từ (đếm theo âm tiết tiếng Việt).
 
@@ -555,6 +648,8 @@ Các block bắt buộc trong mảng body:
 - ĐÚNG MỘT block {"t":"disclaimer"} (đặt cuối)
 - TUYỆT ĐỐI KHÔNG có block {"t":"video_embed"} — không có video nào
 - TUYỆT ĐỐI KHÔNG có đoạn nào "attribution":"speaker" — không có người nói
+
+${BLOCK_SHAPES}
 
 references: TỐI ĐA 8 phần tử. Phần tử ĐẦU TIÊN (chỉ số 0) PHẢI là chính công trình gốc, với url đúng bằng ${input.paperUrl}. Sau đó chỉ thêm các nguồn đã được cung cấp ở trên. KHÔNG thêm nguồn nào khác. Mỗi phần tử BẮT BUỘC có bốn trường {"label", "title", "publisher", "url"}; label là số thứ tự dạng chuỗi ("1", "2", ...).
 

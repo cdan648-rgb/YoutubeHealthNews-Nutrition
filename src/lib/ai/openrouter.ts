@@ -70,6 +70,14 @@ export type CompletionRequest<T> = {
   readonly validator: z.ZodType<T>;
   readonly maxTokens?: number;
   readonly temperature?: number;
+  /**
+   * Extra guidance appended to the REPAIR message only (never the first attempt).
+   *
+   * Used by the draft stage to hand the exact per-block-type shape reference to the repair
+   * pass, so a `body.N.text: expected string, received undefined` error is corrected against
+   * the concrete schema for that block type rather than a guess.
+   */
+  readonly repairHint?: string;
   readonly fetchImpl?: typeof fetch;
 };
 
@@ -142,9 +150,15 @@ export async function complete<T>(request: CompletionRequest<T>): Promise<Comple
             {
               role: 'user',
               content:
-                'JSON trước đó không hợp lệ. Danh sách lỗi cụ thể (do bộ kiểm schema báo về):\n' +
+                'JSON trước đó không hợp lệ. Danh sách lỗi cụ thể (do bộ kiểm schema báo về), mỗi dòng có dạng "<đường dẫn>: <mô tả lỗi>":\n' +
                 lastErrors +
-                '\n\nHãy trả lại JSON HOÀN CHỈNH sau khi sửa. GIỮ NGUYÊN mọi trường và mọi phần tử đã hợp lệ (không có tên trong danh sách lỗi trên). Chỉ bổ sung phần thiếu và chỉnh phần sai đúng theo lỗi được nêu. Nếu lỗi báo "Too small ... expected array to have >=N items", hãy BỔ SUNG các phần tử còn thiếu vào cuối mảng để đạt tối thiểu N, chứ KHÔNG viết lại phần đã hợp lệ. Không thêm lời giải thích, chỉ trả về JSON.',
+                '\n\nCÁCH SỬA:\n' +
+                '1. Mỗi đường dẫn như "body.12.text" trỏ tới một trường cụ thể trong JSON bạn vừa trả về. "expected string, received undefined" (hoặc "Required") nghĩa là một TRƯỜNG BẮT BUỘC bị THIẾU tại đó.\n' +
+                '2. Với lỗi thiếu trường: nhìn phần tử tại đường dẫn đó trong JSON của bạn, xem giá trị "t" của nó, rồi bổ sung ĐÚNG trường bắt buộc còn thiếu với NỘI DUNG CÓ NGHĨA, viết đầy đủ như một bài báo thật. TUYỆT ĐỐI KHÔNG để trống, KHÔNG dùng chuỗi rỗng "", KHÔNG dùng khoảng trắng, KHÔNG dùng placeholder.\n' +
+                '3. Với lỗi "Too small ... expected array to have >=N items": BỔ SUNG phần tử còn thiếu vào cuối mảng cho đủ tối thiểu N.\n' +
+                '4. GIỮ NGUYÊN mọi trường và mọi phần tử đã hợp lệ (không xuất hiện trong danh sách lỗi). Chỉ sửa đúng chỗ được nêu.\n' +
+                '5. Trả về JSON HOÀN CHỈNH đã sửa (toàn bộ đối tượng), không thêm lời giải thích.' +
+                (request.repairHint === undefined ? '' : '\n\n' + request.repairHint),
             },
           ];
 

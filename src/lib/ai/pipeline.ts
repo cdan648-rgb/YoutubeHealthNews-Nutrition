@@ -18,6 +18,7 @@ import 'server-only';
 import type { Reference } from '@/lib/domain/blocks';
 import { complete, OpenRouterError, type UsageStats } from './openrouter';
 import {
+  BLOCK_SHAPES,
   HOUSE_RULES,
   RESEARCH_RULES,
   draftJsonSchema,
@@ -262,6 +263,9 @@ ${RESEARCH_RULES}`
         // overhead, so the ceiling has to sit well above the raw word count in tokens.
         // Truncation here (finish_reason=length) is what took the run to attempts=5.
         maxTokens: 16000,
+        // Hand the exhaustive per-block-type shape to the repair pass, so a missing required
+        // field (e.g. body.N.text) is corrected against the concrete schema, not a guess.
+        repairHint: BLOCK_SHAPES,
         ...(deps.fetchImpl !== undefined ? { fetchImpl: deps.fetchImpl } : {}),
       });
       working.draft = result.data;

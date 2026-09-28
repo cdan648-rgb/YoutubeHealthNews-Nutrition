@@ -913,6 +913,151 @@ describe('body block minimum', () => {
   });
 });
 
+describe('missing required block field (body.N.text)', () => {
+  /**
+   * The 2026-09-28 production blocker: `body.12.text: expected string, received undefined`.
+   * A text-requiring block came back with no `text`. These prove the draft request now
+   * carries a per-type JSON Schema that requires text, that the repair pass restores a
+   * missing text field and is handed the block-shape reference, and that a still-broken
+   * repair fails cleanly with no third attempt.
+   */
+
+  it('sends a per-type anyOf body schema that requires text on h2/p/callout', async () => {
+    const mock = mockOpenRouter();
+    await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
+    const draftBody = mock.bodies.find((b) => b.includes('"name":"draft"')) ?? '';
+    const parsed = JSON.parse(draftBody) as {
+      response_format?: {
+        json_schema?: { schema?: { properties?: { body?: { items?: { anyOf?: unknown[] } } } } };
+      };
+    };
+    const anyOf = parsed.response_format?.json_schema?.schema?.properties?.body?.items?.anyOf;
+    expect(Array.isArray(anyOf)).toBe(true);
+    // Find the h2 branch and assert text is required, not merely allowed.
+    const branchFor = (t: string) =>
+      (anyOf as { required?: string[]; properties?: { t?: { enum?: string[] } } }[]).find(
+        (b) => b.properties?.t?.enum?.[0] === t,
+      );
+    expect(branchFor('h2')?.required).toContain('text');
+    expect(branchFor('p')?.required).toContain('text');
+    expect(branchFor('callout')?.required).toEqual(
+      expect.arrayContaining(['tone', 'title', 'text']),
+    );
+  });
+
+  it('repairs a draft whose h2 block is missing text, and hands over the block-shape hint', async () => {
+    const merged = defaults();
+    const goodDraft = merged.draft as Record<string, unknown>;
+    // Attempt 0: a draft identical to the good one but with one h2 stripped of its text.
+    const brokenBody = (goodDraft.body as Record<string, unknown>[]).map((block) =>
+      block.t === 'h2'
+        ? (() => {
+            const copy = { ...block };
+            delete copy.text;
+            return copy;
+          })()
+        : block,
+    );
+    const brokenDraft = { ...goodDraft, body: brokenBody };
+
+    let draftCalls = 0;
+    const bodies: string[] = [];
+    const fetchImpl = (_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      const raw = typeof init?.body === 'string' ? init.body : '';
+      const stage =
+        (JSON.parse(raw) as { response_format?: { json_schema?: { name?: string } } })
+          .response_format?.json_schema?.name ?? 'seo';
+      let payload: unknown;
+      if (stage === 'draft') {
+        draftCalls += 1;
+        bodies.push(raw);
+        payload = draftCalls === 1 ? brokenDraft : goodDraft;
+      } else if (stage === 'extraction') {
+        payload = merged.extraction;
+      } else if (stage === 'verification') {
+        payload = merged.verification;
+      } else {
+        payload = merged.seo;
+      }
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            model: 'inclusionai/ling-3.0-flash-vl',
+            usage: { prompt_tokens: 1200, completion_tokens: 900 },
+            choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(payload) } }],
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        ),
+      );
+    };
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl }));
+    if (outcome.decision === 'failed') {
+      throw new Error(`unexpected failure: ${outcome.code} ${outcome.message}`);
+    }
+    expect(draftCalls).toBe(2);
+
+    // The repair (2nd draft request) must carry the exhaustive block-shape reference so the
+    // model knows the exact required field for the block type it broke.
+    const repair = JSON.parse(bodies[1] ?? '{}') as {
+      messages?: { role: string; content: string }[];
+    };
+    const lastUser = (repair.messages ?? []).filter((m) => m.role === 'user').at(-1)?.content ?? '';
+    expect(lastUser).toMatch(/HÌNH DẠNG CHÍNH XÁC CỦA TỪNG LOẠI BLOCK/);
+    expect(lastUser).toMatch(/KHÔNG dùng chuỗi rỗng/);
+    // And it must instruct against omitting a required string / using empty strings.
+    expect(lastUser).toMatch(/TRƯỜNG BẮT BUỘC bị THIẾU|nội dung có nghĩa|NỘI DUNG CÓ NGHĨA/i);
+  });
+
+  it('fails cleanly with no third attempt when the block stays missing text', async () => {
+    const merged = defaults();
+    const goodDraft = merged.draft as Record<string, unknown>;
+    const brokenBody = (goodDraft.body as Record<string, unknown>[]).map((block) => {
+      if (block.t !== 'h2') return block;
+      const copy = { ...block };
+      delete copy.text;
+      return copy;
+    });
+    const brokenDraft = { ...goodDraft, body: brokenBody };
+
+    let draftCalls = 0;
+    const fetchImpl = (_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      const raw = typeof init?.body === 'string' ? init.body : '';
+      const stage =
+        (JSON.parse(raw) as { response_format?: { json_schema?: { name?: string } } })
+          .response_format?.json_schema?.name ?? 'seo';
+      let payload: unknown;
+      if (stage === 'draft') {
+        draftCalls += 1;
+        payload = brokenDraft; // stays broken on both attempts
+      } else if (stage === 'extraction') {
+        payload = merged.extraction;
+      } else if (stage === 'verification') {
+        payload = merged.verification;
+      } else {
+        payload = merged.seo;
+      }
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            model: 'inclusionai/ling-3.0-flash-vl',
+            usage: { prompt_tokens: 1200, completion_tokens: 900 },
+            choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(payload) } }],
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        ),
+      );
+    };
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl }));
+    if (outcome.decision !== 'failed') throw new Error('expected failure');
+    expect(outcome.code).toBe('ai_malformed_output');
+    expect(outcome.message).toMatch(/text/);
+    // Two draft attempts (initial + one repair), never a third.
+    expect(draftCalls).toBe(2);
+  });
+});
+
 describe('the seed articles remain publishable', () => {
   // Regression guard: the seeds are the standard, so a gate change that would reject them
   // is either a bug in the change or a sign the seeds need revisiting. Either way, loudly.
