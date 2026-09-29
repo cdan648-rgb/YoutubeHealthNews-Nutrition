@@ -1298,3 +1298,233 @@ describe('the research path', () => {
     );
   });
 });
+
+/**
+ * The validation-repair pass.
+ *
+ * After the gate, a draft that fails on FIXABLE content grounds (too short, prescriptive
+ * phrasing, thin sourcing, a missing structural block) gets exactly one automatic repair
+ * before it is handed to a human. The model is shown the gate's own report and its own JSON,
+ * and the gate re-runs in full over the result. A failure that is NOT fixable — a restricted
+ * topic, a fabricated number — skips the repair entirely and goes straight to review, and no
+ * failure is ever repaired more than once.
+ */
+describe('validation repair', () => {
+  /**
+   * A schema-valid body that clears the YouTube structural gate but is far too short: the
+   * ONLY hard failure it produces is `too_short`, which is repairable. No numbers (so no
+   * traceability flag) and no overlap with the source text.
+   */
+  function shortButStructuredBody(): Block[] {
+    const p = (text: string, attribution: 'general' | 'speaker' = 'general') => ({
+      t: 'p' as const,
+      text,
+      attribution,
+    });
+    return [
+      { t: 'source_note' },
+      p('Bài viết ngắn này giới thiệu chủ đề một cách sơ lược cho người đọc.'),
+      p('Theo video, khoáng chất này góp mặt trong nhiều hoạt động của cơ thể.', 'speaker'),
+      { t: 'h2', text: 'Vai trò' },
+      p('Phần này nói vắn tắt về vai trò của khoáng chất.'),
+      { t: 'h2', text: 'Dấu hiệu' },
+      p('Phần này nói vắn tắt về các dấu hiệu thường thấy.'),
+      { t: 'h2', text: 'Nguồn thực phẩm' },
+      p('Phần này nói vắn tắt về nguồn thực phẩm hằng ngày.'),
+      { t: 'h2', text: 'Khi nào gặp bác sĩ' },
+      p('Phần này nhắc người đọc nên đi khám khi thấy bất thường.'),
+      { t: 'key_facts', title: 'Điểm chính', items: ['Điểm một cần nhớ', 'Điểm hai cần nhớ'] },
+      { t: 'video_embed' },
+      { t: 'disclaimer' },
+    ];
+  }
+
+  /** goodBody with an untraceable statistic injected — a fabrication signal that must NOT be
+   * routed through the repair pass. */
+  function bodyWithUntraceableNumber(): Block[] {
+    let done = false;
+    return goodBody().map((block) => {
+      if (!done && block.t === 'p' && block.attribution === 'general') {
+        done = true;
+        return {
+          ...block,
+          text: 'Một khảo sát gần đây cho thấy khoảng 87 phần trăm người trưởng thành gặp vấn đề này, một tỷ lệ đáng chú ý.',
+        };
+      }
+      return block;
+    });
+  }
+
+  /**
+   * A fetch stub that answers each stage from the defaults, but returns a SEQUENCE of draft
+   * payloads across successive draft-stage calls (write, then repair). The count of draft
+   * calls is exposed so "exactly one repair, never a third attempt" is directly assertable.
+   */
+  function sequencedDraftMock(draftPayloads: readonly unknown[], base: StageResponses = {}) {
+    const merged = { ...defaults(), ...base };
+    let draftCall = 0;
+    const bodies: string[] = [];
+
+    const impl = (_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      const raw = typeof init?.body === 'string' ? init.body : '';
+      bodies.push(raw);
+      const stage =
+        (JSON.parse(raw) as { response_format?: { json_schema?: { name?: string } } })
+          .response_format?.json_schema?.name ?? 'seo';
+
+      let payload: unknown;
+      if (stage === 'draft') {
+        payload = draftPayloads[Math.min(draftCall, draftPayloads.length - 1)];
+        draftCall += 1;
+      } else if (stage === 'extraction') {
+        payload = merged.extraction;
+      } else if (stage === 'verification') {
+        payload = merged.verification;
+      } else {
+        payload = merged.seo;
+      }
+
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            model: 'inclusionai/ling-3.0-flash-vl',
+            usage: { prompt_tokens: 1200, completion_tokens: 900 },
+            choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(payload) } }],
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        ),
+      );
+    };
+
+    return {
+      fetchImpl: impl,
+      bodies,
+      draftRequests: () => bodies.filter((body) => body.includes('"name":"draft"')),
+      get draftCalls() {
+        return draftCall;
+      },
+    };
+  }
+
+  it('repairs a too-short article to ≥700 words and publishes', async () => {
+    const short = {
+      ...(defaults().draft as Record<string, unknown>),
+      body: shortButStructuredBody(),
+    };
+    const good = defaults().draft;
+    const mock = sequencedDraftMock([short, good]);
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
+    if (outcome.decision === 'failed') throw new Error(`unexpected failure: ${outcome.message}`);
+
+    expect(outcome.decision).toBe('publish');
+    expect(outcome.report.passed).toBe(true);
+    expect(outcome.report.stats.wordCount).toBeGreaterThanOrEqual(700);
+    // Exactly one repair on the draft stage (write + repair), never a third.
+    expect(mock.draftCalls).toBe(2);
+    // The repair call is counted in usage alongside the four stage calls.
+    expect(outcome.usage).toHaveLength(5);
+  });
+
+  it('adds references through the repair when the first draft cites none', async () => {
+    // The short draft has zero references (a soft `few_references`) AND is too short (a hard
+    // `too_short`): the hard failure triggers the repair, and the repaired draft carries the
+    // allowlisted references the good draft supplies.
+    const short = {
+      ...(defaults().draft as Record<string, unknown>),
+      body: shortButStructuredBody(),
+      references: [],
+    };
+    const good = defaults().draft;
+    const mock = sequencedDraftMock([short, good]);
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
+    if (outcome.decision === 'failed') throw new Error(`unexpected failure: ${outcome.message}`);
+
+    expect(outcome.decision).toBe('publish');
+    expect(outcome.draft.references.length).toBeGreaterThanOrEqual(2);
+    // The repair prompt was handed BOTH the hard and the soft issue verbatim.
+    const repair = mock.draftRequests()[1] ?? '';
+    expect(repair).toContain('too_short');
+    expect(repair).toContain('few_references');
+  });
+
+  it('feeds the exact validation report and a preserve-and-fix directive to the repair', async () => {
+    const short = {
+      ...(defaults().draft as Record<string, unknown>),
+      body: shortButStructuredBody(),
+    };
+    const mock = sequencedDraftMock([short, defaults().draft]);
+
+    await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
+
+    const repair = JSON.parse(mock.draftRequests()[1] ?? '{}') as {
+      messages?: { role: string; content: string }[];
+    };
+    const lastUser =
+      (repair.messages ?? []).filter((message) => message.role === 'user').at(-1)?.content ?? '';
+    // The gate's own report reaches the model: the code, its severity, and its own prior JSON.
+    expect(lastUser).toContain('too_short');
+    expect(lastUser).toMatch(/NGHIÊM TRỌNG/);
+    expect(lastUser).toContain('JSON BÀI VIẾT TRƯỚC ĐÓ');
+    // A fix-only, preserve-the-rest directive rather than a bare "try again".
+    expect(lastUser).toMatch(/CHỈ sửa/);
+    expect(lastUser).toMatch(/GIỮ NGUYÊN/);
+  });
+
+  it('routes to review as validation_failed when the repair still fails, with no third attempt', async () => {
+    const short = {
+      ...(defaults().draft as Record<string, unknown>),
+      body: shortButStructuredBody(),
+      references: [],
+    };
+    // Both the write and the repair return the same too-short draft.
+    const mock = sequencedDraftMock([short, short]);
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
+    if (outcome.decision === 'failed') throw new Error(`unexpected failure: ${outcome.message}`);
+
+    expect(outcome.decision).toBe('needs_review');
+    expect(outcome.report.passed).toBe(false);
+    expect(hardFailureCodes(outcome.report)).toContain('too_short');
+    expect(outcome.reason).toContain('validation_failed_after_repair');
+    // The repair ran once and only once — never a third draft call.
+    expect(mock.draftCalls).toBe(2);
+  });
+
+  it('does NOT repair a restricted-topic failure — it goes straight to review', async () => {
+    const short = {
+      ...(defaults().draft as Record<string, unknown>),
+      body: shortButStructuredBody(),
+    };
+    const mock = sequencedDraftMock([short], {
+      extraction: {
+        ...(defaults().extraction as Record<string, unknown>),
+        restrictedTopics: ['self_diagnosis'],
+      },
+    });
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
+    if (outcome.decision === 'failed') throw new Error('unexpected failure');
+
+    expect(outcome.decision).toBe('needs_review');
+    expect(hardFailureCodes(outcome.report)).toContain('restricted_topic');
+    // A restricted topic is not repairable: no second draft call is made.
+    expect(mock.draftCalls).toBe(1);
+    expect(outcome.reason).not.toContain('validation_failed_after_repair');
+  });
+
+  it('does NOT repair a fabricated (untraceable) number — it goes straight to review', async () => {
+    const mock = sequencedDraftMock([
+      { ...(defaults().draft as Record<string, unknown>), body: bodyWithUntraceableNumber() },
+    ]);
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
+    if (outcome.decision === 'failed') throw new Error('unexpected failure');
+
+    expect(outcome.decision).toBe('needs_review');
+    expect(hardFailureCodes(outcome.report)).toContain('untraceable_number');
+    // Fabrication belongs to a human, not to an automated rewrite.
+    expect(mock.draftCalls).toBe(1);
+  });
+});

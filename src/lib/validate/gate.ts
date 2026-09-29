@@ -68,8 +68,47 @@ const PRESCRIPTIVE_PATTERNS: readonly { readonly pattern: RegExp; readonly label
   { pattern: /\bđiều trị\s+khỏi\b/iu, label: 'claims a cure' },
   { pattern: /\bthay\s+(?:thế|cho)\s+thuốc\b/iu, label: 'suggests replacing medication' },
   { pattern: /\bkhông cần\s+(?:đi\s+)?(?:khám|bác sĩ)\b/iu, label: 'discourages seeking care' },
-  { pattern: /\btự\s+(?:chẩn đoán|điều trị)\b/iu, label: 'encourages self-treatment' },
 ];
+
+/**
+ * Self-diagnosis and self-treatment — but only where the article ENCOURAGES them.
+ *
+ * "tự chẩn đoán" / "tự điều trị" are phrases a safe health article must never use as advice.
+ * Yet the safest sentence in such an article is frequently the warning AGAINST them:
+ * "không nên tự chẩn đoán", "tránh tự điều trị". A bare phrase match rejects that warning as
+ * if it were the encouragement — punishing exactly the sentence we most want the article to
+ * contain. So we match the phrase twice: once plainly, and once only when a negation or
+ * avoidance cue governs it ("không", "đừng", "tránh", "chớ", "thay vì", "hạn chế", with only
+ * modal connectives like "nên"/"được"/"cần" allowed to sit between the cue and the phrase). An
+ * occurrence is prescriptive only when it is NOT one of the negated ones — the cue has to
+ * directly govern the phrase, so "không cần bác sĩ, hãy tự chẩn đoán" (the negation governs
+ * "bác sĩ", the imperative governs the phrase) is still caught.
+ */
+// The boundaries are Unicode lookarounds, not `\b`: JavaScript's `\b` is ASCII-only, so it
+// finds no boundary after "trị" (which ends in the non-ASCII "ị") and would silently miss
+// every "tự điều trị". Same lesson as the dosage detector above.
+const SELF_CARE_PATTERN = /(?<![\p{L}])tự\s+(?:chẩn đoán|điều trị)(?![\p{L}])/giu;
+const SELF_CARE_NEGATED =
+  /(?<![\p{L}])(?:không|đừng|chớ|tránh|thay vì|hạn chế|ngăn(?:\s+ngừa)?|tuyệt đối không)(?:\s+(?:nên|được|phải|cần|bao|giờ|khi|việc|ý))*\s+tự\s+(?:chẩn đoán|điều trị)(?![\p{L}])/giu;
+
+/**
+ * The first self-care phrase that is encouraged rather than warned against, or null when
+ * every occurrence is a negation. Both regexes end in the identical phrase text, so a negated
+ * occurrence and its plain match share an end offset — that shared offset is how a warning is
+ * excluded without excluding a prescriptive use elsewhere in the same article. The returned
+ * phrase becomes the report's `detail`.
+ */
+function encouragedSelfCare(plain: string): string | null {
+  const negatedEnds = new Set<number>();
+  for (const match of plain.matchAll(SELF_CARE_NEGATED)) {
+    if (match.index !== undefined) negatedEnds.add(match.index + match[0].length);
+  }
+  for (const match of plain.matchAll(SELF_CARE_PATTERN)) {
+    if (match.index === undefined) continue;
+    if (!negatedEnds.has(match.index + match[0].length)) return match[0];
+  }
+  return null;
+}
 
 /**
  * A dosage, in any unit. Separate from the prescriptive patterns because a bare quantity
@@ -257,6 +296,12 @@ export function validateArticle(input: GateInput): ValidationReport {
     if (match !== null) {
       hard('prescriptive_language', `article ${label}`, match[0]);
     }
+  }
+  // Self-diagnosis / self-treatment is context-aware: an explicit warning against it
+  // ("không nên tự chẩn đoán", "tránh tự điều trị") is allowed; only an encouragement fails.
+  const encouragedPhrase = encouragedSelfCare(plain);
+  if (encouragedPhrase !== null) {
+    hard('prescriptive_language', 'article encourages self-treatment', encouragedPhrase);
   }
 
   /* -------------------------------- sourcing -------------------------------- */

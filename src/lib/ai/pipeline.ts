@@ -27,6 +27,7 @@ import {
   extractionJsonSchema,
   extractionPrompt,
   extractionSchema,
+  repairDraftPrompt,
   researchDraftPrompt,
   researchExtractionPrompt,
   seoJsonSchema,
@@ -106,6 +107,56 @@ export type PipelineOutcome =
       readonly usage: readonly UsageStats[];
       readonly retryable: boolean;
     };
+
+/**
+ * Hard failure codes a single content-repair pass may safely and meaningfully attempt.
+ *
+ * An allowlist, not a denylist, so the fail-safe direction is "route to human review": any
+ * code not listed here — and every code added in future — sends the article to review
+ * untouched rather than to a model. The omissions are deliberate:
+ *
+ *   restricted_topic          a policy block a body rewrite cannot clear — it comes from the
+ *                             extraction, so a repaired body would just fail the gate again.
+ *   untraceable_number,       fabrication and plagiarism signals. Letting a model "repair"
+ *   copy_overlap,             them is precisely the surface we do not want an automated pass
+ *   fabricated_quote          improvising over; these belong to a human.
+ *   invalid_slug,             the generation is broken at a level a content edit will not
+ *   unknown_category,         mend (the slug is re-derived from the title; a missing headline
+ *   missing_headline,         or a required paper link is a structural generation failure).
+ *   missing_required_reference
+ *
+ * The listed codes are the length, phrasing, thin-sourcing and missing-structural-block
+ * failures — the ones the reported production incident hit, and the ones a careful rewrite
+ * can fix without inventing anything.
+ */
+const REPAIRABLE_HARD_CODES: ReadonlySet<string> = new Set([
+  'too_short',
+  'too_long',
+  'prescriptive_language',
+  'prescriptive_dosage',
+  'too_few_sections',
+  'missing_key_facts',
+  'missing_video_embed',
+  'missing_source_note',
+  'missing_disclaimer',
+  'unexpected_video_embed',
+  'missing_study_caveat',
+  'dangling_reference',
+  'unsourced_established_claim',
+  'uncited_quotation',
+  'speaker_attribution_without_speaker',
+]);
+
+/**
+ * Whether a failed report is one the repair pass may attempt: it must have at least one hard
+ * issue, and EVERY hard issue must be repairable. A single non-repairable hard issue (a
+ * restricted topic, a fabricated number) sends the whole article to review — a repair that
+ * left such an issue in place would be wasted, and one that "fixed" it would be unsafe.
+ */
+function isRepairable(report: ValidationReport): boolean {
+  const hard = report.issues.filter((issue) => issue.severity === 'hard');
+  return hard.length > 0 && hard.every((issue) => REPAIRABLE_HARD_CODES.has(issue.code));
+}
 
 /**
  * Run the pipeline.
@@ -292,17 +343,16 @@ ${RESEARCH_RULES}`
     const seo = working.seo;
 
     /* --------------------------------- 6. gate ------------------------------ */
-    // The slug is re-derived from the title rather than trusted: a model-supplied slug is
-    // a hint, and the database CHECK is unforgiving.
-    const slug = slugify(draft.title);
-
-    const finalReferences: Reference[] = draft.references.filter((reference) => {
-      try {
-        return isAllowlistedHost(new URL(reference.url).hostname, deps.allowedReferenceHosts);
-      } catch {
-        return false;
-      }
-    });
+    // Keep only allowlisted references. A model-supplied reference on an off-list host is
+    // stripped before the gate, matching what the writing stage was told it may cite.
+    const allowlist = (references: readonly Reference[]): Reference[] =>
+      references.filter((reference) => {
+        try {
+          return isAllowlistedHost(new URL(reference.url).hostname, deps.allowedReferenceHosts);
+        } catch {
+          return false;
+        }
+      });
 
     // The paper's own landing page must be cited. Requiring it here — rather than only
     // asking for it in the prompt — is what makes the rule hold when the model forgets.
@@ -311,27 +361,96 @@ ${RESEARCH_RULES}`
         ? [source.paperUrl]
         : [];
 
-    const report = validateArticle({
-      title: draft.title,
-      dek: draft.dek,
-      slug,
-      categorySlug: draft.categorySlug,
-      body: draft.body,
-      references: finalReferences,
-      sourceText: source.sourceText,
-      sourceTitle: source.title,
-      allowedCategorySlugs: deps.categories.map((category) => category.slug),
-      allowedReferenceHosts: deps.allowedReferenceHosts,
-      unverifiableReferenceUrls: referenceStatus.unverifiable,
-      unreachableReferenceUrls: referenceStatus.unreachable,
-      detectedRestrictedTopics: extraction.restrictedTopics,
-      sourceKind: source.kind,
-      requiredReferenceUrls,
-    });
+    // The slug is re-derived from the title rather than trusted: a model-supplied slug is
+    // a hint, and the database CHECK is unforgiving.
+    const runGate = (
+      candidate: Draft,
+      references: readonly Reference[],
+      status: VerificationSummary,
+    ): ValidationReport =>
+      validateArticle({
+        title: candidate.title,
+        dek: candidate.dek,
+        slug: slugify(candidate.title),
+        categorySlug: candidate.categorySlug,
+        body: candidate.body,
+        references,
+        sourceText: source.sourceText,
+        sourceTitle: source.title,
+        allowedCategorySlugs: deps.categories.map((category) => category.slug),
+        allowedReferenceHosts: deps.allowedReferenceHosts,
+        unverifiableReferenceUrls: status.unverifiable,
+        unreachableReferenceUrls: status.unreachable,
+        detectedRestrictedTopics: extraction.restrictedTopics,
+        sourceKind: source.kind,
+        requiredReferenceUrls,
+      });
 
-    const normalisedDraft: Draft = { ...draft, slug, references: finalReferences };
+    let currentDraft = draft;
+    let finalReferences = allowlist(draft.references);
+    let report = runGate(currentDraft, finalReferences, referenceStatus);
+    let repaired = false;
+
+    /* ---------------------------- 6b. one repair pass ------------------------ */
+    // A fixable content failure gets exactly one automatic repair before the article is
+    // handed to a human. The model sees the gate's own report and its own prior JSON, fixes
+    // only what was flagged, and returns the complete article — which the gate then re-runs
+    // over in full. Never more than once: a rewrite that still fails is not going to succeed
+    // on a third try, and the deterministic gate is what decides, not the model.
+    if (!report.passed && isRepairable(report)) {
+      repaired = true;
+      try {
+        const repairResult = await complete({
+          system,
+          user: repairDraftPrompt({
+            previousDraftJson: JSON.stringify(currentDraft),
+            issues: report.issues,
+            sourceTitle: source.title,
+            sourceKind: source.kind,
+            wordCountMin: WORD_COUNT_MIN,
+            wordCountMax: WORD_COUNT_MAX,
+          }),
+          jsonSchema: draftJsonSchema,
+          schemaName: 'draft',
+          validator: draftSchema,
+          // Same ceiling as the writing stage: a repaired full-length article is no smaller
+          // than the original, and a lower budget would truncate the fix.
+          maxTokens: 16000,
+          repairHint: BLOCK_SHAPES,
+          ...(deps.fetchImpl !== undefined ? { fetchImpl: deps.fetchImpl } : {}),
+        });
+        usage.push(repairResult.usage);
+
+        const repairedReferences = allowlist(repairResult.data.references);
+        // Re-verify the repaired article's citations from scratch: a repair may add sources,
+        // and an added citation must clear the same reachability bar as an original one.
+        const repairedStatus = await deps.verifyReferences(
+          repairedReferences.map((reference) => reference.url),
+        );
+
+        // Adopt the repaired article regardless of outcome: on a pass it publishes, and on a
+        // still-failing repair the human reviewer is shown the closer attempt.
+        currentDraft = repairResult.data;
+        finalReferences = repairedReferences;
+        report = runGate(currentDraft, finalReferences, repairedStatus);
+        working.draft = currentDraft;
+      } catch {
+        // A repair that cannot even produce valid output must never leave the run worse off
+        // than doing nothing: fall through with the original draft and its failing report.
+      }
+    }
+
+    const normalisedDraft: Draft = {
+      ...currentDraft,
+      slug: slugify(currentDraft.title),
+      references: finalReferences,
+    };
 
     if (!report.passed) {
+      const hardCodes = report.issues
+        .filter((issue) => issue.severity === 'hard')
+        .map((issue) => issue.code)
+        .join(', ');
       return {
         decision: 'needs_review',
         draft: normalisedDraft,
@@ -339,10 +458,7 @@ ${RESEARCH_RULES}`
         report,
         artifacts: working,
         usage,
-        reason: report.issues
-          .filter((issue) => issue.severity === 'hard')
-          .map((issue) => issue.code)
-          .join(', '),
+        reason: repaired ? `validation_failed_after_repair: ${hardCodes}` : hardCodes,
       };
     }
 

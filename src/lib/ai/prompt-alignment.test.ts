@@ -16,6 +16,7 @@ import {
   RESEARCH_RULES,
   draftPrompt,
   extractionPrompt,
+  repairDraftPrompt,
   researchDraftPrompt,
   researchExtractionPrompt,
   seoPrompt,
@@ -223,6 +224,15 @@ describe('draft prompt (youtube) ↔ schema', () => {
     // here would let the gate reject a well-formed article.
     expect(draft()).toContain('700–1400 từ');
   });
+
+  it('reinforces the medical-safety and sourcing targets that reduce first-draft failures', () => {
+    // Prevention side of the repair work: the draft prompt itself must prohibit self-care
+    // advice, state the hard minimum word count, and ask for ≥2 sources where appropriate —
+    // so fewer drafts reach the gate broken in the first place.
+    expect(draft()).toMatch(/tự chẩn đoán hay tự điều trị/);
+    expect(draft()).toMatch(/BẮT BUỘC đạt tối thiểu 700 từ/);
+    expect(draft()).toMatch(/ÍT NHẤT 2 nguồn/);
+  });
 });
 
 describe('draft prompt (research) ↔ schema and gate', () => {
@@ -250,6 +260,60 @@ describe('draft prompt (research) ↔ schema and gate', () => {
   it('names the max-8 reference cap and the required-field shape', () => {
     expect(researchDraft()).toMatch(/TỐI ĐA 8/);
     expect(researchDraft()).toMatch(/"label", "title", "publisher", "url"/);
+  });
+
+  it('reinforces the medical-safety prohibitions and the hard minimum word count', () => {
+    expect(researchDraft()).toMatch(/tự chẩn đoán hay tự điều trị/);
+    expect(researchDraft()).toMatch(/BẮT BUỘC đạt tối thiểu 700 từ/);
+  });
+});
+
+describe('repair prompt', () => {
+  function repair() {
+    return repairDraftPrompt({
+      previousDraftJson: '{"title":"x"}',
+      issues: [
+        { code: 'too_short', severity: 'hard', message: 'article is 556 words, minimum 700' },
+        {
+          code: 'prescriptive_language',
+          severity: 'hard',
+          message: 'encourages',
+          detail: 'tự chẩn đoán',
+        },
+        { code: 'few_references', severity: 'soft', message: 'only 0 external reference(s)' },
+      ],
+      sourceTitle: 'Số 118: THIẾU MAGIE',
+      sourceKind: 'youtube',
+      wordCountMin: 700,
+      wordCountMax: 1400,
+    });
+  }
+
+  it('surfaces each reported issue with its code, severity and detail', () => {
+    const p = repair();
+    expect(p).toContain('too_short');
+    expect(p).toContain('prescriptive_language');
+    expect(p).toContain('few_references');
+    expect(p).toMatch(/NGHIÊM TRỌNG/); // hard
+    expect(p).toMatch(/cảnh báo/); // soft
+    expect(p).toContain('tự chẩn đoán'); // the detail string
+  });
+
+  it('embeds the model’s own prior JSON and demands the complete corrected article', () => {
+    const p = repair();
+    expect(p).toContain('{"title":"x"}');
+    expect(p).toMatch(/GIỮ NGUYÊN/);
+    expect(p).toMatch(/CHỈ sửa/);
+    expect(p).toMatch(/TOÀN BỘ bài viết đã sửa/);
+    // The exhaustive block-shape contract rides along, exactly as the writing stage's does.
+    expect(p).toMatch(/HÌNH DẠNG CHÍNH XÁC CỦA TỪNG LOẠI BLOCK/);
+  });
+
+  it('preserves the source topic and keeps the medical-safety rules', () => {
+    const p = repair();
+    expect(p).toContain('Số 118: THIẾU MAGIE');
+    expect(p).toMatch(/KHÔNG bịa số liệu/);
+    expect(p).toMatch(/an toàn y tế/i);
   });
 });
 

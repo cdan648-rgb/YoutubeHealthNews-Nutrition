@@ -465,7 +465,14 @@ Các block bắt buộc trong mảng body:
 
 ${BLOCK_SHAPES}
 
-ĐỘ DÀI: ${input.wordCountMin}–${input.wordCountMax} từ (đếm theo âm tiết tiếng Việt).
+ĐỘ DÀI: ${input.wordCountMin}–${input.wordCountMax} từ (đếm theo âm tiết tiếng Việt). BẮT BUỘC đạt tối thiểu ${input.wordCountMin} từ — một bài dưới mức này sẽ bị từ chối; hãy triển khai đủ ý trong dàn ý thay vì viết sơ sài.
+
+AN TOÀN Y TẾ (bài sẽ bị từ chối nếu vi phạm):
+- TUYỆT ĐỐI KHÔNG khuyến khích người đọc tự chẩn đoán hay tự điều trị. Được phép KHUYÊN NGƯỢC LẠI, ví dụ "không nên tự chẩn đoán", "nên đi khám để được chẩn đoán".
+- KHÔNG kê liều, KHÔNG ra chỉ dẫn dùng thuốc/thực phẩm bổ sung. Đây là bài giải thích, không phải toa thuốc.
+- Ghi rõ nguồn: giữ block {"t":"source_note"} và dùng attribution "speaker" cho những gì video nói.
+
+references: TỐI ĐA 8 nguồn, CHỈ đưa vào các nguồn đã được cung cấp ở trên. KHÔNG thêm nguồn nào khác. KHI bài có nêu kiến thức y khoa đã được xác lập VÀ danh sách trên có sẵn nguồn phù hợp, hãy dẫn ÍT NHẤT 2 nguồn uy tín; nếu danh sách không có nguồn nào phù hợp thì KHÔNG được bịa — để mảng rỗng. Mỗi phần tử BẮT BUỘC có bốn trường {"label", "title", "publisher", "url"} — copy chính xác title/publisher/url từ danh sách đã cung cấp; label là số thứ tự dạng chuỗi ("1", "2", ...).
 
 RÀNG BUỘC ĐỘ DÀI TỪNG TRƯỜNG (nếu vi phạm, JSON sẽ bị từ chối):
 - title: 10–160 ký tự.
@@ -475,8 +482,6 @@ RÀNG BUỘC ĐỘ DÀI TỪNG TRƯỜNG (nếu vi phạm, JSON sẽ bị từ c
 - key_facts: title 3–120 ký tự; mỗi item 5–320 ký tự; 2–8 items.
 - pull_quote: text 20–400 ký tự.
 - callout: title 3–120, text 20–900.
-
-references: TỐI ĐA 8 nguồn, CHỈ đưa vào các nguồn đã được cung cấp ở trên. KHÔNG thêm nguồn nào khác. Mỗi phần tử BẮT BUỘC có bốn trường {"label", "title", "publisher", "url"} — copy chính xác title/publisher/url từ danh sách đã cung cấp; label là số thứ tự dạng chuỗi ("1", "2", ...). Nếu không có nguồn nào, để mảng rỗng.
 
 slug: chữ thường không dấu, các từ nối bằng dấu gạch ngang, chỉ a-z 0-9 và dấu - (10–90 ký tự).
 
@@ -653,7 +658,9 @@ ${BLOCK_SHAPES}
 
 references: TỐI ĐA 8 phần tử. Phần tử ĐẦU TIÊN (chỉ số 0) PHẢI là chính công trình gốc, với url đúng bằng ${input.paperUrl}. Sau đó chỉ thêm các nguồn đã được cung cấp ở trên. KHÔNG thêm nguồn nào khác. Mỗi phần tử BẮT BUỘC có bốn trường {"label", "title", "publisher", "url"}; label là số thứ tự dạng chuỗi ("1", "2", ...).
 
-ĐỘ DÀI: ${input.wordCountMin}–${input.wordCountMax} từ (đếm theo âm tiết tiếng Việt).
+AN TOÀN Y TẾ (bài sẽ bị từ chối nếu vi phạm): KHÔNG khuyến khích người đọc tự chẩn đoán hay tự điều trị (được phép khuyên ngược lại); KHÔNG kê liều; KHÔNG biến kết quả nghiên cứu thành lời khuyên hành động.
+
+ĐỘ DÀI: ${input.wordCountMin}–${input.wordCountMax} từ (đếm theo âm tiết tiếng Việt). BẮT BUỘC đạt tối thiểu ${input.wordCountMin} từ.
 
 RÀNG BUỘC ĐỘ DÀI TỪNG TRƯỜNG (nếu vi phạm, JSON sẽ bị từ chối):
 - title: 10–160 ký tự.
@@ -664,6 +671,75 @@ RÀNG BUỘC ĐỘ DÀI TỪNG TRƯỜNG (nếu vi phạm, JSON sẽ bị từ c
 - callout: title 3–120, text 20–900.
 
 slug: chữ thường không dấu, các từ nối bằng dấu gạch ngang, chỉ a-z 0-9 và dấu - (10–90 ký tự).
+
+CHỈ trả về JSON đúng schema.`;
+}
+
+/* ============================ validation repair =========================== */
+
+/**
+ * A single, targeted repair of a draft that PASSED the schema but FAILED the deterministic
+ * validation gate on fixable content grounds (too short, prescriptive phrasing, thin
+ * sourcing, a missing structural block).
+ *
+ * This is not the schema-repair loop inside `complete()` — that fixes malformed JSON. This
+ * runs one level up, after the gate, and is handed the gate's own report so the model corrects
+ * the exact things a deterministic checker measured rather than guessing. The contract is
+ * deliberately narrow: fix ONLY the reported issues, keep everything already valid, keep the
+ * source's meaning and attribution, invent nothing. It returns the complete corrected article,
+ * because the gate re-runs over the whole document afterwards, not over a patch.
+ *
+ * `previousDraftJson` is the model's own prior output, embedded verbatim so the repair is a
+ * revision rather than a rewrite; the identical `draftSchema` / `draftJsonSchema` still
+ * governs the response.
+ */
+export function repairDraftPrompt(input: {
+  readonly previousDraftJson: string;
+  readonly issues: readonly {
+    readonly code: string;
+    readonly severity: 'hard' | 'soft';
+    readonly message: string;
+    readonly detail?: string;
+  }[];
+  readonly sourceTitle: string;
+  readonly sourceKind: 'youtube' | 'research';
+  readonly wordCountMin: number;
+  readonly wordCountMax: number;
+}): string {
+  const issueList = input.issues
+    .map((issue) => {
+      const severity = issue.severity === 'hard' ? 'NGHIÊM TRỌNG' : 'cảnh báo';
+      const detail = issue.detail === undefined ? '' : ` — chi tiết: "${issue.detail}"`;
+      return `- [${severity}] ${issue.code}: ${issue.message}${detail}`;
+    })
+    .join('\n');
+
+  return `Bài viết dưới đây ĐÃ đúng cấu trúc JSON nhưng KHÔNG qua được bộ kiểm duyệt nội dung tự động. Nhiệm vụ của bạn là SỬA đúng những lỗi được liệt kê, KHÔNG viết lại từ đầu.
+
+NGUỒN GỐC (giữ nguyên chủ đề và cách dẫn nguồn này): "${input.sourceTitle}" (${input.sourceKind === 'research' ? 'bài nghiên cứu' : 'video'}).
+
+JSON BÀI VIẾT TRƯỚC ĐÓ (đây là điểm xuất phát của bạn, hãy chỉnh sửa trên chính nó):
+"""
+${input.previousDraftJson}
+"""
+
+DANH SÁCH LỖI CẦN SỬA (do bộ kiểm duyệt xác định — mỗi dòng: [mức độ] mã_lỗi: mô tả):
+${issueList}
+
+CÁCH SỬA TỪNG LOẠI LỖI:
+- too_short: viết thêm nội dung có thật, bám theo tư liệu nguồn và các ý đã có, để bài đạt ${input.wordCountMin}–${input.wordCountMax} từ. KHÔNG nhồi chữ vô nghĩa, KHÔNG bịa số liệu hay nghiên cứu mới.
+- too_long: rút gọn cho về dưới ${input.wordCountMax} từ mà vẫn giữ các ý chính.
+- prescriptive_language / prescriptive_dosage: diễn đạt lại theo hướng GIẢI THÍCH, bỏ mọi lời khuyên dùng thuốc/liều lượng, bỏ lời khuyên tự chẩn đoán hoặc tự điều trị. Nếu muốn nhắc tới việc tự chẩn đoán, chỉ được nói theo hướng KHUYÊN NGƯỢC LẠI (ví dụ "không nên tự chẩn đoán").
+- few_references: nếu có nguồn uy tín phù hợp, bổ sung để có ít nhất 2 nguồn; nếu không chắc nguồn có thật, ĐỪNG thêm — một nguồn bịa còn tệ hơn không có nguồn.
+- các lỗi cấu trúc (thiếu block, thiếu mục, thiếu key_facts/disclaimer/source_note...): bổ sung đúng block còn thiếu.
+
+QUY TẮC BẮT BUỘC:
+1. CHỈ sửa những lỗi được liệt kê ở trên. GIỮ NGUYÊN mọi nội dung đã hợp lệ.
+2. GIỮ NGUYÊN ý nghĩa và thông tin của nguồn gốc. KHÔNG thêm con số, tỷ lệ, liều lượng hay nghiên cứu không có trong tư liệu nguồn.
+3. Tuân thủ toàn bộ NGUYÊN TẮC BẮT BUỘC về an toàn y tế đã nêu ở đầu.
+4. Trả về TOÀN BỘ bài viết đã sửa dưới dạng JSON hoàn chỉnh đúng schema (không phải bản vá, không kèm lời giải thích).
+
+${BLOCK_SHAPES}
 
 CHỈ trả về JSON đúng schema.`;
 }

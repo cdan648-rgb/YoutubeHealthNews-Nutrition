@@ -225,6 +225,57 @@ describe('prescriptive content', () => {
   });
 });
 
+describe('self-diagnosis is context-aware', () => {
+  // "tự chẩn đoán" / "tự điều trị" must fail when the article ENCOURAGES them, but the
+  // safest sentence in a health article is the WARNING against them. A bare keyword match
+  // punishes the warning; the gate must tell an encouragement from a prohibition.
+
+  it('rejects encouragement to self-diagnose', () => {
+    const report = validateArticle(
+      baseInput({
+        body: withFirstParagraph(
+          'Bạn hoàn toàn có thể tự chẩn đoán tình trạng của mình ngay tại nhà dựa trên các dấu hiệu quen thuộc.',
+        ),
+      }),
+    );
+    expect(hardFailureCodes(report)).toContain('prescriptive_language');
+  });
+
+  it('rejects encouragement to self-treat', () => {
+    const report = validateArticle(
+      baseInput({
+        body: withFirstParagraph(
+          'Nhiều người chọn cách tự điều trị tại nhà bằng các mẹo truyền miệng thay cho việc thăm khám.',
+        ),
+      }),
+    );
+    expect(hardFailureCodes(report)).toContain('prescriptive_language');
+  });
+
+  it.each([
+    'Thông điệp quan trọng nhất là không tự chẩn đoán và luôn tham khảo ý kiến chuyên gia y tế.',
+    'Người đọc không nên tự chẩn đoán mà nên tới cơ sở y tế để được thăm khám cho cẩn thận.',
+    'Các bác sĩ khuyên nên tránh tự chẩn đoán khi chưa có đủ thông tin đáng tin cậy trong tay.',
+    'Điều nên làm là không tự điều trị mà đưa người bệnh đến bác sĩ để được theo dõi đúng cách.',
+  ])('allows an explicit warning against it: %j', (text) => {
+    const report = validateArticle(baseInput({ body: withFirstParagraph(text) }));
+    expect(hardFailureCodes(report)).not.toContain('prescriptive_language');
+  });
+
+  it('still rejects it when an imperative governs the phrase despite an earlier negation', () => {
+    // "không cần chờ" negates "chờ", not the phrase; the imperative "hãy" governs it. This is
+    // the case a naive "contains a negation nearby" check would wrongly wave through.
+    const report = validateArticle(
+      baseInput({
+        body: withFirstParagraph(
+          'Khi thấy mệt thì không cần chờ đợi gì thêm, hãy tự chẩn đoán rồi xử lý ngay tại nhà cho nhanh.',
+        ),
+      }),
+    );
+    expect(hardFailureCodes(report)).toContain('prescriptive_language');
+  });
+});
+
 describe('fabricated attribution', () => {
   it('rejects a pull quote claiming a citation it does not have', () => {
     const body = (seed.body as Block[]).map((block) =>
