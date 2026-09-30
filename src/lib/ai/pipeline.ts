@@ -48,6 +48,7 @@ import {
   type ValidationReport,
 } from '@/lib/validate/gate';
 import { isAllowlistedHost, type VerificationSummary } from '@/lib/references/verify';
+import { reconcileReferences } from '@/lib/references/reconcile';
 import { slugify } from '@/lib/slug';
 
 export type PipelineSource = {
@@ -386,8 +387,28 @@ ${RESEARCH_RULES}`
         requiredReferenceUrls,
       });
 
-    let currentDraft = draft;
-    let finalReferences = allowlist(draft.references);
+    // The ordered pool of verified, allowlisted, reachable sources the writing stage was
+    // handed. Its order is the exact index space the body's `ref` values were written in, so
+    // a body that cited into an empty references array can be repaired against it without
+    // inventing anything. See reconcileReferences.
+    const referencePool = buildReferencePool(
+      source,
+      usableVerification,
+      deps.allowedReferenceHosts,
+    );
+
+    // Close the body-ref ↔ references contract deterministically, BEFORE the gate: resolve a
+    // dropped references array from the verified pool, and strip any citation marker with no
+    // verified source behind it. This turns the model's most common reference mistake into a
+    // corrected article rather than a `dangling_reference` handed to a human — and it invents
+    // no URLs, so it is safe to run unconditionally.
+    const reconciled = reconcileReferences(draft.body, allowlist(draft.references), referencePool);
+    let currentDraft: Draft = {
+      ...draft,
+      body: reconciled.body,
+      references: reconciled.references,
+    };
+    let finalReferences = reconciled.references;
     let report = runGate(currentDraft, finalReferences, referenceStatus);
     let repaired = false;
 
@@ -421,7 +442,20 @@ ${RESEARCH_RULES}`
         });
         usage.push(repairResult.usage);
 
-        const repairedReferences = allowlist(repairResult.data.references);
+        // Reconcile the repaired article's citations against the same verified pool, exactly
+        // as the first draft was: a model repair can reintroduce a dangling ref, and it must
+        // be closed deterministically here too rather than surfacing as a fresh gate failure.
+        const repairedReconciled = reconcileReferences(
+          repairResult.data.body,
+          allowlist(repairResult.data.references),
+          referencePool,
+        );
+        const repairedDraft: Draft = {
+          ...repairResult.data,
+          body: repairedReconciled.body,
+          references: repairedReconciled.references,
+        };
+        const repairedReferences = repairedReconciled.references;
         // Re-verify the repaired article's citations from scratch: a repair may add sources,
         // and an added citation must clear the same reachability bar as an original one.
         const repairedStatus = await deps.verifyReferences(
@@ -430,7 +464,7 @@ ${RESEARCH_RULES}`
 
         // Adopt the repaired article regardless of outcome: on a pass it publishes, and on a
         // still-failing repair the human reviewer is shown the closer attempt.
-        currentDraft = repairResult.data;
+        currentDraft = repairedDraft;
         finalReferences = repairedReferences;
         report = runGate(currentDraft, finalReferences, repairedStatus);
         working.draft = currentDraft;
@@ -499,4 +533,70 @@ ${RESEARCH_RULES}`
 /** Total estimated spend across a run's calls. */
 export function totalCost(usage: readonly UsageStats[]): number {
   return usage.reduce((sum, entry) => sum + entry.estimatedCostUsd, 0);
+}
+
+/** Hostname of a URL, or '' if it will not parse. */
+function safeHost(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return '';
+  }
+}
+
+/** First candidate at least `min` characters long, trimmed; '' if none qualifies. */
+function firstOfLength(candidates: readonly (string | undefined)[], min: number): string {
+  for (const candidate of candidates) {
+    const trimmed = candidate?.trim() ?? '';
+    if (trimmed.length >= min) return trimmed;
+  }
+  return '';
+}
+
+/**
+ * The ordered pool of verified sources the writing stage was handed, as `Reference` objects.
+ *
+ * The order is load-bearing: it is the exact index space the body's `ref` values were written
+ * in, so reconcileReferences can adopt this pool to make a body that cited into a dropped
+ * references array resolve. It mirrors the draft prompts precisely — youtube enumerates the
+ * citable claims from index 0; research places the paper at index 0 and the citable claims
+ * after it — so pool[N] is the source the model was told `ref: N` points at.
+ *
+ * Every entry is real: a citable claim carries a verified, allowlisted, reachable URL (the
+ * pipeline downgraded every other resolution before this point), and the research paper's own
+ * landing page is the source the article reports on. Nothing here is fabricated.
+ */
+function buildReferencePool(
+  source: PipelineSource,
+  verification: Verification,
+  allowedHosts: readonly string[],
+): Reference[] {
+  const claimReferences = verification.verifiedClaims
+    .filter((claim) => claim.resolution === 'cite' && claim.suggestedUrl !== undefined)
+    .map((claim): Reference | null => {
+      const url = claim.suggestedUrl ?? '';
+      const host = safeHost(url);
+      if (host === '' || !isAllowlistedHost(host, allowedHosts)) return null;
+      return {
+        label: '0',
+        title: firstOfLength([claim.suggestedTitle, claim.suggestedPublisher, host], 3) || host,
+        publisher: firstOfLength([claim.suggestedPublisher, host], 2) || host,
+        url,
+      };
+    })
+    .filter((reference): reference is Reference => reference !== null);
+
+  const pool: Reference[] = [];
+  if (source.kind === 'research' && source.paperUrl !== undefined && source.paperUrl !== '') {
+    // The research draft prompt reserves index 0 for the paper itself.
+    pool.push({
+      label: '0',
+      title: firstOfLength([source.title], 3) || 'Công trình nghiên cứu',
+      publisher: firstOfLength([source.journal ?? undefined], 2) || 'Tạp chí khoa học',
+      url: source.paperUrl,
+    });
+  }
+  pool.push(...claimReferences);
+
+  return pool.map((reference, index) => ({ ...reference, label: String(index + 1) }));
 }

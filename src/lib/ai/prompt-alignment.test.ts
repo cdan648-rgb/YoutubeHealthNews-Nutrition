@@ -182,6 +182,13 @@ describe('verification prompt ↔ schema', () => {
     // A model that guesses a URL is worse than a model that admits it does not know.
     expect(verify()).toMatch(/KHÔNG bịa URL/);
   });
+
+  it('forbids choosing "cite" without a concrete real URL', () => {
+    // The 2026-09-30 upstream trigger: the model marked four claims "cite" with no
+    // suggestedUrl. A cite with no URL is meaningless; the prompt must send those to
+    // attribute_to_speaker/drop instead.
+    expect(verify()).toMatch(/KHÔNG có một URL cụ thể có thật.*KHÔNG chọn "cite"/s);
+  });
 });
 
 describe('draft prompt (youtube) ↔ schema', () => {
@@ -232,6 +239,16 @@ describe('draft prompt (youtube) ↔ schema', () => {
     expect(draft()).toMatch(/tự chẩn đoán hay tự điều trị/);
     expect(draft()).toMatch(/BẮT BUỘC đạt tối thiểu 700 từ/);
     expect(draft()).toMatch(/ÍT NHẤT 2 nguồn/);
+  });
+
+  it('states the zero-based ref convention and forbids citing a nonexistent reference', () => {
+    // The 2026-09-30 failure: body blocks carried ref indices while references was empty.
+    // The prompt must state that ref counts from 0 into references, and that a ref may not
+    // point at a source that does not exist (empty references ⇒ no established/ref).
+    const p = draft();
+    expect(p).toMatch(/ĐẾM TỪ 0/);
+    expect(p).toMatch(/references\[N\] tồn tại/);
+    expect(p).toMatch(/Nếu references rỗng/);
   });
 });
 
@@ -314,6 +331,30 @@ describe('repair prompt', () => {
     expect(p).toContain('Số 118: THIẾU MAGIE');
     expect(p).toMatch(/KHÔNG bịa số liệu/);
     expect(p).toMatch(/an toàn y tế/i);
+  });
+
+  it('gives targeted, no-fabrication instructions for a dangling_reference', () => {
+    // The repair prompt previously had no line for dangling_reference, so the model got the
+    // issue with no idea how to fix it. It must now say: add a REAL source or strip the
+    // marker, and never invent a URL.
+    const p = repairDraftPrompt({
+      previousDraftJson: '{"title":"x"}',
+      issues: [
+        {
+          code: 'dangling_reference',
+          severity: 'hard',
+          message: 'block 8 cites reference 1, but only 0 exist',
+        },
+      ],
+      sourceTitle: 'Số 118: THIẾU MAGIE',
+      sourceKind: 'youtube',
+      wordCountMin: 700,
+      wordCountMax: 1400,
+    });
+    expect(p).toContain('dangling_reference');
+    // Both remedies are named, and fabrication is forbidden.
+    expect(p).toMatch(/BỎ trường "ref"/);
+    expect(p).toMatch(/KHÔNG bịa URL/);
   });
 });
 

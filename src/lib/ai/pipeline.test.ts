@@ -1528,3 +1528,209 @@ describe('validation repair', () => {
     expect(mock.draftCalls).toBe(1);
   });
 });
+
+/**
+ * The reference contract.
+ *
+ * Regression pack for the 2026-09-30 blocker: the writer returned body blocks citing `ref: 0`
+ * and `ref: 1` while `references: []`, so the gate hard-failed on `dangling_reference` and the
+ * whole article went to review over citations the model invented. Deterministic reconciliation
+ * now closes that contract BEFORE the gate — adopting a dropped references array from the
+ * verified pool when one exists, and otherwise stripping the unsupported markers — inventing
+ * no URLs. The persisted article (`outcome.draft`) is always the reconciled one.
+ */
+describe('the reference contract', () => {
+  /** A body that cites ref 0 and ref 1 as established fact — the 2026-09-30 shape. */
+  function bodyCitingTwoRefs(): Block[] {
+    let converted = false;
+    return goodBody().map((block) => {
+      // goodBody already carries one established ref:0; promote one filler to established ref:1.
+      if (!converted && block.t === 'p' && block.attribution === 'general') {
+        converted = true;
+        return { t: 'p' as const, text: block.text, attribution: 'established' as const, ref: 1 };
+      }
+      return block;
+    });
+  }
+
+  it('strips unsupported citations and publishes when no verified source exists (the 2026-09-30 repro)', async () => {
+    // Verification offered no citable URL, so the writer had no sources — yet it emitted two
+    // established+ref paragraphs and an empty references array. Reconciliation removes the
+    // markers deterministically; the gate then passes with no dangling_reference.
+    const mock = mockOpenRouter({
+      verification: {
+        verifiedClaims: [
+          {
+            claimText: 'Thiếu magie làm hệ thống tế bào đình trệ',
+            resolution: 'attribute_to_speaker',
+            reason: 'chưa xác lập',
+          },
+        ],
+      },
+      draft: {
+        ...(defaults().draft as Record<string, unknown>),
+        body: bodyCitingTwoRefs(),
+        references: [],
+      },
+    });
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
+    if (outcome.decision === 'failed') throw new Error(`unexpected failure: ${outcome.message}`);
+
+    expect(outcome.decision).toBe('publish');
+    // The exact failure the incident hit is gone.
+    expect(hardFailureCodes(outcome.report)).not.toContain('dangling_reference');
+    // No source was fabricated: references stays empty.
+    expect(outcome.draft.references).toStrictEqual([]);
+    // Every citation marker was removed — no block carries a ref any more.
+    expect(outcome.draft.body.some((block) => 'ref' in block && block.ref !== undefined)).toBe(
+      false,
+    );
+    expect(
+      outcome.draft.body.some((block) => block.t === 'p' && block.attribution === 'established'),
+    ).toBe(false);
+    // Deterministic: no model repair was needed, so exactly the four stage calls ran.
+    expect(mock.calls).toBe(4);
+  });
+
+  it('recovers a dropped references array from the verified pool and keeps the citations', async () => {
+    // Verification produced two citable, reachable sources, but the writer dropped the
+    // references array while still citing ref 0 and ref 1. Reconciliation adopts the pool —
+    // the exact ordered sources the writer was handed — so the model's own indices resolve.
+    const mock = mockOpenRouter({
+      verification: {
+        verifiedClaims: [
+          {
+            claimText: 'Magie tham gia nhiều phản ứng sinh hoá',
+            resolution: 'cite',
+            suggestedUrl: 'https://medlineplus.gov/ency/article/002423.htm',
+            suggestedPublisher: 'MedlinePlus',
+            suggestedTitle: 'Magnesium in diet',
+            reason: 'kiến thức cơ bản',
+          },
+          {
+            claimText: 'Khoáng chất phần lớn nằm trong xương và tế bào',
+            resolution: 'cite',
+            suggestedUrl: 'https://medlineplus.gov/minerals.html',
+            suggestedPublisher: 'MedlinePlus',
+            suggestedTitle: 'Minerals',
+            reason: 'kiến thức cơ bản',
+          },
+        ],
+      },
+      draft: {
+        ...(defaults().draft as Record<string, unknown>),
+        body: bodyCitingTwoRefs(),
+        references: [],
+      },
+    });
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl: mock.fetchImpl }));
+    if (outcome.decision === 'failed') throw new Error(`unexpected failure: ${outcome.message}`);
+
+    expect(outcome.decision).toBe('publish');
+    expect(hardFailureCodes(outcome.report)).not.toContain('dangling_reference');
+    // The references were rebuilt from the real verified sources, in the cited order.
+    expect(outcome.draft.references.map((reference) => reference.url)).toStrictEqual([
+      'https://medlineplus.gov/ency/article/002423.htm',
+      'https://medlineplus.gov/minerals.html',
+    ]);
+    // A full 700–1400-word article with 2–4 real references, end to end.
+    expect(outcome.report.stats.references).toBeGreaterThanOrEqual(2);
+    expect(outcome.report.stats.references).toBeLessThanOrEqual(4);
+    expect(outcome.report.stats.wordCount).toBeGreaterThanOrEqual(700);
+    // The citations still point at established facts (they were not stripped).
+    expect(
+      outcome.draft.body.filter((block) => block.t === 'p' && block.attribution === 'established')
+        .length,
+    ).toBeGreaterThanOrEqual(2);
+    // No fabrication was needed, so no repair call.
+    expect(mock.calls).toBe(4);
+  });
+
+  it('never fabricates a URL: an unsupported citation is removed, not invented, even via repair', async () => {
+    // The draft cites ref 0 with empty references AND is too short — the too_short hard failure
+    // routes it to the single repair. The repair ALSO returns an empty references array with a
+    // stray citation. At no point may a URL be invented: the citation is stripped instead.
+    const short = {
+      ...(defaults().draft as Record<string, unknown>),
+      body: (() => {
+        const p = (text: string, attribution: 'general' | 'speaker' = 'general') => ({
+          t: 'p' as const,
+          text,
+          attribution,
+        });
+        return [
+          { t: 'source_note' },
+          {
+            t: 'p',
+            text: 'Đoạn mở đầu trình bày chủ đề một cách ngắn gọn cho người đọc.',
+            attribution: 'established',
+            ref: 0,
+          },
+          p('Theo video, khoáng chất này góp mặt trong nhiều hoạt động của cơ thể.', 'speaker'),
+          { t: 'h2', text: 'Vai trò' },
+          p('Phần này nói vắn tắt về vai trò của khoáng chất trong cơ thể người.'),
+          { t: 'h2', text: 'Dấu hiệu' },
+          p('Phần này nói vắn tắt về các dấu hiệu thường gặp khi thiếu hụt.'),
+          { t: 'h2', text: 'Nguồn thực phẩm' },
+          p('Phần này nói vắn tắt về nguồn thực phẩm hằng ngày của chúng ta.'),
+          { t: 'h2', text: 'Khi nào gặp bác sĩ' },
+          p('Phần này nhắc người đọc nên đi khám khi thấy dấu hiệu bất thường.'),
+          { t: 'key_facts', title: 'Điểm chính', items: ['Điểm một cần nhớ', 'Điểm hai cần nhớ'] },
+          { t: 'video_embed' },
+          { t: 'disclaimer' },
+        ] as Block[];
+      })(),
+      references: [],
+    };
+
+    let draftCall = 0;
+    const merged = { ...defaults() };
+    const fetchImpl = (_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+      const raw = typeof init?.body === 'string' ? init.body : '';
+      const stage =
+        (JSON.parse(raw) as { response_format?: { json_schema?: { name?: string } } })
+          .response_format?.json_schema?.name ?? 'seo';
+      let payload: unknown;
+      if (stage === 'draft') {
+        draftCall += 1;
+        payload = short; // both the write and the repair drop references while citing ref 0
+      } else if (stage === 'extraction') {
+        payload = merged.extraction;
+      } else if (stage === 'verification') {
+        // No citable URL: there is genuinely no verified source to point at.
+        payload = {
+          verifiedClaims: [
+            {
+              claimText: 'Thiếu magie làm hệ thống tế bào đình trệ',
+              resolution: 'attribute_to_speaker',
+              reason: 'chưa xác lập',
+            },
+          ],
+        };
+      } else {
+        payload = merged.seo;
+      }
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            model: 'inclusionai/ling-3.0-flash-vl',
+            usage: { prompt_tokens: 1200, completion_tokens: 900 },
+            choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(payload) } }],
+          }),
+          { status: 200, headers: { 'content-type': 'application/json' } },
+        ),
+      );
+    };
+
+    const outcome = await generateArticle(SOURCE, deps({ fetchImpl }));
+    if (outcome.decision === 'failed') throw new Error(`unexpected failure: ${outcome.message}`);
+
+    // The stray citation never survives as a dangling reference, and no URL was invented.
+    expect(hardFailureCodes(outcome.report)).not.toContain('dangling_reference');
+    expect(outcome.draft.references).toStrictEqual([]);
+    // Exactly one repair attempt — reconciliation adds no model calls.
+    expect(draftCall).toBe(2);
+  });
+});

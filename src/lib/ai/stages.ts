@@ -223,7 +223,7 @@ CÁC TÊN MIỀN ĐƯỢC PHÉP DẪN NGUỒN (không được dùng tên miền
 ${input.allowedHosts.join(', ')}
 
 QUY TẮC QUYẾT ĐỊNH:
-- "cite": chỉ khi đây là kiến thức y khoa đã được xác lập VÀ bạn biết một trang cụ thể trên tên miền được phép nói về nó. Cung cấp suggestedUrl đầy đủ (https://...), suggestedPublisher và suggestedTitle.
+- "cite": chỉ khi đây là kiến thức y khoa đã được xác lập VÀ bạn biết một trang CỤ THỂ, CÓ THẬT trên tên miền được phép nói về nó. BẮT BUỘC kèm suggestedUrl đầy đủ (https://... trỏ tới đúng trang đó), suggestedPublisher và suggestedTitle. Nếu bạn KHÔNG có một URL cụ thể có thật cho ý này thì TUYỆT ĐỐI KHÔNG chọn "cite" — hãy chọn "attribute_to_speaker" hoặc "drop". "cite" mà thiếu URL là vô nghĩa và sẽ bị loại.
 - "attribute_to_speaker": điều video nói nhưng bạn không chắc đã được xác lập. Bài viết sẽ ghi rõ "theo video".
 - "drop": luận điểm không kiểm chứng được và cũng không đáng nêu, HOẶC chứa con số cụ thể không rõ xuất xứ.
 
@@ -266,7 +266,8 @@ export const BLOCK_SHAPES = `HÌNH DẠNG CHÍNH XÁC CỦA TỪNG LOẠI BLOCK 
 - Tiêu đề phụ:        {"t":"h3","text":"<3–160 ký tự>"}
 - Đoạn văn:           {"t":"p","text":"<20–1600 ký tự>","attribution":"general"}
       · "text" là BẮT BUỘC. "attribution" là một trong "general" | "speaker" | "established" (mặc định "general").
-      · CHỈ khi attribution="established" mới thêm "ref": <số nguyên = chỉ số trong mảng references>.
+      · CHỈ khi attribution="established" mới thêm "ref": <số nguyên, LÀ CHỈ SỐ ĐẾM TỪ 0 trong mảng references — ref=0 trỏ tới references[0], ref=1 trỏ tới references[1]>.
+      · TUYỆT ĐỐI KHÔNG dùng attribution="established" hay trường "ref" nếu references KHÔNG có phần tử tương ứng. Nếu references rỗng thì KHÔNG block nào được có "ref" và KHÔNG block "p" nào được attribution="established".
 - Hộp điểm chính:     {"t":"key_facts","title":"<3–120 ký tự>","items":["<5–320 ký tự>", "<...>"]}  (2–8 phần tử; "title" và "items" đều BẮT BUỘC)
 - Trích dẫn nổi bật:  {"t":"pull_quote","text":"<20–400 ký tự>","kind":"paraphrase"}  ("text" và "kind" BẮT BUỘC; bài từ video luôn dùng "paraphrase")
 - Hộp chú ý:          {"t":"callout","tone":"caution","title":"<3–120 ký tự>","text":"<20–900 ký tự>"}  ("tone" ∈ info|caution|myth; cả "tone","title","text" BẮT BUỘC)
@@ -442,8 +443,8 @@ ${input.descriptionClean}
 DÀN Ý ĐỀ XUẤT:
 ${input.extraction.outline.map((item, i) => `${i + 1}. ${item.heading} — ${item.intent}`).join('\n')}
 
-Ý CÓ THỂ DẪN NGUỒN (attribution "established", kèm ref là chỉ số trong mảng references):
-${citable.length === 0 ? '(không có)' : citable.map((claim, i) => `[ref ${i}] ${claim.claimText}\n   nguồn: ${claim.suggestedTitle ?? ''} — ${claim.suggestedPublisher ?? ''} — ${claim.suggestedUrl ?? ''}`).join('\n')}
+Ý CÓ THỂ DẪN NGUỒN (attribution "established", kèm ref = CHỈ SỐ ĐẾM TỪ 0 trong mảng references — nguồn dưới đây phải nằm trong references theo ĐÚNG thứ tự này, ref=0 ứng với nguồn đầu tiên):
+${citable.length === 0 ? '(không có — vì vậy KHÔNG được có đoạn nào attribution="established", KHÔNG block nào có "ref", và references PHẢI để rỗng [])' : citable.map((claim, i) => `[ref ${i}] ${claim.claimText}\n   nguồn: ${claim.suggestedTitle ?? ''} — ${claim.suggestedPublisher ?? ''} — ${claim.suggestedUrl ?? ''}`).join('\n')}
 
 Ý CHỈ ĐƯỢC GHI LÀ "THEO VIDEO" (attribution "speaker"):
 ${speakerOnly.length === 0 ? '(không có)' : speakerOnly.map((claim) => `- ${claim.claimText}`).join('\n')}
@@ -473,6 +474,11 @@ AN TOÀN Y TẾ (bài sẽ bị từ chối nếu vi phạm):
 - Ghi rõ nguồn: giữ block {"t":"source_note"} và dùng attribution "speaker" cho những gì video nói.
 
 references: TỐI ĐA 8 nguồn, CHỈ đưa vào các nguồn đã được cung cấp ở trên. KHÔNG thêm nguồn nào khác. KHI bài có nêu kiến thức y khoa đã được xác lập VÀ danh sách trên có sẵn nguồn phù hợp, hãy dẫn ÍT NHẤT 2 nguồn uy tín; nếu danh sách không có nguồn nào phù hợp thì KHÔNG được bịa — để mảng rỗng. Mỗi phần tử BẮT BUỘC có bốn trường {"label", "title", "publisher", "url"} — copy chính xác title/publisher/url từ danh sách đã cung cấp; label là số thứ tự dạng chuỗi ("1", "2", ...).
+
+QUY TẮC DẪN NGUỒN BẤT BIẾN (vi phạm sẽ bị từ chối):
+- Chỉ số ref đếm TỪ 0. Mỗi "ref": N trong body PHẢI có references[N] tồn tại — tức references phải có ít nhất N+1 phần tử.
+- KHÔNG bao giờ ghi "ref" trỏ tới một nguồn không tồn tại. Nếu references rỗng thì KHÔNG block nào được có "ref" và KHÔNG "p" nào được attribution="established".
+- Số nguồn trong references phải khớp với những gì bạn thực sự trích dẫn: nếu không đưa nguồn vào references thì đừng dùng attribution="established" cho ý đó — hãy để "general" hoặc "speaker".
 
 RÀNG BUỘC ĐỘ DÀI TỪNG TRƯỜNG (nếu vi phạm, JSON sẽ bị từ chối):
 - title: 10–160 ký tự.
@@ -633,8 +639,8 @@ ${input.abstract}
 DÀN Ý ĐỀ XUẤT:
 ${input.extraction.outline.map((item, i) => `${i + 1}. ${item.heading} — ${item.intent}`).join('\n')}
 
-Ý CÓ THỂ DẪN NGUỒN NGOÀI (attribution "established", kèm ref là chỉ số trong mảng references):
-${citable.length === 0 ? '(không có)' : citable.map((claim, i) => `[ref ${i + 1}] ${claim.claimText}\n   nguồn: ${claim.suggestedTitle ?? ''} — ${claim.suggestedPublisher ?? ''} — ${claim.suggestedUrl ?? ''}`).join('\n')}
+Ý CÓ THỂ DẪN NGUỒN NGOÀI (attribution "established", kèm ref = CHỈ SỐ ĐẾM TỪ 0 trong mảng references; references[0] là công trình gốc nên các nguồn ngoài dưới đây bắt đầu từ chỉ số 1, theo ĐÚNG thứ tự này):
+${citable.length === 0 ? '(không có nguồn ngoài — chỉ được dẫn ref 0 là công trình gốc)' : citable.map((claim, i) => `[ref ${i + 1}] ${claim.claimText}\n   nguồn: ${claim.suggestedTitle ?? ''} — ${claim.suggestedPublisher ?? ''} — ${claim.suggestedUrl ?? ''}`).join('\n')}
 
 Ý LÀ KẾT QUẢ CỦA RIÊNG CÔNG TRÌNH NÀY (attribution "established" kèm ref 0 — tức chính công trình gốc — và phải ghi rõ trong câu rằng đây là kết quả của nghiên cứu này):
 ${paperOwn.length === 0 ? '(không có)' : paperOwn.map((claim) => `- ${claim.claimText}`).join('\n')}
@@ -657,6 +663,8 @@ Các block bắt buộc trong mảng body:
 ${BLOCK_SHAPES}
 
 references: TỐI ĐA 8 phần tử. Phần tử ĐẦU TIÊN (chỉ số 0) PHẢI là chính công trình gốc, với url đúng bằng ${input.paperUrl}. Sau đó chỉ thêm các nguồn đã được cung cấp ở trên. KHÔNG thêm nguồn nào khác. Mỗi phần tử BẮT BUỘC có bốn trường {"label", "title", "publisher", "url"}; label là số thứ tự dạng chuỗi ("1", "2", ...).
+
+QUY TẮC DẪN NGUỒN BẤT BIẾN (vi phạm sẽ bị từ chối): chỉ số ref đếm TỪ 0; mỗi "ref": N PHẢI có references[N] tồn tại (references có ít nhất N+1 phần tử). KHÔNG bao giờ ghi "ref" trỏ tới nguồn không tồn tại, và KHÔNG bịa URL cho bất kỳ nguồn nào.
 
 AN TOÀN Y TẾ (bài sẽ bị từ chối nếu vi phạm): KHÔNG khuyến khích người đọc tự chẩn đoán hay tự điều trị (được phép khuyên ngược lại); KHÔNG kê liều; KHÔNG biến kết quả nghiên cứu thành lời khuyên hành động.
 
@@ -731,6 +739,8 @@ CÁCH SỬA TỪNG LOẠI LỖI:
 - too_long: rút gọn cho về dưới ${input.wordCountMax} từ mà vẫn giữ các ý chính.
 - prescriptive_language / prescriptive_dosage: diễn đạt lại theo hướng GIẢI THÍCH, bỏ mọi lời khuyên dùng thuốc/liều lượng, bỏ lời khuyên tự chẩn đoán hoặc tự điều trị. Nếu muốn nhắc tới việc tự chẩn đoán, chỉ được nói theo hướng KHUYÊN NGƯỢC LẠI (ví dụ "không nên tự chẩn đoán").
 - few_references: nếu có nguồn uy tín phù hợp, bổ sung để có ít nhất 2 nguồn; nếu không chắc nguồn có thật, ĐỪNG thêm — một nguồn bịa còn tệ hơn không có nguồn.
+- dangling_reference: một block đang trỏ "ref": N nhưng references[N] không tồn tại (chỉ số đếm TỪ 0). Sửa theo MỘT trong hai cách, KHÔNG bịa URL: (a) nếu có nguồn CÓ THẬT tương ứng, thêm nó vào references sao cho references[N] tồn tại rồi giữ ref; (b) nếu KHÔNG có nguồn thật, BỎ trường "ref" và đổi attribution "established"→"general" (hoặc "speaker" nếu đó là điều video nói), còn pull_quote thì đổi kind "cited"→"paraphrase". Bảo đảm số phần tử references đủ lớn hơn mọi chỉ số ref còn lại.
+- unsourced_established_claim / uncited_quotation: đoạn đang để attribution="established" (hoặc pull_quote kind="cited") mà không có "ref". Hoặc thêm "ref" trỏ tới một nguồn CÓ THẬT trong references, hoặc hạ xuống "general"/"paraphrase".
 - các lỗi cấu trúc (thiếu block, thiếu mục, thiếu key_facts/disclaimer/source_note...): bổ sung đúng block còn thiếu.
 
 QUY TẮC BẮT BUỘC:

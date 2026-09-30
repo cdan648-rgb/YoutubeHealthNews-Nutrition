@@ -129,6 +129,69 @@ describe('checkBodyStructure', () => {
     expect(codes).toContain('dangling_reference');
   });
 
+  it('accepts a body with no citations and an empty reference list', () => {
+    // references=[] is legitimate for a YouTube article, PROVIDED nothing cites a source.
+    const body = validBody().map((block) =>
+      block.t === 'p' && block.attribution === 'established'
+        ? { t: 'p' as const, text: block.text, attribution: 'general' as const }
+        : block,
+    );
+    const codes = checkBodyStructure(body, []).map((issue) => issue.code);
+    expect(codes).not.toContain('dangling_reference');
+    expect(codes).not.toContain('unsourced_established_claim');
+  });
+
+  it('flags any citation at all when the reference list is empty', () => {
+    // The 2026-09-30 shape: a body cites ref 0 while references is []. Zero-based, so even
+    // ref 0 is dangling against an empty array.
+    const body = validBody().map((block) =>
+      block.t === 'p' && block.attribution === 'established' ? { ...block, ref: 0 } : block,
+    );
+    const codes = checkBodyStructure(body, []).map((issue) => issue.code);
+    expect(codes).toContain('dangling_reference');
+  });
+
+  it('accepts multiple citations that each resolve (zero-based indices 0 and 1)', () => {
+    const secondRef: Reference = {
+      ...ref,
+      label: '2',
+      url: 'https://medlineplus.gov/minerals.html',
+    };
+    const body = [
+      { t: 'source_note' as const },
+      { t: 'h2' as const, text: 'Magie làm gì trong tế bào' },
+      {
+        t: 'p' as const,
+        text: 'Magie tham gia rất nhiều phản ứng enzyme khác nhau trong tế bào.',
+        attribution: 'established' as const,
+        ref: 0,
+      },
+      {
+        t: 'p' as const,
+        text: 'Phần lớn khoáng chất này nằm trong xương và mô chứ không phải máu.',
+        attribution: 'established' as const,
+        ref: 1,
+      },
+      {
+        t: 'p' as const,
+        text: 'Theo bác sĩ trong video, tình trạng này thường bị bỏ qua.',
+        attribution: 'speaker' as const,
+      },
+      { t: 'h2' as const, text: 'Dấu hiệu thường gặp' },
+      {
+        t: 'key_facts' as const,
+        title: 'Những điểm chính',
+        items: ['Điểm thứ nhất', 'Điểm thứ hai'],
+      },
+      { t: 'h2' as const, text: 'Điều gì đã được chứng minh' },
+      { t: 'h2' as const, text: 'Kết luận' },
+      { t: 'video_embed' as const },
+      { t: 'disclaimer' as const },
+    ];
+    const codes = checkBodyStructure(body, [ref, secondRef]).map((issue) => issue.code);
+    expect(codes).not.toContain('dangling_reference');
+  });
+
   it('flags a claim presented as established fact with no source', () => {
     const body = validBody().map((block) =>
       block.t === 'p' && block.attribution === 'established'
