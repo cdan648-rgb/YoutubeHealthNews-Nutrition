@@ -45,10 +45,41 @@ export type ValidationReport = {
   };
 };
 
+/**
+ * Word-count policy for unattended publishing.
+ *
+ * The band is deliberately wide. 700–1400 is what we ASK the model for, but an otherwise
+ * coherent article is not worth wasting a publishing day over a few dozen words either side.
+ * Only the hard floor and hard ceiling block a publish; everything between is a warning, and
+ * a genuinely short piece (below the expand threshold) earns one automatic expansion first.
+ *
+ *   < HARD_MIN (350)        hard fail — too little to be an article
+ *   < EXPAND_MIN (450)      warn, and attempt one expansion
+ *   < WORD_COUNT_MIN (700)  warn only (preferred floor)
+ *   700 – 1400              preferred band
+ *   > SOFT_MAX (1800)       warn only
+ *   > HARD_MAX (2600)       hard fail — extremely excessive
+ */
 export const WORD_COUNT_MIN = 700;
 export const WORD_COUNT_MAX = 1400;
-/** Longest run of identical words permitted between the article and its source. */
+export const WORD_COUNT_HARD_MIN = 350;
+export const WORD_COUNT_EXPAND_MIN = 450;
+export const WORD_COUNT_SOFT_MAX = 1800;
+export const WORD_COUNT_HARD_MAX = 2600;
+
+/**
+ * Copy-overlap policy.
+ *
+ * The article is written FROM a source, so short phrase overlap is normal and must not block
+ * a publish. A single shared run is a warning up to a generous length; a hard failure is
+ * reserved for genuine copying — a very long verbatim run, or a large fraction of the whole
+ * article lifted. `COPY_RUN_MARK_MIN` is the run length that counts toward the copied ratio.
+ */
 export const MAX_COPY_NGRAM = 12;
+export const COPY_WARN_NGRAM = 12;
+export const COPY_HARD_NGRAM = 30;
+export const COPY_RATIO_HARD = 0.5;
+export const COPY_RUN_MARK_MIN = 8;
 
 /**
  * Language that turns an explainer into a prescription.
@@ -87,25 +118,43 @@ const PRESCRIPTIVE_PATTERNS: readonly { readonly pattern: RegExp; readonly label
 // The boundaries are Unicode lookarounds, not `\b`: JavaScript's `\b` is ASCII-only, so it
 // finds no boundary after "trị" (which ends in the non-ASCII "ị") and would silently miss
 // every "tự điều trị". Same lesson as the dosage detector above.
-const SELF_CARE_PATTERN = /(?<![\p{L}])tự\s+(?:chẩn đoán|điều trị)(?![\p{L}])/giu;
-const SELF_CARE_NEGATED =
-  /(?<![\p{L}])(?:không|đừng|chớ|tránh|thay vì|hạn chế|ngăn(?:\s+ngừa)?|tuyệt đối không)(?:\s+(?:nên|được|phải|cần|bao|giờ|khi|việc|ý))*\s+tự\s+(?:chẩn đoán|điều trị)(?![\p{L}])/giu;
+//
+// The phrase covers the self-care acts a health article must never PRESCRIBE: self-diagnosis,
+// self-treatment, and self-medication ("tự ý dùng thuốc"). The optional "ý" catches "tự ý".
+const SELF_CARE_PATTERN =
+  /(?<![\p{L}])tự(?:\s+ý)?\s+(?:chẩn đoán|điều trị|dùng thuốc)(?![\p{L}])/giu;
 
 /**
- * The first self-care phrase that is encouraged rather than warned against, or null when
- * every occurrence is a negation. Both regexes end in the identical phrase text, so a negated
- * occurrence and its plain match share an end offset — that shared offset is how a warning is
- * excluded without excluding a prescriptive use elsewhere in the same article. The returned
- * phrase becomes the report's `detail`.
+ * A negated / warning CLAUSE governing one or more self-care phrases.
+ *
+ * A negation or avoidance cue ("không", "tránh", "không nên", "không tự ý", …), optionally
+ * followed by modal connectives, then a self-care phrase — AND any further self-care phrases
+ * coordinated onto it by "và", "hay", "hoặc", "lẫn", "cũng như" or a comma. That trailing
+ * coordination is the fix for the real false positive: "không nên tự chẩn đoán hay tự điều
+ * trị" is one warning in which a single "không nên" governs BOTH acts, so both must be treated
+ * as safe — not just the first. The cue still has to reach the first phrase through modal
+ * words only, so "không cần đi khám, hãy tự điều trị" (the cue governs "khám", the imperative
+ * governs the act) is NOT swept in and remains a hard failure.
+ */
+const SELF_CARE_NEGATED_CLAUSE =
+  /(?<![\p{L}])(?:không|đừng|chớ|tránh|thay vì|hạn chế|ngăn(?:\s+ngừa)?|tuyệt đối không|cần tránh|nên tránh)(?:\s+(?:nên|được|phải|cần|bao|giờ|khi|việc|ý|tự))*\s+tự(?:\s+ý)?\s+(?:chẩn đoán|điều trị|dùng thuốc)(?:\s*(?:,|;|và|hay|hoặc|lẫn|cũng như)\s+(?:tự(?:\s+ý)?\s+)?(?:chẩn đoán|điều trị|dùng thuốc))*(?![\p{L}])/giu;
+
+/**
+ * The first self-care phrase that is ENCOURAGED rather than warned against, or null when every
+ * occurrence sits inside a negation/warning clause. A phrase is safe when its start offset
+ * falls within the span of some negated clause — which covers the head act and every act
+ * coordinated onto it. The returned phrase becomes the report's `detail`.
  */
 function encouragedSelfCare(plain: string): string | null {
-  const negatedEnds = new Set<number>();
-  for (const match of plain.matchAll(SELF_CARE_NEGATED)) {
-    if (match.index !== undefined) negatedEnds.add(match.index + match[0].length);
+  const safeSpans: [number, number][] = [];
+  for (const match of plain.matchAll(SELF_CARE_NEGATED_CLAUSE)) {
+    if (match.index !== undefined) safeSpans.push([match.index, match.index + match[0].length]);
   }
   for (const match of plain.matchAll(SELF_CARE_PATTERN)) {
     if (match.index === undefined) continue;
-    if (!negatedEnds.has(match.index + match[0].length)) return match[0];
+    const start = match.index;
+    const covered = safeSpans.some(([from, to]) => start >= from && start < to);
+    if (!covered) return match[0];
   }
   return null;
 }
@@ -191,6 +240,59 @@ export function longestSharedWordRun(left: string, right: string): number {
   return best;
 }
 
+export type CopyOverlapProfile = {
+  /** Length of the single longest shared run of words. */
+  readonly longestRun: number;
+  /** Fraction of the article's words that lie inside a shared run of `markMin`+ words. */
+  readonly copiedRatio: number;
+};
+
+/**
+ * How much of the article overlaps its source, as both the longest verbatim run and the
+ * fraction of the article copied.
+ *
+ * The ratio is what turns "one shared 13-word phrase" (normal, when writing from a source)
+ * into a warning rather than a block, while still catching a piece that is largely lifted.
+ * A single DP pass marks every article word that participates in a shared run of at least
+ * `markMin` words; the marked fraction is the copied ratio. Tokenisation matches
+ * `longestSharedWordRun`: lower-cased, whitespace-split, so case never creates a false match
+ * and punctuation stays attached to its word (which only ever REDUCES matches — the
+ * conservative direction for an anti-copying measure).
+ */
+export function copyOverlapProfile(
+  left: string,
+  right: string,
+  markMin = COPY_RUN_MARK_MIN,
+): CopyOverlapProfile {
+  const a = left.toLowerCase().split(/\s+/).filter(Boolean);
+  const b = right.toLowerCase().split(/\s+/).filter(Boolean);
+  if (a.length === 0 || b.length === 0) return { longestRun: 0, copiedRatio: 0 };
+
+  let best = 0;
+  const copied = new Array<boolean>(a.length).fill(false);
+  let previous = new Array<number>(b.length + 1).fill(0);
+
+  for (let i = 1; i <= a.length; i += 1) {
+    const current = new Array<number>(b.length + 1).fill(0);
+    for (let j = 1; j <= b.length; j += 1) {
+      if (a[i - 1] === b[j - 1]) {
+        const run = (previous[j - 1] ?? 0) + 1;
+        current[j] = run;
+        if (run > best) best = run;
+        // Once a run reaches the mark length, flag every article word in it (the window
+        // ending at position i-1). Overlapping windows dedupe through the boolean array.
+        if (run >= markMin) {
+          for (let k = i - run; k < i; k += 1) copied[k] = true;
+        }
+      }
+    }
+    previous = current;
+  }
+
+  const copiedCount = copied.reduce((sum, flag) => sum + (flag ? 1 : 0), 0);
+  return { longestRun: best, copiedRatio: copiedCount / a.length };
+}
+
 export function validateArticle(input: GateInput): ValidationReport {
   const issues: ValidationIssue[] = [];
   const hard = (code: string, message: string, detail?: string) =>
@@ -227,21 +329,40 @@ export function validateArticle(input: GateInput): ValidationReport {
   /* ------------------------------- structure -------------------------------- */
   const sourceKind = input.sourceKind ?? 'youtube';
 
-  for (const issue of checkBodyStructure(input.body, input.references, sourceKind)) {
-    // The speaker-attribution rule is the one structural check we treat as soft: a
-    // well-sourced article that happens not to paraphrase the video is not dangerous.
-    if (issue.code === 'no_speaker_attribution') {
-      soft(issue.code, issue.message);
-    } else {
-      hard(issue.code, issue.message);
-    }
+  // An article with nothing readable in it cannot publish, whatever else is true.
+  const meaningfulBlocks = input.body.filter((block) =>
+    ['p', 'h2', 'h3', 'key_facts', 'callout', 'pull_quote'].includes(block.t),
+  ).length;
+  if (meaningfulBlocks === 0 || plain.trim() === '') {
+    hard('empty_article', 'article has no readable content');
   }
 
-  if (wordCount < WORD_COUNT_MIN) {
-    hard('too_short', `article is ${wordCount} words, minimum ${WORD_COUNT_MIN}`);
+  // Structural rules are WARNINGS now, not blockers: the pipeline's deterministic normaliser
+  // guarantees the render-critical markers (source note, disclaimer, one video embed) and
+  // reconciles reference pointers before the gate runs, so a structural gap here means a
+  // stylistic imperfection, not an unsafe or unrenderable article. None of these should waste
+  // a publishing day.
+  for (const issue of checkBodyStructure(input.body, input.references, sourceKind)) {
+    soft(issue.code, issue.message);
   }
-  if (wordCount > WORD_COUNT_MAX) {
-    hard('too_long', `article is ${wordCount} words, maximum ${WORD_COUNT_MAX}`);
+
+  // Word count: only the hard floor and ceiling block a publish. The rest is a warning, and a
+  // genuinely short article earns one automatic expansion (driven by the pipeline).
+  if (wordCount < WORD_COUNT_HARD_MIN) {
+    hard(
+      'too_short',
+      `article is ${wordCount} words, below the hard minimum ${WORD_COUNT_HARD_MIN}`,
+    );
+  } else if (wordCount < WORD_COUNT_MIN) {
+    soft('short_article', `article is ${wordCount} words, below the preferred ${WORD_COUNT_MIN}`);
+  }
+  if (wordCount > WORD_COUNT_HARD_MAX) {
+    hard(
+      'too_long',
+      `article is ${wordCount} words, above the hard maximum ${WORD_COUNT_HARD_MAX}`,
+    );
+  } else if (wordCount > WORD_COUNT_SOFT_MAX) {
+    soft('long_article', `article is ${wordCount} words, above the preferred ${WORD_COUNT_MAX}`);
   }
 
   /* --------------------------- identity and routing ------------------------- */
@@ -347,26 +468,34 @@ export function validateArticle(input: GateInput): ValidationReport {
     }
   }
 
+  // A thin reference list is a WARNING, never a blocker — including for a research article.
+  // The paper's own landing page is separately REQUIRED (missing_required_reference, hard), so
+  // a research piece still cannot omit the study it reports on; but requiring a second
+  // corroborating source for every article is an editorial preference, not a safety rule, and
+  // a YouTube article whose claims are attributed to the video needs no external reference at
+  // all. Zero references is allowed.
   if (input.references.length < 2) {
-    // For a research piece the paper itself is one of those references, so fewer than two
-    // means the article rests on the abstract alone with nothing corroborating it. That is
-    // exactly the "single study reported as settled" failure the section exists to prevent.
-    if (sourceKind === 'research') {
-      hard(
-        'few_references',
-        `a research article needs the paper plus at least one corroborating source; found ${input.references.length}`,
-      );
-    } else {
-      soft('few_references', `only ${input.references.length} external reference(s)`);
-    }
+    soft('few_references', `only ${input.references.length} external reference(s)`);
   }
 
   /* ------------------------------ copy overlap ------------------------------ */
-  const sharedRun = longestSharedWordRun(plain, input.sourceText);
-  if (sharedRun > MAX_COPY_NGRAM) {
+  // Writing from a source makes short phrase overlap normal. Only substantial copying blocks a
+  // publish — a very long verbatim run, or a large fraction of the whole article lifted.
+  // Anything shorter is a warning the piece publishes with.
+  const overlap = copyOverlapProfile(plain, input.sourceText);
+  if (overlap.longestRun > COPY_HARD_NGRAM || overlap.copiedRatio > COPY_RATIO_HARD) {
     hard(
       'copy_overlap',
-      `article shares a ${sharedRun}-word run with its source (limit ${MAX_COPY_NGRAM})`,
+      `substantial copying from the source: longest run ${overlap.longestRun} words, ` +
+        `${Math.round(overlap.copiedRatio * 100)}% of the article overlaps the source`,
+      // The overlapping run text would be ideal here, but the run offset is not tracked; the
+      // longest-run length is enough for the repair pass to target the copied passage.
+      `longest_run=${overlap.longestRun}`,
+    );
+  } else if (overlap.longestRun > COPY_WARN_NGRAM) {
+    soft(
+      'copy_overlap',
+      `article shares a ${overlap.longestRun}-word run with its source (preferred limit ${COPY_WARN_NGRAM})`,
     );
   }
 

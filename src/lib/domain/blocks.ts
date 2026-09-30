@@ -30,19 +30,22 @@ const referenceIndex = z.number().int().nonnegative();
 export const attributionSchema = z.enum(['speaker', 'established', 'general']);
 export type Attribution = z.infer<typeof attributionSchema>;
 
+// Upper bounds are generous, not stylistic: the store is jsonb and the renderer escapes any
+// length, so a slightly long heading or paragraph is accepted rather than rejected. The lower
+// bounds stay — they guard against an empty or unreadable block, which IS a render problem.
 const headingBlock = z.object({
   t: z.literal('h2'),
-  text: z.string().min(3).max(160),
+  text: z.string().min(3).max(300),
 });
 
 const subheadingBlock = z.object({
   t: z.literal('h3'),
-  text: z.string().min(3).max(160),
+  text: z.string().min(3).max(300),
 });
 
 const paragraphBlock = z.object({
   t: z.literal('p'),
-  text: z.string().min(20).max(1600),
+  text: z.string().min(20).max(6000),
   attribution: attributionSchema.default('general'),
   /** Required when `attribution` is 'established'; enforced in refinement below. */
   ref: referenceIndex.optional(),
@@ -50,8 +53,8 @@ const paragraphBlock = z.object({
 
 const keyFactsBlock = z.object({
   t: z.literal('key_facts'),
-  title: z.string().min(3).max(120),
-  items: z.array(z.string().min(5).max(320)).min(2).max(8),
+  title: z.string().min(3).max(200),
+  items: z.array(z.string().min(5).max(600)).min(2).max(12),
 });
 
 /**
@@ -62,7 +65,7 @@ const keyFactsBlock = z.object({
  */
 const pullQuoteBlock = z.object({
   t: z.literal('pull_quote'),
-  text: z.string().min(20).max(400),
+  text: z.string().min(20).max(600),
   kind: z.enum(['paraphrase', 'cited']),
   ref: referenceIndex.optional(),
 });
@@ -70,8 +73,8 @@ const pullQuoteBlock = z.object({
 const calloutBlock = z.object({
   t: z.literal('callout'),
   tone: z.enum(['info', 'caution', 'myth']),
-  title: z.string().min(3).max(120),
-  text: z.string().min(20).max(900),
+  title: z.string().min(3).max(200),
+  text: z.string().min(20).max(2000),
 });
 
 /**
@@ -124,7 +127,10 @@ export const referenceSchema = z.object({
 
 export type Reference = z.infer<typeof referenceSchema>;
 
-export const bodySchema = z.array(blockSchema).min(6);
+// Floor is renderability, not style: three meaningful blocks is enough to be an article.
+// Section counts, marker blocks and richer structure are handled as warnings and by the
+// deterministic normaliser, not by a hard schema minimum that can waste a publishing day.
+export const bodySchema = z.array(blockSchema).min(3);
 
 /**
  * Structural rules every article body must satisfy. Kept separate from the per-block

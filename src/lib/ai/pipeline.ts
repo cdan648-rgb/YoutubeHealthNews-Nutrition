@@ -42,6 +42,7 @@ import {
   type Verification,
 } from './stages';
 import {
+  WORD_COUNT_EXPAND_MIN,
   WORD_COUNT_MAX,
   WORD_COUNT_MIN,
   validateArticle,
@@ -49,6 +50,7 @@ import {
 } from '@/lib/validate/gate';
 import { isAllowlistedHost, type VerificationSummary } from '@/lib/references/verify';
 import { reconcileReferences } from '@/lib/references/reconcile';
+import { normalizeBody } from '@/lib/domain/normalize';
 import { slugify } from '@/lib/slug';
 
 export type PipelineSource = {
@@ -110,53 +112,49 @@ export type PipelineOutcome =
     };
 
 /**
- * Hard failure codes a single content-repair pass may safely and meaningfully attempt.
+ * Hard failure codes a single AI content-repair pass may safely and meaningfully attempt.
+ *
+ * The structural and reference-contract failures are gone from this list on purpose: the
+ * deterministic normaliser now fixes them for free (missing markers, dangling refs,
+ * unsupported citations, an off-list or dead reference, an invented category), and the gate
+ * treats what remains of them as warnings — so they never reach here as hard failures. What is
+ * left is the editorial and safety-wording set that only a rewrite can address: length,
+ * prescriptive phrasing, an untraceable number, substantial copying, and a missing headline.
  *
  * An allowlist, not a denylist, so the fail-safe direction is "route to human review": any
- * code not listed here — and every code added in future — sends the article to review
- * untouched rather than to a model. The omissions are deliberate:
- *
- *   restricted_topic          a policy block a body rewrite cannot clear — it comes from the
- *                             extraction, so a repaired body would just fail the gate again.
- *   untraceable_number,       fabrication and plagiarism signals. Letting a model "repair"
- *   copy_overlap,             them is precisely the surface we do not want an automated pass
- *   fabricated_quote          improvising over; these belong to a human.
- *   invalid_slug,             the generation is broken at a level a content edit will not
- *   unknown_category,         mend (the slug is re-derived from the title; a missing headline
- *   missing_headline,         or a required paper link is a structural generation failure).
- *   missing_required_reference
- *
- * The listed codes are the length, phrasing, thin-sourcing and missing-structural-block
- * failures — the ones the reported production incident hit, and the ones a careful rewrite
- * can fix without inventing anything.
+ * hard code NOT listed — restricted_topic, empty_article, and every backstop integrity code —
+ * sends the article to review untouched rather than to a model.
  */
 const REPAIRABLE_HARD_CODES: ReadonlySet<string> = new Set([
   'too_short',
   'too_long',
   'prescriptive_language',
   'prescriptive_dosage',
-  'too_few_sections',
-  'missing_key_facts',
-  'missing_video_embed',
-  'missing_source_note',
-  'missing_disclaimer',
-  'unexpected_video_embed',
-  'missing_study_caveat',
-  'dangling_reference',
-  'unsourced_established_claim',
-  'uncited_quotation',
-  'speaker_attribution_without_speaker',
+  'untraceable_number',
+  'copy_overlap',
+  'missing_headline',
 ]);
 
 /**
- * Whether a failed report is one the repair pass may attempt: it must have at least one hard
- * issue, and EVERY hard issue must be repairable. A single non-repairable hard issue (a
- * restricted topic, a fabricated number) sends the whole article to review — a repair that
- * left such an issue in place would be wasted, and one that "fixed" it would be unsafe.
+ * Whether a report's hard failures are all repairable. It must have at least one hard issue,
+ * and EVERY hard issue must be in the repairable set: a single non-repairable hard issue (a
+ * restricted topic, an empty article) sends the whole article to review, because a repair that
+ * left it in place would be wasted and one that "fixed" it would be unsafe.
  */
 function isRepairable(report: ValidationReport): boolean {
   const hard = report.issues.filter((issue) => issue.severity === 'hard');
   return hard.length > 0 && hard.every((issue) => REPAIRABLE_HARD_CODES.has(issue.code));
+}
+
+/**
+ * Whether to attempt the single repair pass. Either the report has hard failures that are all
+ * repairable, OR the article already passes but is short enough (below the expand threshold)
+ * to be worth one automatic expansion. A report blocked by a non-repairable hard issue is not
+ * repaired — it goes straight to review.
+ */
+function shouldAttemptRepair(report: ValidationReport): boolean {
+  if (isRepairable(report)) return true;
+  return report.passed && report.stats.wordCount < WORD_COUNT_EXPAND_MIN;
 }
 
 /**
@@ -344,16 +342,39 @@ ${RESEARCH_RULES}`
     const seo = working.seo;
 
     /* --------------------------------- 6. gate ------------------------------ */
-    // Keep only allowlisted references. A model-supplied reference on an off-list host is
-    // stripped before the gate, matching what the writing stage was told it may cite.
-    const allowlist = (references: readonly Reference[]): Reference[] =>
-      references.filter((reference) => {
+    // Reference sanitation: drop anything a citation cannot safely rest on — a non-https URL,
+    // an off-allowlist host, a URL that will not parse, or one the reachability check found
+    // missing (404). A body citation that pointed at a dropped reference is reconciled away by
+    // normalise(). None of this blocks a publish; it corrects it.
+    const sanitizeReferences = (
+      references: readonly Reference[],
+      status: VerificationSummary,
+    ): Reference[] => {
+      const unreachable = new Set(status.unreachable);
+      return references.filter((reference) => {
         try {
-          return isAllowlistedHost(new URL(reference.url).hostname, deps.allowedReferenceHosts);
+          const url = new URL(reference.url);
+          return (
+            url.protocol === 'https:' &&
+            isAllowlistedHost(url.hostname, deps.allowedReferenceHosts) &&
+            !unreachable.has(reference.url)
+          );
         } catch {
           return false;
         }
       });
+    };
+
+    const allowedCategorySlugs = deps.categories.map((category) => category.slug);
+    // A category the model invented is clamped to a real one rather than failing the article:
+    // the extraction's proposed category if that is valid, otherwise the first seeded category
+    // (which is also what persistence falls back to).
+    const clampCategory = (slug: string): string =>
+      allowedCategorySlugs.includes(slug)
+        ? slug
+        : allowedCategorySlugs.includes(extraction.proposedCategorySlug)
+          ? extraction.proposedCategorySlug
+          : (allowedCategorySlugs[0] ?? slug);
 
     // The paper's own landing page must be cited. Requiring it here — rather than only
     // asking for it in the prompt — is what makes the rule hold when the model forgets.
@@ -378,7 +399,7 @@ ${RESEARCH_RULES}`
         references,
         sourceText: source.sourceText,
         sourceTitle: source.title,
-        allowedCategorySlugs: deps.categories.map((category) => category.slug),
+        allowedCategorySlugs,
         allowedReferenceHosts: deps.allowedReferenceHosts,
         unverifiableReferenceUrls: status.unverifiable,
         unreachableReferenceUrls: status.unreachable,
@@ -397,28 +418,52 @@ ${RESEARCH_RULES}`
       deps.allowedReferenceHosts,
     );
 
-    // Close the body-ref ↔ references contract deterministically, BEFORE the gate: resolve a
-    // dropped references array from the verified pool, and strip any citation marker with no
-    // verified source behind it. This turns the model's most common reference mistake into a
-    // corrected article rather than a `dangling_reference` handed to a human — and it invents
-    // no URLs, so it is safe to run unconditionally.
-    const reconciled = reconcileReferences(draft.body, allowlist(draft.references), referencePool);
-    let currentDraft: Draft = {
-      ...draft,
-      body: reconciled.body,
-      references: reconciled.references,
+    // Deterministic normalisation, run BEFORE the gate and again after any repair. It closes
+    // the reference contract, guarantees render-critical structure, neutralises unsupported
+    // citations, ensures a research article cites its paper, and clamps the category — every
+    // one a correction rather than a reason to waste a publishing day.
+    const normalize = (
+      candidate: Draft,
+      status: VerificationSummary,
+    ): { draft: Draft; references: Reference[] } => {
+      const reconciled = reconcileReferences(
+        candidate.body,
+        sanitizeReferences(candidate.references, status),
+        referencePool,
+      );
+      let references = reconciled.references;
+      // Append the required paper reference if the model dropped it — append, not insert at 0,
+      // so existing body ref indices keep pointing where they did.
+      for (const url of requiredReferenceUrls) {
+        if (!references.some((reference) => reference.url === url)) {
+          references = [...references, paperReference(source, url, references.length)];
+        }
+      }
+      const body = normalizeBody(reconciled.body, source.kind);
+      return {
+        draft: {
+          ...candidate,
+          categorySlug: clampCategory(candidate.categorySlug),
+          body,
+          references,
+        },
+        references,
+      };
     };
-    let finalReferences = reconciled.references;
+
+    const firstPass = normalize(draft, referenceStatus);
+    let currentDraft: Draft = firstPass.draft;
+    let finalReferences = firstPass.references;
     let report = runGate(currentDraft, finalReferences, referenceStatus);
     let repaired = false;
 
     /* ---------------------------- 6b. one repair pass ------------------------ */
-    // A fixable content failure gets exactly one automatic repair before the article is
-    // handed to a human. The model sees the gate's own report and its own prior JSON, fixes
-    // only what was flagged, and returns the complete article — which the gate then re-runs
-    // over in full. Never more than once: a rewrite that still fails is not going to succeed
-    // on a third try, and the deterministic gate is what decides, not the model.
-    if (!report.passed && isRepairable(report)) {
+    // Exactly one automatic repair. It runs when the gate's hard failures are all repairable,
+    // or when the article already passes but is short enough to be worth one expansion. The
+    // model sees the gate's own report (hard AND soft) plus its own prior JSON, fixes what was
+    // flagged, and returns the complete article — which is renormalised and re-gated in full.
+    // Never more than once: a rewrite that still fails is not going to succeed on a third try.
+    if (shouldAttemptRepair(report)) {
       repaired = true;
       try {
         const repairResult = await complete({
@@ -442,30 +487,19 @@ ${RESEARCH_RULES}`
         });
         usage.push(repairResult.usage);
 
-        // Reconcile the repaired article's citations against the same verified pool, exactly
-        // as the first draft was: a model repair can reintroduce a dangling ref, and it must
-        // be closed deterministically here too rather than surfacing as a fresh gate failure.
-        const repairedReconciled = reconcileReferences(
-          repairResult.data.body,
-          allowlist(repairResult.data.references),
-          referencePool,
-        );
-        const repairedDraft: Draft = {
-          ...repairResult.data,
-          body: repairedReconciled.body,
-          references: repairedReconciled.references,
-        };
-        const repairedReferences = repairedReconciled.references;
         // Re-verify the repaired article's citations from scratch: a repair may add sources,
         // and an added citation must clear the same reachability bar as an original one.
         const repairedStatus = await deps.verifyReferences(
-          repairedReferences.map((reference) => reference.url),
+          repairResult.data.references.map((reference) => reference.url),
         );
 
-        // Adopt the repaired article regardless of outcome: on a pass it publishes, and on a
-        // still-failing repair the human reviewer is shown the closer attempt.
-        currentDraft = repairedDraft;
-        finalReferences = repairedReferences;
+        // Renormalise the repaired article exactly as the first draft was — reconcile refs,
+        // guarantee structure, clamp category — then re-gate. Adopt it regardless of outcome:
+        // on a pass it publishes, and on a still-failing repair the reviewer sees the closer
+        // attempt.
+        const repairedPass = normalize(repairResult.data, repairedStatus);
+        currentDraft = repairedPass.draft;
+        finalReferences = repairedPass.references;
         report = runGate(currentDraft, finalReferences, repairedStatus);
         working.draft = currentDraft;
       } catch {
@@ -589,14 +623,19 @@ function buildReferencePool(
   const pool: Reference[] = [];
   if (source.kind === 'research' && source.paperUrl !== undefined && source.paperUrl !== '') {
     // The research draft prompt reserves index 0 for the paper itself.
-    pool.push({
-      label: '0',
-      title: firstOfLength([source.title], 3) || 'Công trình nghiên cứu',
-      publisher: firstOfLength([source.journal ?? undefined], 2) || 'Tạp chí khoa học',
-      url: source.paperUrl,
-    });
+    pool.push(paperReference(source, source.paperUrl, 0));
   }
   pool.push(...claimReferences);
 
   return pool.map((reference, index) => ({ ...reference, label: String(index + 1) }));
+}
+
+/** A `Reference` for a research paper's own landing page, at a given array position. */
+function paperReference(source: PipelineSource, url: string, index: number): Reference {
+  return {
+    label: String(index + 1),
+    title: firstOfLength([source.title], 3) || 'Công trình nghiên cứu',
+    publisher: firstOfLength([source.journal ?? undefined], 2) || 'Tạp chí khoa học',
+    url,
+  };
 }

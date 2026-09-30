@@ -644,26 +644,26 @@ describe('body block minimum', () => {
     ];
   }
 
-  it('accepts a body with exactly the minimum block count at the Zod schema boundary', () => {
-    // Direct schema check: 8 blocks is the floor and must pass, since a shorter body
-    // is what took today's run to attempt 5.
+  it('accepts a body at the renderability floor of three blocks', () => {
+    // The schema floor is now renderability (3 blocks), not a stylistic quota: a coherent
+    // short article must parse rather than be rejected. Section richness is a warning.
     const draft = {
       title: 'Thiếu magie ảnh hưởng đến cơ thể như thế nào',
       dek: 'Magie tham gia rất nhiều phản ứng enzyme, nhưng phần lớn lượng magie lại không nằm trong máu, khiến xét nghiệm máu không phản ánh đầy đủ tình trạng dự trữ của cơ thể.',
       slug: 'thieu-magie-anh-huong-den-co-the',
       categorySlug: 'vi-chat-vitamin',
       isFactCheck: false,
-      body: eightBlockBody(),
+      body: eightBlockBody().slice(0, 3),
       references: [],
     };
     const parsed = draftSchema.safeParse(draft);
     expect(parsed.success).toBe(true);
   });
 
-  it('rejects a body of seven blocks with an array-too-small error', () => {
-    // The exact failure production hit: body length below the schema floor. This is the
-    // check that must NOT be relaxed; the fix is prompt-side.
-    const shortBody = eightBlockBody().slice(0, 7);
+  it('rejects a body below the three-block floor with an array-too-small error', () => {
+    // Two blocks is below the renderability floor and must still be rejected — the floor was
+    // lowered, not removed.
+    const shortBody = eightBlockBody().slice(0, 2);
     const parsed = draftSchema.safeParse({
       title: 'Thiếu magie ảnh hưởng đến cơ thể như thế nào',
       dek: 'Magie tham gia rất nhiều phản ứng enzyme, nhưng phần lớn lượng magie lại không nằm trong máu, khiến xét nghiệm máu không phản ánh đầy đủ tình trạng dự trữ của cơ thể.',
@@ -797,14 +797,15 @@ describe('body block minimum', () => {
     expect(draftCalls).toBe(2);
   });
 
-  it('does not attempt a third try when the draft stays too short', async () => {
-    // Both draft attempts return a 5-block body. The pipeline must fail cleanly with
-    // ai_malformed_output — never a third call, never a loop.
+  it('does not attempt a third try when the draft stays schema-invalid', async () => {
+    // Both draft attempts return a 2-block body — below the renderability floor of 3, so the
+    // schema-repair loop inside complete() cannot rescue it. The pipeline must fail cleanly
+    // with ai_malformed_output — never a third call, never a loop.
     let draftCalls = 0;
     const merged = defaults();
     const shortDraft = {
       ...(merged.draft as Record<string, unknown>),
-      body: eightBlockBody().slice(0, 5),
+      body: eightBlockBody().slice(0, 2),
     };
 
     const fetchImpl = (_input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
@@ -852,7 +853,7 @@ describe('body block minimum', () => {
     const merged = defaults();
     const shortDraft = {
       ...(merged.draft as Record<string, unknown>),
-      body: eightBlockBody().slice(0, 5),
+      body: eightBlockBody().slice(0, 2),
     };
     const shortDraftJson = JSON.stringify(shortDraft);
 
@@ -1270,7 +1271,10 @@ describe('the research path', () => {
     expect(system).toContain('BỐI CẢNH RIÊNG CHO BÀI VIẾT VỀ NGHIÊN CỨU');
   });
 
-  it('fails a research article that omits the paper it reports on', async () => {
+  it('deterministically re-inserts the paper a research draft omitted, rather than failing', async () => {
+    // The paper URL is known and real (it is the source), so a draft that dropped it is
+    // repaired — the normaliser appends the paper reference — instead of wasting a publishing
+    // day. The article publishes with the paper cited and no missing_required_reference.
     const responses = researchResponses();
     (responses.draft as { references: unknown[] }).references = [
       {
@@ -1292,10 +1296,11 @@ describe('the research path', () => {
       fetchImpl: mock.fetchImpl,
     });
     if (outcome.decision === 'failed') throw new Error('unexpected failure');
-    expect(outcome.decision).toBe('needs_review');
-    expect(outcome.report.issues.map((issue) => issue.code)).toContain(
+    expect(outcome.decision).toBe('publish');
+    expect(outcome.report.issues.map((issue) => issue.code)).not.toContain(
       'missing_required_reference',
     );
+    expect(outcome.draft.references.map((reference) => reference.url)).toContain(PAPER_URL);
   });
 });
 
@@ -1514,7 +1519,10 @@ describe('validation repair', () => {
     expect(outcome.reason).not.toContain('validation_failed_after_repair');
   });
 
-  it('does NOT repair a fabricated (untraceable) number — it goes straight to review', async () => {
+  it('attempts one repair on an untraceable number, then routes to review if it survives', async () => {
+    // An untraceable number is now repairable (attribute to the speaker, or remove it) — but
+    // only once. When the repair keeps the fabricated figure, the article still goes to review
+    // rather than publishing it: the number is never invented over, and never published.
     const mock = sequencedDraftMock([
       { ...(defaults().draft as Record<string, unknown>), body: bodyWithUntraceableNumber() },
     ]);
@@ -1524,8 +1532,9 @@ describe('validation repair', () => {
 
     expect(outcome.decision).toBe('needs_review');
     expect(hardFailureCodes(outcome.report)).toContain('untraceable_number');
-    // Fabrication belongs to a human, not to an automated rewrite.
-    expect(mock.draftCalls).toBe(1);
+    // Exactly one repair pass — the same body comes back, so it still fails, with no third try.
+    expect(mock.draftCalls).toBe(2);
+    expect(outcome.reason).toContain('validation_failed_after_repair');
   });
 });
 

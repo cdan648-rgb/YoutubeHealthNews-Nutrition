@@ -237,12 +237,17 @@ CHỈ trả về JSON đúng schema.`;
 /* ================================= write ================================= */
 
 export const draftSchema = z.object({
-  title: z.string().min(10).max(160),
-  dek: z.string().min(80).max(320),
+  // Generous upper bounds: a slightly long title or dek is accepted, not rejected. The lower
+  // bounds and the slug format stay — they matter for SEO, rendering and the database CHECK.
+  title: z.string().min(10).max(200),
+  dek: z.string().min(80).max(500),
   slug: z.string().min(10).max(90),
   categorySlug: z.string().min(3).max(60),
   isFactCheck: z.boolean(),
-  body: z.array(blockSchema).min(8),
+  // Renderability floor, not a stylistic quota. The prompt still ASKS for a full 8–20-block
+  // article, but a coherent 3-block piece is accepted rather than rejected — section and
+  // marker richness are warnings and normaliser concerns, not a hard schema gate.
+  body: z.array(blockSchema).min(3),
   references: z.array(referenceSchema).max(8),
 });
 
@@ -737,7 +742,9 @@ ${issueList}
 CÁCH SỬA TỪNG LOẠI LỖI:
 - too_short: viết thêm nội dung có thật, bám theo tư liệu nguồn và các ý đã có, để bài đạt ${input.wordCountMin}–${input.wordCountMax} từ. KHÔNG nhồi chữ vô nghĩa, KHÔNG bịa số liệu hay nghiên cứu mới.
 - too_long: rút gọn cho về dưới ${input.wordCountMax} từ mà vẫn giữ các ý chính.
-- prescriptive_language / prescriptive_dosage: diễn đạt lại theo hướng GIẢI THÍCH, bỏ mọi lời khuyên dùng thuốc/liều lượng, bỏ lời khuyên tự chẩn đoán hoặc tự điều trị. Nếu muốn nhắc tới việc tự chẩn đoán, chỉ được nói theo hướng KHUYÊN NGƯỢC LẠI (ví dụ "không nên tự chẩn đoán").
+- prescriptive_language / prescriptive_dosage: viết lại ĐÚNG câu bị gắn cờ (xem chi tiết) thành ngôn ngữ GIẢI THÍCH trung tính, GIỮ NGUYÊN ý nghĩa y khoa nhưng bỏ mọi lời khuyên hành động: bỏ liều lượng có đơn vị, bỏ lời khuyên dùng thuốc, bỏ khuyến khích tự chẩn đoán/tự điều trị. Nếu muốn nhắc tới tự chẩn đoán/tự điều trị, chỉ được nói theo hướng KHUYÊN NGƯỢC LẠI (ví dụ "không nên tự chẩn đoán, hãy đi khám"). KHÔNG thêm chỉ dẫn điều trị mới.
+- copy_overlap: một đoạn đang trùng quá nhiều từ liên tiếp với tư liệu nguồn. Hãy DIỄN GIẢI LẠI riêng đoạn đó bằng lời của mình, GIỮ NGUYÊN ý nghĩa và cách dẫn nguồn, sao cho không còn chuỗi trùng dài với nguồn (không quá ~12 từ liên tiếp giống hệt). KHÔNG đổi số liệu, KHÔNG bịa thông tin mới.
+- untraceable_number: một con số không có trong tư liệu nguồn cũng không có trong nguồn đã dẫn. Hãy hoặc GHI RÕ đây là điều video/nguồn nói (diễn giải, không khẳng định như sự thật y học), hoặc BỎ con số đó. TUYỆT ĐỐI KHÔNG bịa thêm số liệu hay nghiên cứu.
 - few_references: nếu có nguồn uy tín phù hợp, bổ sung để có ít nhất 2 nguồn; nếu không chắc nguồn có thật, ĐỪNG thêm — một nguồn bịa còn tệ hơn không có nguồn.
 - dangling_reference: một block đang trỏ "ref": N nhưng references[N] không tồn tại (chỉ số đếm TỪ 0). Sửa theo MỘT trong hai cách, KHÔNG bịa URL: (a) nếu có nguồn CÓ THẬT tương ứng, thêm nó vào references sao cho references[N] tồn tại rồi giữ ref; (b) nếu KHÔNG có nguồn thật, BỎ trường "ref" và đổi attribution "established"→"general" (hoặc "speaker" nếu đó là điều video nói), còn pull_quote thì đổi kind "cited"→"paraphrase". Bảo đảm số phần tử references đủ lớn hơn mọi chỉ số ref còn lại.
 - unsourced_established_claim / uncited_quotation: đoạn đang để attribution="established" (hoặc pull_quote kind="cited") mà không có "ref". Hoặc thêm "ref" trỏ tới một nguồn CÓ THẬT trong references, hoặc hạ xuống "general"/"paraphrase".

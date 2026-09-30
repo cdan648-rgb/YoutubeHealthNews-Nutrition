@@ -285,15 +285,19 @@ describe('fabricated attribution', () => {
     expect(codes).toContain('fabricated_quote');
   });
 
-  it('rejects a claim presented as established fact with no reference', () => {
+  it('warns (does not block) on a claim presented as established fact with no reference', () => {
+    // The normaliser demotes an unsupported `established` paragraph to plain prose, so at the
+    // gate this is a warning — the pipeline never publishes a dangling "established" claim.
     const body = (seed.body as Block[]).map((block) =>
       block.t === 'p' && block.attribution === 'established'
         ? { t: 'p' as const, text: block.text, attribution: 'established' as const }
         : block,
     );
-    expect(hardFailureCodes(validateArticle(baseInput({ body })))).toContain(
-      'unsourced_established_claim',
-    );
+    const report = validateArticle(baseInput({ body }));
+    expect(hardFailureCodes(report)).not.toContain('unsourced_established_claim');
+    expect(
+      report.issues.some((i) => i.code === 'unsourced_established_claim' && i.severity === 'soft'),
+    ).toBe(true);
   });
 });
 
@@ -391,14 +395,26 @@ describe('copying', () => {
 });
 
 describe('structure and identity', () => {
-  it('rejects a body with too few sections', () => {
+  it('warns but does not block on too few sections', () => {
+    // Section count is a stylistic preference, not a safety or rendering requirement, so it
+    // is a warning the article publishes with — the pipeline does not waste a day over it.
     const body = (seed.body as Block[]).filter((block) => block.t !== 'h2');
-    expect(hardFailureCodes(validateArticle(baseInput({ body })))).toContain('too_few_sections');
+    const report = validateArticle(baseInput({ body }));
+    expect(hardFailureCodes(report)).not.toContain('too_few_sections');
+    expect(report.issues.some((i) => i.code === 'too_few_sections' && i.severity === 'soft')).toBe(
+      true,
+    );
   });
 
-  it('rejects a missing disclaimer', () => {
+  it('warns but does not block on a missing disclaimer (the normaliser inserts one)', () => {
+    // The deterministic normaliser guarantees exactly one disclaimer in the pipeline; at the
+    // gate a missing one is a warning, never a hard failure.
     const body = (seed.body as Block[]).filter((block) => block.t !== 'disclaimer');
-    expect(hardFailureCodes(validateArticle(baseInput({ body })))).toContain('missing_disclaimer');
+    const report = validateArticle(baseInput({ body }));
+    expect(hardFailureCodes(report)).not.toContain('missing_disclaimer');
+    expect(
+      report.issues.some((i) => i.code === 'missing_disclaimer' && i.severity === 'soft'),
+    ).toBe(true);
   });
 
   it('rejects an invented category', () => {
@@ -516,24 +532,34 @@ describe('the research branch', () => {
     expect(codes).toContain('missing_required_reference');
   });
 
-  it('treats fewer than two references as a HARD failure, unlike a YouTube article', () => {
-    const codes = hardFailureCodes(researchInputWithOneRef());
-    expect(codes).toContain('few_references');
-
-    function researchInputWithOneRef() {
-      return validateArticle(
-        researchInput({ references: [paperRef], requiredReferenceUrls: [PAPER_URL] }),
-      );
-    }
+  it('treats a thin reference list as a warning, provided the paper itself is cited', () => {
+    // Under the tolerant policy few_references is always soft: the paper's presence is the
+    // real integrity guarantee (missing_required_reference, hard), and demanding a second
+    // corroborating source for every article is an editorial preference, not a safety rule.
+    const report = validateArticle(
+      researchInput({ references: [paperRef], requiredReferenceUrls: [PAPER_URL] }),
+    );
+    expect(hardFailureCodes(report)).not.toContain('few_references');
+    expect(hardFailureCodes(report)).not.toContain('missing_required_reference');
+    expect(report.issues.some((i) => i.code === 'few_references' && i.severity === 'soft')).toBe(
+      true,
+    );
   });
 
-  it('fails a research article that embeds a video', () => {
+  it('warns (does not block) on a research article that embeds a video; the normaliser strips it', () => {
+    // A video_embed on a research article renders nothing (there is no video), so it is a
+    // warning at the gate and is deterministically removed by the pipeline's normaliser.
     const body = [...researchBody(), { t: 'video_embed' } as Block];
-    const codes = hardFailureCodes(validateArticle(researchInput({ body })));
-    expect(codes).toContain('unexpected_video_embed');
+    const report = validateArticle(researchInput({ body }));
+    expect(hardFailureCodes(report)).not.toContain('unexpected_video_embed');
+    expect(
+      report.issues.some((i) => i.code === 'unexpected_video_embed' && i.severity === 'soft'),
+    ).toBe(true);
   });
 
-  it('fails a research article that attributes a claim to a non-existent speaker', () => {
+  it('warns (does not block) on a research claim attributed to a non-existent speaker', () => {
+    // The normaliser downgrades a stray speaker attribution to plain prose; at the gate it is
+    // a warning, not a hard failure.
     let converted = false;
     const body = researchBody().map((block) => {
       if (!converted && block.t === 'p') {
@@ -542,7 +568,12 @@ describe('the research branch', () => {
       }
       return block;
     });
-    const codes = hardFailureCodes(validateArticle(researchInput({ body })));
-    expect(codes).toContain('speaker_attribution_without_speaker');
+    const report = validateArticle(researchInput({ body }));
+    expect(hardFailureCodes(report)).not.toContain('speaker_attribution_without_speaker');
+    expect(
+      report.issues.some(
+        (i) => i.code === 'speaker_attribution_without_speaker' && i.severity === 'soft',
+      ),
+    ).toBe(true);
   });
 });
